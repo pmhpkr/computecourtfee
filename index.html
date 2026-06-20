@@ -1236,7 +1236,247 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
     amtInp.addEventListener('input', compute);
   })();
 
+  /* ── APL-05 category other toggle ── */
+  document.getElementById('apl-category').addEventListener('change', function () {
+    document.getElementById('apl-category-other-wrap').style.display = this.value === 'Other' ? 'block' : 'none';
+  });
+
+  /* ── APL-05 default sign date ── */
+  (function () {
+    var t = new Date();
+    var d = document.getElementById('apl-sign-date');
+    if (d) d.value = t.getFullYear() + '-' + String(t.getMonth()+1).padStart(2,'0') + '-' + String(t.getDate()).padStart(2,'0');
+  })();
+
+  /* ── APL-05 demand table auto-calc: Disputed = Determined − Admitted ── */
+  (function () {
+    var acts  = ['igst','cgst','sgst','cess'];
+    var comps = ['tax','int','pen','oth'];
+    function parseN(id) { var el = document.getElementById(id); var n = parseFloat((el ? el.value : '').replace(/[^0-9.]/g,'')); return isNaN(n) ? 0 : n; }
+    function recalc(ak, ck) {
+      var det = parseN('dem-'+ak+'-'+ck+'-det');
+      var adm = parseN('dem-'+ak+'-'+ck+'-adm');
+      var dis = Math.max(0, det - adm);
+      var el  = document.getElementById('dem-'+ak+'-'+ck+'-dis');
+      if (el) { el.value = dis > 0 ? dis.toLocaleString('en-IN') : ''; }
+    }
+    acts.forEach(function(ak) {
+      comps.forEach(function(ck) {
+        ['det','adm'].forEach(function(tk) {
+          var el = document.getElementById('dem-'+ak+'-'+ck+'-'+tk);
+          if (el) el.addEventListener('input', function() { recalc(ak, ck); });
+        });
+        /* make disputed field read-only with a visual hint */
+        var disEl = document.getElementById('dem-'+ak+'-'+ck+'-dis');
+        if (disEl) { disEl.readOnly = true; disEl.style.background = '#fdf8f2'; disEl.style.color = '#b8956a'; disEl.placeholder = 'auto'; }
+      });
+    });
+  })();
+
 })();
+</script>
+<script>
+function generateAPL05() {
+  var status = document.getElementById('apl-gen-status');
+  var btn    = document.getElementById('apl-generate-btn');
+
+  btn.disabled = true;
+  status.textContent = 'Generating document…';
+
+  try {
+
+    /* ── helpers ── */
+    function v(id) { var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; }
+    function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function fmtAmt(s) { var n = parseFloat((s||'').replace(/[^0-9.]/g,'')); return isNaN(n) || n===0 ? '' : 'Rs ' + Math.round(n).toLocaleString('en-IN'); }
+    function fmtDate(s) {
+      if (!s) return '—';
+      var p = s.split('-'); if (p.length !== 3) return s;
+      var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      return parseInt(p[2]) + ' ' + months[parseInt(p[1])-1] + ' ' + p[0];
+    }
+    function acts() {
+      var a = [];
+      ['cgst','sgst','igst','cess'].forEach(function(k) {
+        var el = document.getElementById('apl-act-'+k);
+        if (el && el.checked) a.push(el.value);
+      });
+      return a.length ? a.join(', ') : '—';
+    }
+    function catVal() {
+      var c = v('apl-category'); return c === 'Other' ? v('apl-category-other') : c || '—';
+    }
+
+    /* ── data helpers ── */
+    function fmtDate(s) {
+      if (!s) return '';
+      var p = s.split('-'); if (p.length !== 3) return s;
+      var mo = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      return parseInt(p[2]) + ' ' + mo[parseInt(p[1])-1] + ' ' + p[0];
+    }
+    function actsChk() {
+      var a = [];
+      [{k:'igst',l:'IGST'},{k:'cgst',l:'CGST'},{k:'sgst',l:'SGST/UTGST'},{k:'cess',l:'Cess'}].forEach(function(x){
+        var el = document.getElementById('apl-act-'+x.k); if (el && el.checked) a.push(x.l);
+      });
+      return a.length ? a.join(', ') : '';
+    }
+    function catVal() { var c = v('apl-category'); return c === 'Other' ? v('apl-category-other') : c; }
+
+    /* ── HTML builder ── */
+    var S = ''; /* accumulate HTML string */
+    function row(label, val, no) {
+      S += '<tr><td class="lbl">' + (no ? '<b>'+no+'.</b>&nbsp;' : '') + esc(label) + '</td><td>' + esc(val||'') + '</td></tr>';
+    }
+    function hdr(text) {
+      S += '<tr><td colspan="2" class="sec">' + esc(text) + '</td></tr>';
+    }
+
+    /* ── demand table HTML ── */
+    var actKeys  = ['igst','cgst','sgst','cess'];
+    var actNames = {igst:'IGST', cgst:'CGST', sgst:'SGST / UTGST', cess:'Cess'};
+    var compKeys = ['tax','int','pen','oth'];
+    var compNames= {tax:'Tax / ITC', int:'Interest', pen:'Penalty', oth:'Fees &amp; Others'};
+    var typeKeys = ['det','adm','dis'];
+    var typeNames= {det:'Determined (Rs)', adm:'Admitted (Rs)', dis:'Disputed (Rs)'};
+
+    var demHTML = '<table class="dem"><thead>';
+    demHTML += '<tr><th rowspan="2" style="width:12%">Act</th>';
+    compKeys.forEach(function(ck){ demHTML += '<th colspan="3">'+compNames[ck]+'</th>'; });
+    demHTML += '</tr><tr>';
+    compKeys.forEach(function(){ typeKeys.forEach(function(tk){ demHTML += '<th class="sub">'+typeNames[tk]+'</th>'; }); });
+    demHTML += '</tr></thead><tbody>';
+    var totals = {};
+    typeKeys.forEach(function(tk){ compKeys.forEach(function(ck){ totals[ck+tk]=0; }); });
+    actKeys.forEach(function(ak){
+      demHTML += '<tr><td class="act">'+actNames[ak]+'</td>';
+      compKeys.forEach(function(ck){
+        typeKeys.forEach(function(tk){
+          var n = parseFloat((v('dem-'+ak+'-'+ck+'-'+tk)||'').replace(/[^0-9.]/g,''));
+          var s = isNaN(n)||n===0 ? '' : Math.round(n).toLocaleString('en-IN');
+          if (!isNaN(n)) totals[ck+tk] += n;
+          demHTML += '<td class="amt">'+esc(s)+'</td>';
+        });
+      });
+      demHTML += '</tr>';
+    });
+    demHTML += '<tr class="tot"><td><b>Total</b></td>';
+    compKeys.forEach(function(ck){
+      typeKeys.forEach(function(tk){
+        var s = totals[ck+tk] > 0 ? Math.round(totals[ck+tk]).toLocaleString('en-IN') : '';
+        demHTML += '<td class="amt"><b>'+s+'</b></td>';
+      });
+    });
+    demHTML += '</tr></tbody></table>';
+
+    /* ── pre-deposit table HTML ── */
+    var pdHTML = '<table class="dem"><thead><tr>'
+      + '<th style="width:12%">Act</th><th>10% Required (Rs)</th><th>Amount Paid (Rs)</th><th>Mode</th><th>Reference / Challan No.</th>'
+      + '</tr></thead><tbody>';
+    actKeys.forEach(function(ak){
+      pdHTML += '<tr><td class="act">'+actNames[ak]+'</td>'
+        + '<td class="amt">'+esc(fmtAmt(v('pd2-'+ak+'-req')))+'</td>'
+        + '<td class="amt">'+esc(fmtAmt(v('pd2-'+ak+'-paid')))+'</td>'
+        + '<td>'+esc(v('pd2-'+ak+'-mode'))+'</td>'
+        + '<td>'+esc(v('pd2-'+ak+'-ref'))+'</td></tr>';
+    });
+    pdHTML += '</tbody></table>';
+
+    /* ── assemble full HTML ── */
+    var docName = (v('apl-gstin') || v('apl-name') || 'appeal').replace(/[^a-zA-Z0-9]/g,'_');
+
+    /* main fields table */
+    hdr('APPELLANT DETAILS');
+    row('GSTIN / Temp ID / UIN',                   v('apl-gstin'),        '1');
+    row('Name of Appellant',                        v('apl-name'),         '2');
+    row('Address',                                  v('apl-address'),      '3');
+    row('State',                                    v('apl-state'),        '');
+    row('Phone / Email',                            v('apl-phone'),        '');
+    hdr('AUTHORIZED REPRESENTATIVE');
+    row('Name of AR',                               v('apl-ar-name'),      '4');
+    row('AR Registration No.',                      v('apl-ar-reg'),       '');
+    hdr('RESPONDENT');
+    row('Designation of Respondent',                v('apl-resp-desig'),   '5');
+    row('Office / Commissionerate',                 v('apl-resp-office'),  '');
+    hdr('ORDER UNDER APPEAL');
+    row('Order / APL-04 Reference No.',             v('apl-order-ref'),    '6');
+    row('Date of Order',                            fmtDate(v('apl-order-date')),    '7');
+    row('Date of Receipt of Order',                 fmtDate(v('apl-receipt-date')),  '8');
+    row('Authority that Passed the Order',          v('apl-authority'),    '9');
+    row('Original Order Reference (if applicable)', v('apl-orig-order'),   '10');
+    hdr('DISPUTE DETAILS');
+    row('Acts in Dispute',                          actsChk(),             '11');
+    row('Category of Dispute',                      catVal(),              '12');
+
+    var fullHTML = '<!DOCTYPE html>'
+      + '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
+      + '<head><meta charset="utf-8"><title>FORM GST APL-05</title>'
+      + '<!--[if gte mso 9]><xml><w:WordDocument>'
+      + '<w:View>Print</w:View><w:Zoom>100</w:Zoom>'
+      + '<w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->'
+      + '<style>'
+      + '@page { size: A4; margin: 2cm; }'
+      + 'body { font-family: "Times New Roman", serif; font-size: 12pt; line-height: 1.0; color: #000; }'
+      + 'p, td, th, li { font-family: "Times New Roman", serif; font-size: 12pt; line-height: 1.0; }'
+      + '.title { text-align: center; font-size: 16pt; font-weight: bold; margin: 0 0 4pt 0; }'
+      + '.subtitle { text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 4pt 0; }'
+      + '.rule { text-align: center; font-size: 11pt; color: #555; margin: 0 0 16pt 0; }'
+      + 'table { border-collapse: collapse; width: 100%; margin-bottom: 14pt; }'
+      + 'td, th { border: 1pt solid #aaa; padding: 4pt 6pt; vertical-align: top; text-align: left; }'
+      + '.lbl { background: #f5f1e8; width: 35%; font-weight: normal; }'
+      + '.sec { background: #1a2a3a; color: #b8956a; font-weight: bold; font-size: 11pt; padding: 5pt 6pt; }'
+      + 'table.dem th { background: #1a2a3a; color: #b8956a; font-size: 10pt; text-align: center; padding: 4pt 3pt; }'
+      + 'table.dem th.sub { background: #2a3a4a; color: #d4cfc5; font-size: 9pt; font-weight: normal; }'
+      + 'table.dem td.act { background: #fafaf8; font-weight: bold; text-align: center; font-size: 11pt; }'
+      + 'table.dem td.amt { text-align: right; font-size: 10pt; }'
+      + 'table.dem tr.tot td { background: #f0ece2; font-size: 10pt; }'
+      + '.item-hdr { font-weight: bold; font-size: 12pt; margin: 16pt 0 6pt 0; border-bottom: 1pt solid #1a2a3a; padding-bottom: 3pt; }'
+      + '.narrative { text-align: justify; margin: 0; white-space: pre-wrap; }'
+      + '.ver-table td.lbl { width: 30%; }'
+      + '.note { font-size: 10pt; color: #666; font-style: italic; margin-top: 16pt; }'
+      + '</style></head><body>'
+      + '<p class="title">FORM GST APL-05</p>'
+      + '<p class="subtitle">Appeal to the Appellate Tribunal</p>'
+      + '<p class="rule">[See Rule 110(1) of CGST (Appellate Tribunal Procedure) Rules, 2024]</p>'
+      + '<table>' + S + '</table>'
+      + '<p class="item-hdr">Item 20 — Details of Demand Involved in Appeal (amounts in Rs)</p>'
+      + demHTML
+      + '<p class="item-hdr">Item 21 — Pre-Deposit Details</p>'
+      + pdHTML
+      + '<p class="item-hdr">Item 13 — Statement of Facts</p>'
+      + '<p class="narrative">' + esc(v('apl-facts') || '—') + '</p>'
+      + '<p class="item-hdr">Item 14 — Grounds of Appeal</p>'
+      + '<p class="narrative">' + esc(v('apl-grounds') || '—') + '</p>'
+      + '<p class="item-hdr">Item 15 — Relief / Prayer</p>'
+      + '<p class="narrative">' + esc(v('apl-prayer') || '—') + '</p>'
+      + '<p class="item-hdr">Verification</p>'
+      + '<p>I, <b>' + esc(v('apl-signatory')||'______________') + '</b>, '
+      + esc(v('apl-designation')||'______________')
+      + ', do hereby solemnly affirm and declare that the information given herein above is true and correct to the best of my knowledge and belief and nothing has been concealed therefrom.</p>'
+      + '<table class="ver-table"><tr><td class="lbl">Place</td><td>' + esc(v('apl-place')) + '</td></tr>'
+      + '<tr><td class="lbl">Date</td><td>' + esc(fmtDate(v('apl-sign-date'))) + '</td></tr>'
+      + '<tr><td class="lbl">Name</td><td>' + esc(v('apl-signatory')) + '</td></tr>'
+      + '<tr><td class="lbl">Designation / Capacity</td><td>' + esc(v('apl-designation')) + '</td></tr></table>'
+      + '<p class="note">This is a computer-generated draft. Verify all details against the official APL-05 before filing.</p>'
+      + '</body></html>';
+
+    var blob = new Blob(['﻿' + fullHTML], { type: 'application/msword' });
+    var url  = URL.createObjectURL(blob);
+    var a    = document.createElement('a');
+    a.href     = url;
+    a.download = 'APL-05_' + docName + '.doc';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    status.textContent = 'Document downloaded — open APL-05_' + docName + '.doc in Word.';
+    btn.disabled = false;
+
+  } catch(err) {
+    status.textContent = 'Error: ' + err.message;
+    btn.disabled = false;
+  }
+}
 </script>
 </body>
 </html>
