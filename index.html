@@ -138,6 +138,7 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
         <button class="tool-tab active" data-panel="gstat">GSTAT Court Fee</button>
         <button class="tool-tab" data-panel="predeposit">Pre-Deposit</button>
         <button class="tool-tab" data-panel="limitation">Limitation Calculator</button>
+        <button class="tool-tab" data-panel="apl05">APL-05 Generator</button>
       </div>
 
       <!-- GSTAT Court Fee -->
@@ -353,6 +354,341 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
           <div class="calc-disclaimer">
             <strong>Disclaimer:</strong> The limitation periods shown are based on Sections 107 and 112 of the CGST Act, 2017. Limitation is counted from the date of actual receipt of the order, which may differ from the date of the order itself. For <strong>Section 112 (second appeal)</strong> only — where the order was received between 1 July 2017 and 31 March 2026, the amnesty period is excluded from the limitation count, resulting in an effective last date of <strong>30 June 2026</strong>; this extended deadline does not apply to Section 107 first appeals. This calculator does not account for public holidays, other exclusions under the Limitation Act, 1963, Supreme Court orders on limitation, or any other ground of condonation. <strong>Do not rely solely on this tool.</strong> Always verify against the actual order and applicable law before filing.
           </div>
+        </div>
+      </div>
+
+      <!-- APL-05 Generator -->
+      <div class="tool-panel" id="panel-apl05">
+        <p style="color:#7a8a9a; margin-bottom:30px; font-size:15.5px;">Fill in the details below to generate a pre-filled FORM GST APL-05 (Appeal to the Appellate Tribunal under Section 112) as a formatted Word document. Leave any field blank if not applicable.</p>
+        <style>
+          .apl-section { margin-bottom: 36px; }
+          .apl-section-title { font-size: 13px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: #b8956a; border-bottom: 1px solid #d4cfc5; padding-bottom: 10px; margin-bottom: 20px; }
+          .apl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+          .apl-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+          .apl-full { grid-column: 1 / -1; }
+          .apl-grid .calc-group, .apl-grid-3 .calc-group { margin-bottom: 0; }
+          textarea.apl-area { width: 100%; padding: 13px; border: 1px solid #d4cfc5; border-radius: 1px; font-size: 15px; color: #1a2a3a; background: #ffffff; font-family: 'Garamond','Book Antiqua',serif; resize: vertical; min-height: 100px; box-sizing: border-box; }
+          textarea.apl-area:focus { outline: none; border-color: #b8956a; box-shadow: 0 0 0 2px rgba(184,149,106,0.1); }
+          .demand-wrap { overflow-x: auto; border: 1px solid #d4cfc5; border-radius: 1px; }
+          .demand-tbl { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 680px; }
+          .demand-tbl th { background: #1a2a3a; color: #b8956a; padding: 9px 10px; text-align: center; font-size: 12px; font-weight: 600; letter-spacing: 0.4px; border: 1px solid #2a3a4a; white-space: nowrap; }
+          .demand-tbl td { border: 1px solid #d4cfc5; padding: 4px 6px; vertical-align: middle; }
+          .demand-tbl .act-lbl { font-weight: 600; color: #1a2a3a; background: #fafaf8; font-size: 13px; text-align: center; white-space: nowrap; padding: 8px 10px; }
+          .demand-tbl input[type="text"] { width: 100%; border: none; background: transparent; font-size: 13px; padding: 4px 2px; font-family: 'Garamond','Book Antiqua',serif; color: #1a2a3a; min-width: 80px; }
+          .demand-tbl input[type="text"]:focus { outline: none; background: #fdf8f2; }
+          .demand-tbl .sub-hdr { font-size: 11px; color: #7a8a9a; font-weight: 400; }
+          .apl-generate-btn { margin-top: 32px; padding: 16px 40px; background: #1a2a3a; color: #b8956a; border: 1px solid #b8956a; font-family: 'Garamond','Book Antiqua',serif; font-size: 15px; font-weight: 600; letter-spacing: 0.8px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; }
+          .apl-generate-btn:hover { background: #b8956a; color: #ffffff; }
+          .apl-generate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+          @media (max-width: 700px) { .apl-grid { grid-template-columns: 1fr; } .apl-grid-3 { grid-template-columns: 1fr; } }
+        </style>
+
+        <div class="calc-container" style="max-width:900px;">
+
+          <!-- 1. Appellant -->
+          <div class="apl-section">
+            <div class="apl-section-title">1. Appellant Details</div>
+            <div class="apl-grid">
+              <div class="calc-group">
+                <label class="calc-label" for="apl-gstin">GSTIN / Temp ID / UIN</label>
+                <input type="text" id="apl-gstin" placeholder="e.g. 29AABCX1234M1Z5">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-name">Name of Appellant</label>
+                <input type="text" id="apl-name" placeholder="As on GST registration">
+              </div>
+              <div class="calc-group apl-full">
+                <label class="calc-label" for="apl-address">Address of Appellant</label>
+                <textarea class="apl-area" id="apl-address" rows="2" placeholder="Registered address"></textarea>
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-state">State</label>
+                <input type="text" id="apl-state" placeholder="e.g. Karnataka">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-phone">Phone / Email of Appellant</label>
+                <input type="text" id="apl-phone" placeholder="Contact details">
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Authorized Representative -->
+          <div class="apl-section">
+            <div class="apl-section-title">2. Authorized Representative (if any)</div>
+            <div class="apl-grid">
+              <div class="calc-group">
+                <label class="calc-label" for="apl-ar-name">Name of AR</label>
+                <input type="text" id="apl-ar-name" placeholder="Name">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-ar-reg">AR Registration No.</label>
+                <input type="text" id="apl-ar-reg" placeholder="If enrolled with GSTAT">
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Respondent -->
+          <div class="apl-section">
+            <div class="apl-section-title">3. Respondent</div>
+            <div class="apl-grid">
+              <div class="calc-group">
+                <label class="calc-label" for="apl-resp-desig">Designation of Respondent</label>
+                <input type="text" id="apl-resp-desig" placeholder="e.g. Commissioner of Central Tax">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-resp-office">Office / Commissionerate</label>
+                <input type="text" id="apl-resp-office" placeholder="e.g. Bengaluru South Commissionerate">
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Order Under Appeal -->
+          <div class="apl-section">
+            <div class="apl-section-title">4. Order Under Appeal</div>
+            <div class="apl-grid">
+              <div class="calc-group">
+                <label class="calc-label" for="apl-order-ref">Order / APL-04 Reference No.</label>
+                <input type="text" id="apl-order-ref" placeholder="Reference number of impugned order">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-order-date">Date of Order</label>
+                <input type="date" id="apl-order-date">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-receipt-date">Date of Receipt of Order</label>
+                <input type="date" id="apl-receipt-date">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-authority">Designation of Authority that Passed the Order</label>
+                <input type="text" id="apl-authority" placeholder="e.g. Appellate Authority / Revisional Authority">
+              </div>
+              <div class="calc-group apl-full">
+                <label class="calc-label" for="apl-orig-order">Original Order Reference (if the order under appeal is a 1st appellate order)</label>
+                <input type="text" id="apl-orig-order" placeholder="Original order no. and date (if applicable)">
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Dispute Details -->
+          <div class="apl-section">
+            <div class="apl-section-title">5. Act &amp; Dispute Category</div>
+            <div class="apl-grid">
+              <div class="calc-group">
+                <label class="calc-label">Acts in Dispute</label>
+                <div style="display:flex; gap:18px; flex-wrap:wrap; margin-top:4px;">
+                  <label style="display:flex;align-items:center;gap:6px;font-size:14px;color:#1a2a3a;cursor:pointer;"><input type="checkbox" id="apl-act-cgst" value="CGST"> CGST</label>
+                  <label style="display:flex;align-items:center;gap:6px;font-size:14px;color:#1a2a3a;cursor:pointer;"><input type="checkbox" id="apl-act-sgst" value="SGST/UTGST"> SGST / UTGST</label>
+                  <label style="display:flex;align-items:center;gap:6px;font-size:14px;color:#1a2a3a;cursor:pointer;"><input type="checkbox" id="apl-act-igst" value="IGST"> IGST</label>
+                  <label style="display:flex;align-items:center;gap:6px;font-size:14px;color:#1a2a3a;cursor:pointer;"><input type="checkbox" id="apl-act-cess" value="Cess"> Cess</label>
+                </div>
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-category">Category of Dispute</label>
+                <select id="apl-category">
+                  <option value="">— Select —</option>
+                  <option value="ITC denial">ITC denial</option>
+                  <option value="Demand under Section 73 (non-fraud)">Demand — Section 73 (non-fraud)</option>
+                  <option value="Demand under Section 74 (fraud / suppression)">Demand — Section 74 (fraud / suppression)</option>
+                  <option value="Refund rejection">Refund rejection</option>
+                  <option value="Classification / rate dispute">Classification / rate dispute</option>
+                  <option value="Place of supply dispute">Place of supply dispute</option>
+                  <option value="Valuation dispute">Valuation dispute</option>
+                  <option value="Registration cancellation">Registration cancellation</option>
+                  <option value="Penalty under Section 122">Penalty — Section 122</option>
+                  <option value="Detention / seizure under Section 129">Detention / seizure — Section 129</option>
+                  <option value="Confiscation under Section 130">Confiscation — Section 130</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="calc-group apl-full" id="apl-category-other-wrap" style="display:none;">
+                <label class="calc-label" for="apl-category-other">Specify dispute category</label>
+                <input type="text" id="apl-category-other" placeholder="Describe the nature of dispute">
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. Demand Details Table -->
+          <div class="apl-section">
+            <div class="apl-section-title">6. Demand Details (Item 20) — amounts in Rs</div>
+            <p style="color:#7a8a9a; font-size:14px; margin-bottom:14px;">Enter amounts in rupees. Leave blank if the component / Act is not in dispute.</p>
+            <div class="demand-wrap">
+              <table class="demand-tbl" id="apl-demand-tbl">
+                <thead>
+                  <tr>
+                    <th rowspan="2">Act</th>
+                    <th colspan="3">Tax / ITC (Rs)</th>
+                    <th colspan="3">Interest (Rs)</th>
+                    <th colspan="3">Penalty (Rs)</th>
+                    <th colspan="3">Fees &amp; Others (Rs)</th>
+                  </tr>
+                  <tr>
+                    <th class="sub-hdr">Determined</th><th class="sub-hdr">Admitted</th><th class="sub-hdr">Disputed</th>
+                    <th class="sub-hdr">Determined</th><th class="sub-hdr">Admitted</th><th class="sub-hdr">Disputed</th>
+                    <th class="sub-hdr">Determined</th><th class="sub-hdr">Admitted</th><th class="sub-hdr">Disputed</th>
+                    <th class="sub-hdr">Determined</th><th class="sub-hdr">Admitted</th><th class="sub-hdr">Disputed</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="act-lbl">IGST</td>
+                    <td><input type="text" id="dem-igst-tax-det" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-igst-tax-adm" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-igst-tax-dis" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-igst-int-det" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-igst-int-adm" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-igst-int-dis" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-igst-pen-det" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-igst-pen-adm" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-igst-pen-dis" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-igst-oth-det" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-igst-oth-adm" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-igst-oth-dis" inputmode="numeric" placeholder="0"></td>
+                  </tr>
+                  <tr>
+                    <td class="act-lbl">CGST</td>
+                    <td><input type="text" id="dem-cgst-tax-det" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cgst-tax-adm" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cgst-tax-dis" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cgst-int-det" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cgst-int-adm" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cgst-int-dis" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cgst-pen-det" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cgst-pen-adm" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cgst-pen-dis" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cgst-oth-det" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cgst-oth-adm" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cgst-oth-dis" inputmode="numeric" placeholder="0"></td>
+                  </tr>
+                  <tr>
+                    <td class="act-lbl">SGST / UTGST</td>
+                    <td><input type="text" id="dem-sgst-tax-det" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-sgst-tax-adm" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-sgst-tax-dis" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-sgst-int-det" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-sgst-int-adm" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-sgst-int-dis" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-sgst-pen-det" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-sgst-pen-adm" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-sgst-pen-dis" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-sgst-oth-det" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-sgst-oth-adm" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-sgst-oth-dis" inputmode="numeric" placeholder="0"></td>
+                  </tr>
+                  <tr>
+                    <td class="act-lbl">Cess</td>
+                    <td><input type="text" id="dem-cess-tax-det" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cess-tax-adm" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cess-tax-dis" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cess-int-det" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cess-int-adm" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cess-int-dis" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cess-pen-det" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cess-pen-adm" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cess-pen-dis" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cess-oth-det" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cess-oth-adm" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="dem-cess-oth-dis" inputmode="numeric" placeholder="0"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 7. Pre-Deposit -->
+          <div class="apl-section">
+            <div class="apl-section-title">7. Pre-Deposit Details (Item 21)</div>
+            <p style="color:#7a8a9a; font-size:14px; margin-bottom:14px;">Enter amounts paid as pre-deposit under Section 112(8). These should match the disputed tax/ITC pre-deposit at 10% (capped at Rs 20 crore per Act).</p>
+            <div class="demand-wrap">
+              <table class="demand-tbl">
+                <thead>
+                  <tr>
+                    <th>Act</th>
+                    <th>10% of Disputed Tax / ITC</th>
+                    <th>Amount Paid (Rs)</th>
+                    <th>Mode (Cash / Credit)</th>
+                    <th>Debit Entry / Challan No.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="act-lbl">IGST</td>
+                    <td><input type="text" id="pd2-igst-req" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="pd2-igst-paid" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="pd2-igst-mode" placeholder="Cash / Credit"></td>
+                    <td><input type="text" id="pd2-igst-ref" placeholder="Reference no."></td>
+                  </tr>
+                  <tr>
+                    <td class="act-lbl">CGST</td>
+                    <td><input type="text" id="pd2-cgst-req" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="pd2-cgst-paid" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="pd2-cgst-mode" placeholder="Cash / Credit"></td>
+                    <td><input type="text" id="pd2-cgst-ref" placeholder="Reference no."></td>
+                  </tr>
+                  <tr>
+                    <td class="act-lbl">SGST / UTGST</td>
+                    <td><input type="text" id="pd2-sgst-req" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="pd2-sgst-paid" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="pd2-sgst-mode" placeholder="Cash / Credit"></td>
+                    <td><input type="text" id="pd2-sgst-ref" placeholder="Reference no."></td>
+                  </tr>
+                  <tr>
+                    <td class="act-lbl">Cess</td>
+                    <td><input type="text" id="pd2-cess-req" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="pd2-cess-paid" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="pd2-cess-mode" placeholder="Cash / Credit"></td>
+                    <td><input type="text" id="pd2-cess-ref" placeholder="Reference no."></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 8. Narrative -->
+          <div class="apl-section">
+            <div class="apl-section-title">8. Statement of Facts</div>
+            <textarea class="apl-area" id="apl-facts" rows="6" placeholder="Set out a concise chronological statement of the facts of the case — original order, first appeal, and the order now under challenge before the Tribunal."></textarea>
+          </div>
+          <div class="apl-section">
+            <div class="apl-section-title">9. Grounds of Appeal</div>
+            <textarea class="apl-area" id="apl-grounds" rows="8" placeholder="State each ground of appeal separately and concisely. Number each ground. e.g.&#10;1. That the Appellate Authority erred in law in confirming the demand on the ground that...&#10;2. That the finding on ITC reversal is contrary to the provisions of Section 17(5) because..."></textarea>
+          </div>
+          <div class="apl-section">
+            <div class="apl-section-title">10. Relief / Prayer</div>
+            <textarea class="apl-area" id="apl-prayer" rows="4" placeholder="State the relief sought. e.g. It is therefore humbly prayed that this Hon'ble Tribunal may be pleased to allow this appeal and set aside the impugned order dated ___ passed by the Appellate Authority..."></textarea>
+          </div>
+
+          <!-- 9. Verification -->
+          <div class="apl-section">
+            <div class="apl-section-title">11. Verification</div>
+            <div class="apl-grid">
+              <div class="calc-group">
+                <label class="calc-label" for="apl-place">Place</label>
+                <input type="text" id="apl-place" placeholder="e.g. Bengaluru">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-sign-date">Date</label>
+                <input type="date" id="apl-sign-date">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-signatory">Name of Signatory</label>
+                <input type="text" id="apl-signatory" placeholder="Full name">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-designation">Designation / Capacity</label>
+                <input type="text" id="apl-designation" placeholder="e.g. Proprietor / Director / Partner / Authorized Signatory">
+              </div>
+            </div>
+          </div>
+
+          <div class="calc-disclaimer">
+            <strong>Disclaimer:</strong> This generator produces a draft pre-filled APL-05 for reference and internal use. It does not constitute a filed appeal and carries no legal effect until submitted through the official GSTAT portal or in the prescribed manner. Always verify the generated document against the official FORM GST APL-05 and applicable rules before use. This tool does not provide legal advice.
+          </div>
+
+          <div style="text-align:center; margin-top:10px;">
+            <button class="apl-generate-btn" id="apl-generate-btn" onclick="generateAPL05()">Generate APL-05 Word Document</button>
+            <div id="apl-gen-status" style="margin-top:14px; font-size:14px; color:#7a8a9a;"></div>
+          </div>
+
         </div>
       </div>
 
