@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8309581100470150"
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8309581100470150"
      crossorigin="anonymous"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -227,10 +227,9 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
           <div class="calc-group" id="pd-act-group">
             <label class="calc-label">Applicable Act</label>
             <div class="pill-row">
-              <div class="pill active" id="pd-pill-cgst-sgst">CGST + SGST</div>
-              <div class="pill" id="pd-pill-igst">IGST</div>
+              <div class="pill active" id="pd-pill-igst">IGST</div>
+              <div class="pill" id="pd-pill-cgst-sgst">CGST + SGST</div>
               <div class="pill" id="pd-pill-cgst-utgst">CGST + UTGST</div>
-              <div class="pill" id="pd-pill-cgst-only">CGST only</div>
             </div>
           </div>
 
@@ -509,7 +508,7 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
   (function () {
     var stage    = '107';       /* '107' | '112' */
     var dispType = 'tax';       /* 'tax' | 'penonly' | 'intonly' */
-    var actType  = 'cgst-sgst'; /* 'cgst-sgst' | 'igst' | 'cgst-utgst' | 'cgst-only' */
+    var actType  = 'igst';      /* 'igst' | 'cgst-sgst' | 'cgst-utgst' */
 
     var CAP         = 20 * 10000000;              /* Rs 20 crore per Act per stage */
     var FINANCE_ACT = new Date('2025-10-01T00:00:00');
@@ -520,10 +519,9 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
     var pillTax       = document.getElementById('pd-pill-tax');
     var pillPenOnly   = document.getElementById('pd-pill-penonly');
     var pillIntOnly   = document.getElementById('pd-pill-intonly');
-    var pillCgstSgst  = document.getElementById('pd-pill-cgst-sgst');
     var pillIgst      = document.getElementById('pd-pill-igst');
+    var pillCgstSgst  = document.getElementById('pd-pill-cgst-sgst');
     var pillCgstUtgst = document.getElementById('pd-pill-cgst-utgst');
-    var pillCgstOnly  = document.getElementById('pd-pill-cgst-only');
     var actGrp        = document.getElementById('pd-act-group');
     var cgstGrp       = document.getElementById('pd-cgst-group');
     var sgstGrp       = document.getElementById('pd-sgst-group');
@@ -613,10 +611,9 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
     }
     function setAct(a) {
       actType = a;
-      pillCgstSgst.classList.toggle('active',  a === 'cgst-sgst');
       pillIgst.classList.toggle('active',      a === 'igst');
+      pillCgstSgst.classList.toggle('active',  a === 'cgst-sgst');
       pillCgstUtgst.classList.toggle('active', a === 'cgst-utgst');
-      pillCgstOnly.classList.toggle('active',  a === 'cgst-only');
       syncVisibility();
     }
 
@@ -723,10 +720,9 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
     pillTax.addEventListener('click',       function () { setDisp('tax'); });
     pillPenOnly.addEventListener('click',   function () { setDisp('penonly'); });
     pillIntOnly.addEventListener('click',   function () { setDisp('intonly'); });
-    pillCgstSgst.addEventListener('click',  function () { setAct('cgst-sgst'); });
     pillIgst.addEventListener('click',      function () { setAct('igst'); });
+    pillCgstSgst.addEventListener('click',  function () { setAct('cgst-sgst'); });
     pillCgstUtgst.addEventListener('click', function () { setAct('cgst-utgst'); });
-    pillCgstOnly.addEventListener('click',  function () { setAct('cgst-only'); });
     cgstInp.addEventListener('input',           compute);
     sgstInp.addEventListener('input',           compute);
     penOnlyInp.addEventListener('input',        compute);
