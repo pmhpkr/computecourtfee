@@ -1467,46 +1467,12 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
             </div>
 
             <div id="fb-form-wrap">
-              <form id="fb-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" onsubmit="handleFeedback(event)">
-
-                <div class="calc-group">
-                  <label class="calc-label" for="fb-type">Type of Feedback</label>
-                  <select id="fb-type" name="type" required>
-                    <option value="">— Select —</option>
-                    <option value="Calculation error">Calculation error / wrong result</option>
-                    <option value="Missing feature">Missing feature or field</option>
-                    <option value="Legal inaccuracy">Legal / statutory inaccuracy</option>
-                    <option value="UI / usability issue">UI / usability issue</option>
-                    <option value="Word document issue">Word document issue</option>
-                    <option value="General suggestion">General suggestion</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-
-                <div class="calc-group" style="margin-top:16px;">
-                  <label class="calc-label" for="fb-tool">Which tool does this relate to?</label>
-                  <select id="fb-tool" name="tool">
-                    <option value="">— All / General —</option>
-                    <option value="GSTAT Court Fee Calculator">GSTAT Court Fee Calculator</option>
-                    <option value="Pre-Deposit Calculator">Pre-Deposit Calculator</option>
-                    <option value="Appeal Limitation Calculator">Appeal Limitation Calculator</option>
-                    <option value="APL-05 Generator">APL-05 Generator</option>
-                  </select>
-                </div>
-
-                <div class="calc-group" style="margin-top:16px;">
-                  <label class="calc-label" for="fb-message">Your Feedback <span style="color:#b8956a;">*</span></label>
-                  <textarea id="fb-message" name="message" rows="5" required
-                    style="width:100%; padding:13px; border:1px solid #d4cfc5; border-radius:1px; font-size:15px; color:#1a2a3a; background:#ffffff; font-family:'Garamond','Book Antiqua',serif; resize:vertical; box-sizing:border-box;"
-                    placeholder="Describe the issue or suggestion in as much detail as possible. If reporting a calculation error, include the inputs you used and the result you expected."></textarea>
-                </div>
-
-                <div class="calc-group" style="margin-top:16px;">
-                  <label class="calc-label" for="fb-email">Your Email (optional — only if you want a response)</label>
-                  <input type="email" id="fb-email" name="email" placeholder="your@email.com"
-                    style="width:100%; padding:13px; border:1px solid #d4cfc5; font-size:15px; font-family:'Garamond','Book Antiqua',serif; color:#1a2a3a; background:#fff; border-radius:1px; box-sizing:border-box;">
-                </div>
-
+              <div style="text-align:center; padding:40px 20px;">
+                <div style="font-size:15px; color:#7a8a9a; line-height:1.8; margin-bottom:24px;">Found an error, have a suggestion, or want to report a legal inaccuracy?<br>Write to us at:</div>
+                <a href="mailto:pmhpkr@gmail.com" style="font-size:22px; font-family:'Garamond','Book Antiqua',serif; color:#b8956a; text-decoration:none; border-bottom:1px solid #b8956a; padding-bottom:3px;">pmhpkr@gmail.com</a>
+                <div style="margin-top:20px; font-size:13.5px; color:#7a8a9a; line-height:1.7;">Please mention the tool name, the inputs you used,<br>and what you expected vs. what you got.</div>
+              </div>
+              <div style="display:none;">
                 <div style="margin-top:24px;">
                   <button type="submit" class="apl-generate-btn" id="fb-submit-btn" style="margin-top:0;">Submit Feedback</button>
                   <div id="fb-status" style="margin-top:12px; font-size:14px; color:#7a8a9a;"></div>
