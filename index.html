@@ -137,7 +137,7 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
       <div class="tool-tabs">
         <button class="tool-tab active" data-panel="gstat">GSTAT Court Fee</button>
         <button class="tool-tab" data-panel="predeposit">Pre-Deposit</button>
-        <button class="tool-tab" data-panel="limitation">Limitation Calculator</button>
+        <button class="tool-tab" data-panel="limitation">Appeal Limitation Calculator</button>
         <button class="tool-tab" data-panel="apl05">APL-05 Generator</button>
       </div>
 
@@ -330,16 +330,14 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
 
       <!-- Limitation Calculator -->
       <div class="tool-panel" id="panel-limitation">
-        <p style="color:#7a8a9a; margin-bottom:30px; font-size:15.5px;">Calculate the last date for filing a GST appeal based on the date of receipt of the order, including the special extended deadline applicable to Section 112 appeals for orders received between 1 July 2017 and 31 March 2026.</p>
+        <p style="color:#7a8a9a; margin-bottom:30px; font-size:15.5px;">Calculate the last date for filing a GST appeal based on the date of receipt of the order. If the limitation period has expired, the condonation window and delay details are shown automatically below.</p>
         <div class="calc-container">
           <div class="calc-group">
-            <label class="calc-label">Appeal / Application type</label>
-            <select id="ld-type">
-              <option value="107">Section 107 — First Appeal to Appellate Authority</option>
-              <option value="112">Section 112 — Second Appeal to GSTAT</option>
-              <option value="107cond">Section 107 — With condonation window (max)</option>
-              <option value="112cond">Section 112 — With condonation window (max)</option>
-            </select>
+            <label class="calc-label">Appeal type</label>
+            <div class="pill-row">
+              <div class="pill active" id="ld-pill-107">Section 107 — First Appeal</div>
+              <div class="pill" id="ld-pill-112">Section 112 — GSTAT Appeal</div>
+            </div>
           </div>
           <div class="calc-group">
             <label class="calc-label" for="ld-date">Date of receipt of order</label>
@@ -350,9 +348,14 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
             <div class="calc-row"><span>Limitation period</span><span class="val" id="ld-r-period">—</span></div>
             <div class="calc-row"><span>Today</span><span class="val" id="ld-r-today">—</span></div>
             <div class="date-result-grid" id="ld-cards" style="margin-top:25px;"></div>
+            <!-- Condonation box — shown only when limitation has expired -->
+            <div id="ld-cond-box" style="display:none; margin-top:24px; padding:20px 22px; background:#fff8f0; border:1px solid #b8956a; border-radius:1px;">
+              <div style="font-size:13px; font-weight:700; letter-spacing:0.7px; text-transform:uppercase; color:#b8956a; margin-bottom:14px;">Condonation of Delay</div>
+              <div id="ld-cond-rows"></div>
+            </div>
           </div>
           <div class="calc-disclaimer">
-            <strong>Disclaimer:</strong> The limitation periods shown are based on Sections 107 and 112 of the CGST Act, 2017. Limitation is counted from the date of actual receipt of the order, which may differ from the date of the order itself. For <strong>Section 112 (second appeal)</strong> only — where the order was received between 1 July 2017 and 31 March 2026, the amnesty period is excluded from the limitation count, resulting in an effective last date of <strong>30 June 2026</strong>; this extended deadline does not apply to Section 107 first appeals. This calculator does not account for public holidays, other exclusions under the Limitation Act, 1963, Supreme Court orders on limitation, or any other ground of condonation. <strong>Do not rely solely on this tool.</strong> Always verify against the actual order and applicable law before filing.
+            <strong>Disclaimer:</strong> Limitation periods are based on Sections 107 and 112 of the CGST Act, 2017, counted from the date of actual receipt of the order. For <strong>Section 112</strong> only — where the order was received between 1 July 2017 and 31 March 2026, the amnesty period is excluded, making the effective last date <strong>30 June 2026</strong>. Condonation is at the discretion of the authority and is not a right; the periods shown are the maximum statutory windows. This calculator does not account for public holidays, Supreme Court orders on limitation, or other exclusions. <strong>Do not rely solely on this tool.</strong>
           </div>
         </div>
       </div>
@@ -380,15 +383,124 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
           .apl-generate-btn { margin-top: 32px; padding: 16px 40px; background: #1a2a3a; color: #b8956a; border: 1px solid #b8956a; font-family: 'Garamond','Book Antiqua',serif; font-size: 15px; font-weight: 600; letter-spacing: 0.8px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; }
           .apl-generate-btn:hover { background: #b8956a; color: #ffffff; }
           .apl-generate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-          @media (max-width: 700px) { .apl-grid { grid-template-columns: 1fr; } .apl-grid-3 { grid-template-columns: 1fr; } }
+          .apl-chk-lbl { display:flex; align-items:center; gap:6px; font-size:13.5px; color:#1a2a3a; cursor:pointer; padding:6px 10px; border:1px solid #d4cfc5; border-radius:1px; user-select:none; }
+          .apl-chk-lbl:has(input:checked) { border-color:#b8956a; background:#fdf8f2; color:#b8956a; font-weight:600; }
+          .apl-doc-row { display:flex; align-items:center; gap:14px; margin-bottom:10px; }
+          .apl-doc-label { flex:1; font-size:13.5px; color:#1a2a3a; }
+          .apl-doc-req { color:#b8956a; font-weight:700; margin-right:3px; }
+          .apl-doc-ref { width:220px; border:1px solid #d4cfc5; padding:8px 10px; font-size:13px; font-family:'Garamond','Book Antiqua',serif; color:#1a2a3a; background:#fff; border-radius:1px; flex-shrink:0; }
+          .apl-doc-ref:focus { outline:none; border-color:#b8956a; }
+          @media (max-width: 700px) { .apl-grid { grid-template-columns: 1fr; } .apl-grid-3 { grid-template-columns: 1fr; } .apl-doc-row { flex-direction:column; align-items:flex-start; } .apl-doc-ref { width:100%; } }
         </style>
 
         <div class="calc-container" style="max-width:900px;">
 
-          <!-- 1. Appellant -->
+          <!-- SECTION A: ORDER DETAILS (mirrors GSTAT portal Tab 1) -->
           <div class="apl-section">
-            <div class="apl-section-title">1. Appellant Details</div>
+            <div class="apl-section-title" style="background:#f0ece2; padding:10px 14px; border-left:3px solid #b8956a; margin-bottom:18px;">A — Order Details</div>
             <div class="apl-grid">
+              <div class="calc-group apl-full">
+                <label class="calc-label" for="apl-order-type">Type of Order Under Appeal</label>
+                <select id="apl-order-type">
+                  <option value="">— Select —</option>
+                  <option value="APL-04 (Order of Appellate Authority under Section 107)">APL-04 — Order of Appellate Authority under Section 107</option>
+                  <option value="Revisional Order under Section 108">Revisional Order under Section 108</option>
+                  <option value="Order of Revisional Authority under Section 112(2)">Order of Revisional Authority under Section 112(2)</option>
+                  <option value="Other order appealable under Section 112">Other order appealable under Section 112</option>
+                </select>
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-order-ref">Order Reference No.</label>
+                <input type="text" id="apl-order-ref" placeholder="Reference number of impugned order">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-order-date">Date of Order</label>
+                <input type="date" id="apl-order-date">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-comm-date">Date of Communication of Order</label>
+                <input type="date" id="apl-comm-date">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-receipt-date">Date of Receipt of Order</label>
+                <input type="date" id="apl-receipt-date">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-authority">Designation of Authority that Passed the Order</label>
+                <input type="text" id="apl-authority" placeholder="e.g. Appellate Authority, Revisional Authority">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-orig-order">Original Order Reference</label>
+                <input type="text" id="apl-orig-order" placeholder="Original order no. and date (if applicable)">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-orig-order-date">Date of Original Order</label>
+                <input type="date" id="apl-orig-order-date">
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION B: CASE DETAILS (mirrors GSTAT portal Tab 2) -->
+          <div class="apl-section">
+            <div class="apl-section-title" style="background:#f0ece2; padding:10px 14px; border-left:3px solid #b8956a; margin-bottom:18px;">B — Case Details</div>
+            <div class="apl-grid">
+              <div class="calc-group apl-full">
+                <label class="calc-label">Acts in Dispute</label>
+                <div style="display:flex; gap:18px; flex-wrap:wrap; margin-top:4px;">
+                  <label style="display:flex;align-items:center;gap:6px;font-size:14px;color:#1a2a3a;cursor:pointer;"><input type="checkbox" id="apl-act-cgst" value="CGST"> CGST</label>
+                  <label style="display:flex;align-items:center;gap:6px;font-size:14px;color:#1a2a3a;cursor:pointer;"><input type="checkbox" id="apl-act-sgst" value="SGST/UTGST"> SGST / UTGST</label>
+                  <label style="display:flex;align-items:center;gap:6px;font-size:14px;color:#1a2a3a;cursor:pointer;"><input type="checkbox" id="apl-act-igst" value="IGST"> IGST</label>
+                  <label style="display:flex;align-items:center;gap:6px;font-size:14px;color:#1a2a3a;cursor:pointer;"><input type="checkbox" id="apl-act-cess" value="Cess"> Cess</label>
+                </div>
+              </div>
+              <div class="calc-group apl-full">
+                <label class="calc-label">Issue Categories (select all that apply — as required by GSTAT portal)</label>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:6px;" id="apl-issues-wrap">
+                  <label class="apl-chk-lbl"><input type="checkbox" class="apl-issue" value="Classification"> Classification</label>
+                  <label class="apl-chk-lbl"><input type="checkbox" class="apl-issue" value="Valuation"> Valuation</label>
+                  <label class="apl-chk-lbl"><input type="checkbox" class="apl-issue" value="Refund"> Refund</label>
+                  <label class="apl-chk-lbl"><input type="checkbox" class="apl-issue" value="Input Tax Credit"> Input Tax Credit</label>
+                  <label class="apl-chk-lbl"><input type="checkbox" class="apl-issue" value="Place of Supply"> Place of Supply</label>
+                  <label class="apl-chk-lbl"><input type="checkbox" class="apl-issue" value="Time of Supply"> Time of Supply</label>
+                  <label class="apl-chk-lbl"><input type="checkbox" class="apl-issue" value="Registration"> Registration</label>
+                  <label class="apl-chk-lbl"><input type="checkbox" class="apl-issue" value="Transitional Credit"> Transitional Credit</label>
+                  <label class="apl-chk-lbl"><input type="checkbox" class="apl-issue" value="Demand and Recovery"> Demand and Recovery</label>
+                  <label class="apl-chk-lbl"><input type="checkbox" class="apl-issue" value="Penalty"> Penalty</label>
+                  <label class="apl-chk-lbl"><input type="checkbox" class="apl-issue" value="Others"> Others</label>
+                </div>
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-category">Dispute Classification (short description)</label>
+                <select id="apl-category">
+                  <option value="">— Select —</option>
+                  <option value="ITC denial">ITC denial</option>
+                  <option value="Demand under Section 73 (non-fraud)">Demand — Section 73 (non-fraud)</option>
+                  <option value="Demand under Section 74 (fraud / suppression)">Demand — Section 74 (fraud / suppression)</option>
+                  <option value="Refund rejection">Refund rejection</option>
+                  <option value="Classification / rate dispute">Classification / rate dispute</option>
+                  <option value="Place of supply dispute">Place of supply dispute</option>
+                  <option value="Valuation dispute">Valuation dispute</option>
+                  <option value="Registration cancellation">Registration cancellation</option>
+                  <option value="Transitional credit dispute">Transitional credit dispute</option>
+                  <option value="Penalty under Section 122">Penalty — Section 122</option>
+                  <option value="Detention / seizure under Section 129">Detention / seizure — Section 129</option>
+                  <option value="Confiscation under Section 130">Confiscation — Section 130</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="calc-group apl-full" id="apl-category-other-wrap" style="display:none;">
+                <label class="calc-label" for="apl-category-other">Specify dispute category</label>
+                <input type="text" id="apl-category-other" placeholder="Describe the nature of dispute">
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION C: PARTY DETAILS (mirrors GSTAT portal Tab 3) -->
+          <div class="apl-section">
+            <div class="apl-section-title" style="background:#f0ece2; padding:10px 14px; border-left:3px solid #b8956a; margin-bottom:18px;">C — Party Details</div>
+
+            <div style="font-size:13px; font-weight:600; letter-spacing:0.5px; text-transform:uppercase; color:#1a2a3a; margin-bottom:12px;">Appellant</div>
+            <div class="apl-grid" style="margin-bottom:20px;">
               <div class="calc-group">
                 <label class="calc-label" for="apl-gstin">GSTIN / Temp ID / UIN</label>
                 <input type="text" id="apl-gstin" placeholder="e.g. 29AABCX1234M1Z5">
@@ -406,103 +518,52 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
                 <input type="text" id="apl-state" placeholder="e.g. Karnataka">
               </div>
               <div class="calc-group">
-                <label class="calc-label" for="apl-phone">Phone / Email of Appellant</label>
-                <input type="text" id="apl-phone" placeholder="Contact details">
+                <label class="calc-label" for="apl-phone">Mobile Number</label>
+                <input type="text" id="apl-phone" placeholder="10-digit mobile number">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-email">Email Address</label>
+                <input type="email" id="apl-email" placeholder="Appellant's email">
               </div>
             </div>
-          </div>
 
-          <!-- 2. Authorized Representative -->
-          <div class="apl-section">
-            <div class="apl-section-title">2. Authorized Representative (if any)</div>
-            <div class="apl-grid">
-              <div class="calc-group">
-                <label class="calc-label" for="apl-ar-name">Name of AR</label>
-                <input type="text" id="apl-ar-name" placeholder="Name">
-              </div>
-              <div class="calc-group">
-                <label class="calc-label" for="apl-ar-reg">AR Registration No.</label>
-                <input type="text" id="apl-ar-reg" placeholder="If enrolled with GSTAT">
-              </div>
-            </div>
-          </div>
-
-          <!-- 3. Respondent -->
-          <div class="apl-section">
-            <div class="apl-section-title">3. Respondent</div>
-            <div class="apl-grid">
-              <div class="calc-group">
-                <label class="calc-label" for="apl-resp-desig">Designation of Respondent</label>
-                <input type="text" id="apl-resp-desig" placeholder="e.g. Commissioner of Central Tax">
-              </div>
-              <div class="calc-group">
-                <label class="calc-label" for="apl-resp-office">Office / Commissionerate</label>
-                <input type="text" id="apl-resp-office" placeholder="e.g. Bengaluru South Commissionerate">
-              </div>
-            </div>
-          </div>
-
-          <!-- 4. Order Under Appeal -->
-          <div class="apl-section">
-            <div class="apl-section-title">4. Order Under Appeal</div>
-            <div class="apl-grid">
-              <div class="calc-group">
-                <label class="calc-label" for="apl-order-ref">Order / APL-04 Reference No.</label>
-                <input type="text" id="apl-order-ref" placeholder="Reference number of impugned order">
-              </div>
-              <div class="calc-group">
-                <label class="calc-label" for="apl-order-date">Date of Order</label>
-                <input type="date" id="apl-order-date">
-              </div>
-              <div class="calc-group">
-                <label class="calc-label" for="apl-receipt-date">Date of Receipt of Order</label>
-                <input type="date" id="apl-receipt-date">
-              </div>
-              <div class="calc-group">
-                <label class="calc-label" for="apl-authority">Designation of Authority that Passed the Order</label>
-                <input type="text" id="apl-authority" placeholder="e.g. Appellate Authority / Revisional Authority">
-              </div>
-              <div class="calc-group apl-full">
-                <label class="calc-label" for="apl-orig-order">Original Order Reference (if the order under appeal is a 1st appellate order)</label>
-                <input type="text" id="apl-orig-order" placeholder="Original order no. and date (if applicable)">
-              </div>
-            </div>
-          </div>
-
-          <!-- 5. Dispute Details -->
-          <div class="apl-section">
-            <div class="apl-section-title">5. Act &amp; Dispute Category</div>
-            <div class="apl-grid">
-              <div class="calc-group">
-                <label class="calc-label">Acts in Dispute</label>
-                <div style="display:flex; gap:18px; flex-wrap:wrap; margin-top:4px;">
-                  <label style="display:flex;align-items:center;gap:6px;font-size:14px;color:#1a2a3a;cursor:pointer;"><input type="checkbox" id="apl-act-cgst" value="CGST"> CGST</label>
-                  <label style="display:flex;align-items:center;gap:6px;font-size:14px;color:#1a2a3a;cursor:pointer;"><input type="checkbox" id="apl-act-sgst" value="SGST/UTGST"> SGST / UTGST</label>
-                  <label style="display:flex;align-items:center;gap:6px;font-size:14px;color:#1a2a3a;cursor:pointer;"><input type="checkbox" id="apl-act-igst" value="IGST"> IGST</label>
-                  <label style="display:flex;align-items:center;gap:6px;font-size:14px;color:#1a2a3a;cursor:pointer;"><input type="checkbox" id="apl-act-cess" value="Cess"> Cess</label>
+            <div style="font-size:13px; font-weight:600; letter-spacing:0.5px; text-transform:uppercase; color:#1a2a3a; margin-bottom:12px;">Respondent(s)</div>
+            <div id="apl-respondents-wrap">
+              <!-- Respondent 1 -->
+              <div class="apl-resp-block apl-grid" data-resp="1" style="margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid #e8e4dc;">
+                <div style="grid-column:1/-1; font-size:12.5px; color:#7a8a9a; font-weight:600;">Respondent 1</div>
+                <div class="calc-group">
+                  <label class="calc-label">Designation</label>
+                  <input type="text" id="apl-resp-1-desig" placeholder="e.g. Commissioner of Central Tax">
+                </div>
+                <div class="calc-group">
+                  <label class="calc-label">Office / Commissionerate</label>
+                  <input type="text" id="apl-resp-1-office" placeholder="e.g. Bengaluru South Commissionerate">
                 </div>
               </div>
+            </div>
+            <button type="button" onclick="addRespondent()" style="background:none; border:1px dashed #b8956a; color:#b8956a; padding:8px 20px; cursor:pointer; font-size:13px; font-family:inherit; margin-top:4px;">+ Add Respondent</button>
+          </div>
+
+          <!-- SECTION D: AR DETAILS (mirrors GSTAT portal Tab 4) -->
+          <div class="apl-section">
+            <div class="apl-section-title" style="background:#f0ece2; padding:10px 14px; border-left:3px solid #b8956a; margin-bottom:18px;">D — Authorised Representative Details</div>
+            <div class="apl-grid">
               <div class="calc-group">
-                <label class="calc-label" for="apl-category">Category of Dispute</label>
-                <select id="apl-category">
-                  <option value="">— Select —</option>
-                  <option value="ITC denial">ITC denial</option>
-                  <option value="Demand under Section 73 (non-fraud)">Demand — Section 73 (non-fraud)</option>
-                  <option value="Demand under Section 74 (fraud / suppression)">Demand — Section 74 (fraud / suppression)</option>
-                  <option value="Refund rejection">Refund rejection</option>
-                  <option value="Classification / rate dispute">Classification / rate dispute</option>
-                  <option value="Place of supply dispute">Place of supply dispute</option>
-                  <option value="Valuation dispute">Valuation dispute</option>
-                  <option value="Registration cancellation">Registration cancellation</option>
-                  <option value="Penalty under Section 122">Penalty — Section 122</option>
-                  <option value="Detention / seizure under Section 129">Detention / seizure — Section 129</option>
-                  <option value="Confiscation under Section 130">Confiscation — Section 130</option>
-                  <option value="Other">Other</option>
-                </select>
+                <label class="calc-label" for="apl-ar-name">Name of Authorised Representative</label>
+                <input type="text" id="apl-ar-name" placeholder="Full name">
               </div>
-              <div class="calc-group apl-full" id="apl-category-other-wrap" style="display:none;">
-                <label class="calc-label" for="apl-category-other">Specify dispute category</label>
-                <input type="text" id="apl-category-other" placeholder="Describe the nature of dispute">
+              <div class="calc-group">
+                <label class="calc-label" for="apl-ar-reg">AR Enrolment / Registration No.</label>
+                <input type="text" id="apl-ar-reg" placeholder="GSTAT enrolment number (if any)">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-ar-mobile">AR Mobile Number</label>
+                <input type="text" id="apl-ar-mobile" placeholder="10-digit mobile number">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-ar-email">AR Email Address</label>
+                <input type="email" id="apl-ar-email" placeholder="Representative's email">
               </div>
             </div>
           </div>
@@ -594,45 +655,94 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
             </div>
           </div>
 
-          <!-- 7. Pre-Deposit -->
+          <!-- SECTION E: DEMAND DETAILS (mirrors GSTAT portal Tab 5) -->
           <div class="apl-section">
-            <div class="apl-section-title">7. Pre-Deposit Details (Item 21)</div>
-            <p style="color:#7a8a9a; font-size:14px; margin-bottom:14px;">Enter amounts paid as pre-deposit under Section 112(8). These should match the disputed tax/ITC pre-deposit at 10% (capped at Rs 20 crore per Act).</p>
+            <div class="apl-section-title" style="background:#f0ece2; padding:10px 14px; border-left:3px solid #b8956a; margin-bottom:18px;">E — Demand Details</div>
+
+            <!-- E1: Demand table (unchanged) is already above this section -->
+
+            <!-- E2: Admitted Dues Already Discharged [Sec 112(8) — first limb] -->
+            <div style="font-size:13px; font-weight:600; letter-spacing:0.5px; text-transform:uppercase; color:#1a2a3a; margin:20px 0 10px 0;">Part I — Admitted Dues Already Discharged [Section 112(8) — First Limb]</div>
+            <p style="color:#7a8a9a; font-size:14px; margin-bottom:14px;">Under Section 112(8), the entire amount of admitted tax, interest, fine, fee and penalty arising from the order appealed against must have been paid before filing. Enter those payments below.</p>
             <div class="demand-wrap">
               <table class="demand-tbl">
                 <thead>
                   <tr>
                     <th>Act</th>
-                    <th>10% of Disputed Tax / ITC</th>
+                    <th>Admitted Tax / ITC (Rs)</th>
+                    <th>Admitted Interest (Rs)</th>
+                    <th>Admitted Penalty / Fine / Fee (Rs)</th>
+                    <th>Mode (Cash / Credit)</th>
+                    <th>Debit Entry / Challan No.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td class="act-lbl">IGST</td>
+                    <td><input type="text" id="adm-igst-tax" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="adm-igst-int" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="adm-igst-pen" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="adm-igst-mode" placeholder="Cash / Credit"></td>
+                    <td><input type="text" id="adm-igst-ref" placeholder="Reference no."></td>
+                  </tr>
+                  <tr><td class="act-lbl">CGST</td>
+                    <td><input type="text" id="adm-cgst-tax" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="adm-cgst-int" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="adm-cgst-pen" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="adm-cgst-mode" placeholder="Cash / Credit"></td>
+                    <td><input type="text" id="adm-cgst-ref" placeholder="Reference no."></td>
+                  </tr>
+                  <tr><td class="act-lbl">SGST / UTGST</td>
+                    <td><input type="text" id="adm-sgst-tax" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="adm-sgst-int" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="adm-sgst-pen" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="adm-sgst-mode" placeholder="Cash / Credit"></td>
+                    <td><input type="text" id="adm-sgst-ref" placeholder="Reference no."></td>
+                  </tr>
+                  <tr><td class="act-lbl">Cess</td>
+                    <td><input type="text" id="adm-cess-tax" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="adm-cess-int" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="adm-cess-pen" inputmode="numeric" placeholder="0"></td>
+                    <td><input type="text" id="adm-cess-mode" placeholder="Cash / Credit"></td>
+                    <td><input type="text" id="adm-cess-ref" placeholder="Reference no."></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- E3: Additional 10% Pre-Deposit [Sec 112(8) — Second Limb] -->
+            <div style="font-size:13px; font-weight:600; letter-spacing:0.5px; text-transform:uppercase; color:#1a2a3a; margin:24px 0 10px 0;">Part II — Additional Pre-Deposit on Disputed Amount [Section 112(8) — Second Limb]</div>
+            <p style="color:#7a8a9a; font-size:14px; margin-bottom:14px;">10% of the remaining disputed tax / ITC amount, capped at Rs 20 crore per Act. Use the Pre-Deposit Calculator in the earlier tab to compute the exact figures.</p>
+            <div class="demand-wrap">
+              <table class="demand-tbl">
+                <thead>
+                  <tr>
+                    <th>Act</th>
+                    <th>10% of Disputed Tax / ITC Required (Rs)</th>
                     <th>Amount Paid (Rs)</th>
                     <th>Mode (Cash / Credit)</th>
                     <th>Debit Entry / Challan No.</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td class="act-lbl">IGST</td>
+                  <tr><td class="act-lbl">IGST</td>
                     <td><input type="text" id="pd2-igst-req" inputmode="numeric" placeholder="0"></td>
                     <td><input type="text" id="pd2-igst-paid" inputmode="numeric" placeholder="0"></td>
                     <td><input type="text" id="pd2-igst-mode" placeholder="Cash / Credit"></td>
                     <td><input type="text" id="pd2-igst-ref" placeholder="Reference no."></td>
                   </tr>
-                  <tr>
-                    <td class="act-lbl">CGST</td>
+                  <tr><td class="act-lbl">CGST</td>
                     <td><input type="text" id="pd2-cgst-req" inputmode="numeric" placeholder="0"></td>
                     <td><input type="text" id="pd2-cgst-paid" inputmode="numeric" placeholder="0"></td>
                     <td><input type="text" id="pd2-cgst-mode" placeholder="Cash / Credit"></td>
                     <td><input type="text" id="pd2-cgst-ref" placeholder="Reference no."></td>
                   </tr>
-                  <tr>
-                    <td class="act-lbl">SGST / UTGST</td>
+                  <tr><td class="act-lbl">SGST / UTGST</td>
                     <td><input type="text" id="pd2-sgst-req" inputmode="numeric" placeholder="0"></td>
                     <td><input type="text" id="pd2-sgst-paid" inputmode="numeric" placeholder="0"></td>
                     <td><input type="text" id="pd2-sgst-mode" placeholder="Cash / Credit"></td>
                     <td><input type="text" id="pd2-sgst-ref" placeholder="Reference no."></td>
                   </tr>
-                  <tr>
-                    <td class="act-lbl">Cess</td>
+                  <tr><td class="act-lbl">Cess</td>
                     <td><input type="text" id="pd2-cess-req" inputmode="numeric" placeholder="0"></td>
                     <td><input type="text" id="pd2-cess-paid" inputmode="numeric" placeholder="0"></td>
                     <td><input type="text" id="pd2-cess-mode" placeholder="Cash / Credit"></td>
@@ -643,27 +753,212 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
             </div>
           </div>
 
-          <!-- 8. Narrative -->
+          <!-- SECTION F: COURT FEES [Rule 110(5)] -->
           <div class="apl-section">
-            <div class="apl-section-title">8. Statement of Facts</div>
-            <textarea class="apl-area" id="apl-facts" rows="6" placeholder="Set out a concise chronological statement of the facts of the case — original order, first appeal, and the order now under challenge before the Tribunal."></textarea>
-          </div>
-          <div class="apl-section">
-            <div class="apl-section-title">9. Grounds of Appeal</div>
-            <textarea class="apl-area" id="apl-grounds" rows="8" placeholder="State each ground of appeal separately and concisely. Number each ground. e.g.&#10;1. That the Appellate Authority erred in law in confirming the demand on the ground that...&#10;2. That the finding on ITC reversal is contrary to the provisions of Section 17(5) because..."></textarea>
-          </div>
-          <div class="apl-section">
-            <div class="apl-section-title">10. Relief / Prayer</div>
-            <textarea class="apl-area" id="apl-prayer" rows="4" placeholder="State the relief sought. e.g. It is therefore humbly prayed that this Hon'ble Tribunal may be pleased to allow this appeal and set aside the impugned order dated ___ passed by the Appellate Authority..."></textarea>
+            <div class="apl-section-title" style="background:#f0ece2; padding:10px 14px; border-left:3px solid #b8956a; margin-bottom:18px;">F — Court Fees [Rule 110(5)]</div>
+            <p style="color:#7a8a9a; font-size:14px; margin-bottom:14px;">Filing fee is prescribed at 1% of the tax / ITC / fine / fee / penalty in dispute, subject to a minimum of Rs 5,000 and a maximum of Rs 25,000 per appeal. Enter the fee details below.</p>
+            <div class="apl-grid">
+              <div class="calc-group">
+                <label class="calc-label" for="apl-fee-payable">Amount of Filing Fee Payable (Rs)</label>
+                <input type="text" id="apl-fee-payable" inputmode="numeric" placeholder="Min Rs 5,000 — Max Rs 25,000">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-fee-paid">Amount Paid (Rs)</label>
+                <input type="text" id="apl-fee-paid" inputmode="numeric" placeholder="0">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-fee-mode">Mode of Payment</label>
+                <select id="apl-fee-mode">
+                  <option value="">— Select —</option>
+                  <option value="Online (NEFT/RTGS)">Online — NEFT / RTGS</option>
+                  <option value="Online (Net Banking)">Online — Net Banking</option>
+                  <option value="Demand Draft">Demand Draft</option>
+                  <option value="Cash">Cash</option>
+                </select>
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-fee-cin">CIN / Reference Number</label>
+                <input type="text" id="apl-fee-cin" placeholder="Challan Identification Number">
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-fee-date">Date of Payment</label>
+                <input type="date" id="apl-fee-date">
+              </div>
+            </div>
           </div>
 
-          <!-- 9. Verification -->
+          <!-- SECTION G: STATUTORY DECLARATIONS -->
           <div class="apl-section">
-            <div class="apl-section-title">11. Verification</div>
+            <div class="apl-section-title" style="background:#f0ece2; padding:10px 14px; border-left:3px solid #b8956a; margin-bottom:18px;">G — Statutory Declarations</div>
+            <div class="apl-grid">
+
+              <div class="calc-group apl-full">
+                <label class="calc-label">Does the appeal involve a question of place of supply? (Item 11)</label>
+                <div class="pill-row" style="margin-top:4px;">
+                  <div class="pill" id="apl-pos-yes" data-field="apl-pos" data-val="Yes">Yes</div>
+                  <div class="pill active" id="apl-pos-no" data-field="apl-pos" data-val="No">No</div>
+                </div>
+                <input type="hidden" id="apl-pos" value="No">
+              </div>
+
+              <div class="calc-group apl-full">
+                <label class="calc-label">Does the appeal relate to goods detained / seized / confiscated under Section 129 or 130? (Item 12)</label>
+                <div class="pill-row" style="margin-top:4px;">
+                  <div class="pill" id="apl-129-yes" data-field="apl-129" data-val="Yes">Yes</div>
+                  <div class="pill active" id="apl-129-no" data-field="apl-129" data-val="No">No</div>
+                </div>
+                <input type="hidden" id="apl-129" value="No">
+              </div>
+              <div class="calc-group apl-full" id="apl-129-mkt-wrap" style="display:none;">
+                <label class="calc-label" for="apl-129-mkt">Market value of seized / detained goods (Rs)</label>
+                <input type="text" id="apl-129-mkt" inputmode="numeric" placeholder="Enter market value in rupees">
+              </div>
+
+              <div class="calc-group apl-full">
+                <label class="calc-label">Is the appeal filed within the prescribed limitation period? (Item 13)</label>
+                <div class="pill-row" style="margin-top:4px;">
+                  <div class="pill active" id="apl-lim-yes" data-field="apl-lim" data-val="Yes">Yes — within time</div>
+                  <div class="pill" id="apl-lim-no" data-field="apl-lim" data-val="No">No — seeking condonation</div>
+                </div>
+                <input type="hidden" id="apl-lim" value="Yes">
+              </div>
+              <div class="calc-group apl-full" id="apl-cond-wrap" style="display:none;">
+                <label class="calc-label" for="apl-cond-grounds">Grounds for condonation of delay</label>
+                <textarea class="apl-area" id="apl-cond-grounds" rows="3" placeholder="State the reasons for the delay and grounds on which condonation is sought."></textarea>
+              </div>
+
+              <div class="calc-group apl-full">
+                <label class="calc-label">Are any other appeals / revisions / references pending before any court or authority in relation to the same subject matter? (Item 14)</label>
+                <div class="pill-row" style="margin-top:4px;">
+                  <div class="pill" id="apl-pend-yes" data-field="apl-pend" data-val="Yes">Yes</div>
+                  <div class="pill active" id="apl-pend-no" data-field="apl-pend" data-val="No">No</div>
+                </div>
+                <input type="hidden" id="apl-pend" value="No">
+              </div>
+              <div class="calc-group apl-full" id="apl-pend-wrap" style="display:none;">
+                <label class="calc-label" for="apl-pend-details">Details of pending proceedings</label>
+                <textarea class="apl-area" id="apl-pend-details" rows="3" placeholder="Court / authority, case number, stage, and subject matter."></textarea>
+              </div>
+
+              <div class="calc-group apl-full">
+                <label class="calc-label">Is interim relief / stay of the impugned order sought? (Item 15)</label>
+                <div class="pill-row" style="margin-top:4px;">
+                  <div class="pill" id="apl-stay-yes" data-field="apl-stay" data-val="Yes">Yes</div>
+                  <div class="pill active" id="apl-stay-no" data-field="apl-stay" data-val="No">No</div>
+                </div>
+                <input type="hidden" id="apl-stay" value="No">
+              </div>
+              <div class="calc-group apl-full" id="apl-stay-wrap" style="display:none;">
+                <label class="calc-label" for="apl-stay-grounds">Grounds for interim relief</label>
+                <textarea class="apl-area" id="apl-stay-grounds" rows="3" placeholder="State why stay / interim relief is warranted. Address balance of convenience, irreparable injury, and prima facie case."></textarea>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- SECTION H: APPELLANT PROFILE (Annexure D) -->
+          <div class="apl-section">
+            <div class="apl-section-title" style="background:#f0ece2; padding:10px 14px; border-left:3px solid #b8956a; margin-bottom:18px;">H — Appellant Profile (Annexure D)</div>
+            <div class="apl-grid">
+              <div class="calc-group">
+                <label class="calc-label" for="apl-constitution">Constitution of Appellant</label>
+                <select id="apl-constitution">
+                  <option value="">— Select —</option>
+                  <option value="Proprietorship">Proprietorship</option>
+                  <option value="Partnership">Partnership Firm</option>
+                  <option value="LLP">Limited Liability Partnership (LLP)</option>
+                  <option value="Private Limited Company">Private Limited Company</option>
+                  <option value="Public Limited Company">Public Limited Company</option>
+                  <option value="Trust">Trust</option>
+                  <option value="Society">Society / Co-operative</option>
+                  <option value="Government">Government Department / PSU</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="calc-group">
+                <label class="calc-label" for="apl-incorp-date">Date of Incorporation / Registration / Commencement</label>
+                <input type="date" id="apl-incorp-date">
+              </div>
+              <div class="calc-group apl-full">
+                <label class="calc-label" for="apl-nature-biz">Nature / Description of Business</label>
+                <input type="text" id="apl-nature-biz" placeholder="Brief description of principal business activities">
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION I: STATEMENT OF FACTS / GROUNDS / PRAYER -->
+          <div class="apl-section">
+            <div class="apl-section-title" style="background:#f0ece2; padding:10px 14px; border-left:3px solid #b8956a; margin-bottom:18px;">I — Statement of Facts, Grounds of Appeal &amp; Prayer</div>
+            <div class="apl-section" style="border:none; padding:0;">
+              <div class="apl-section-title">Statement of Facts</div>
+              <textarea class="apl-area" id="apl-facts" rows="6" placeholder="Set out a concise chronological statement of the facts — original order, first appeal, and the order now under challenge before the Tribunal."></textarea>
+            </div>
+            <div class="apl-section" style="border:none; padding:0; margin-top:20px;">
+              <div class="apl-section-title">Grounds of Appeal</div>
+              <textarea class="apl-area" id="apl-grounds" rows="8" placeholder="State each ground of appeal separately and concisely. Number each ground. e.g.&#10;1. That the Appellate Authority erred in law in confirming the demand on the ground that...&#10;2. That the finding on ITC reversal is contrary to the provisions of Section 17(5) because..."></textarea>
+            </div>
+            <div class="apl-section" style="border:none; padding:0; margin-top:20px;">
+              <div class="apl-section-title">Relief / Prayer</div>
+              <textarea class="apl-area" id="apl-prayer" rows="4" placeholder="It is therefore humbly prayed that this Hon'ble Tribunal may be pleased to allow this appeal and set aside the impugned order dated ___ passed by ___ and grant such other relief as may be deemed fit in the facts and circumstances of the case."></textarea>
+            </div>
+          </div>
+
+          <!-- SECTION J: DOCUMENT CHECKLIST (mirrors GSTAT portal Tab 6) -->
+          <div class="apl-section">
+            <div class="apl-section-title" style="background:#f0ece2; padding:10px 14px; border-left:3px solid #b8956a; margin-bottom:18px;">J — Document Checklist &amp; Upload References</div>
+            <p style="color:#7a8a9a; font-size:14px; margin-bottom:18px;">Rule 110(3) requires the following documents to be filed / uploaded with the appeal. If the impugned order is not available on the GST portal, a self-certified copy must be uploaded within 7 days of filing. Enter file names / reference numbers of uploaded documents.</p>
+            <div id="apl-docs-list">
+              <div class="apl-doc-row">
+                <div class="apl-doc-label"><span class="apl-doc-req">*</span> Self-certified copy of the impugned order (APL-04 / revisional order)</div>
+                <input type="text" class="apl-doc-ref" id="doc-1" placeholder="File name / upload reference">
+              </div>
+              <div class="apl-doc-row">
+                <div class="apl-doc-label"><span class="apl-doc-req">*</span> Proof of payment of admitted dues (tax, interest, penalty) — Sec 112(8) first limb</div>
+                <input type="text" class="apl-doc-ref" id="doc-2" placeholder="File name / upload reference">
+              </div>
+              <div class="apl-doc-row">
+                <div class="apl-doc-label"><span class="apl-doc-req">*</span> Proof of payment of additional pre-deposit — Sec 112(8) second limb</div>
+                <input type="text" class="apl-doc-ref" id="doc-3" placeholder="File name / upload reference">
+              </div>
+              <div class="apl-doc-row">
+                <div class="apl-doc-label"><span class="apl-doc-req">*</span> Proof of payment of court / filing fee</div>
+                <input type="text" class="apl-doc-ref" id="doc-4" placeholder="File name / upload reference">
+              </div>
+              <div class="apl-doc-row">
+                <div class="apl-doc-label"><span class="apl-doc-req">*</span> Vakalatnama / authorisation in favour of AR (if applicable)</div>
+                <input type="text" class="apl-doc-ref" id="doc-5" placeholder="File name / upload reference">
+              </div>
+              <div class="apl-doc-row">
+                <div class="apl-doc-label">Index of documents relied upon</div>
+                <input type="text" class="apl-doc-ref" id="doc-6" placeholder="File name / upload reference">
+              </div>
+              <div class="apl-doc-row">
+                <div class="apl-doc-label">Statement of facts (Annexure)</div>
+                <input type="text" class="apl-doc-ref" id="doc-7" placeholder="File name / upload reference">
+              </div>
+              <div class="apl-doc-row">
+                <div class="apl-doc-label">Grounds of appeal (Annexure)</div>
+                <input type="text" class="apl-doc-ref" id="doc-8" placeholder="File name / upload reference">
+              </div>
+              <div class="apl-doc-row">
+                <div class="apl-doc-label">Original order (against which the first appeal was filed)</div>
+                <input type="text" class="apl-doc-ref" id="doc-9" placeholder="File name / upload reference">
+              </div>
+              <div class="apl-doc-row">
+                <div class="apl-doc-label">Other relevant documents / annexures</div>
+                <input type="text" class="apl-doc-ref" id="doc-10" placeholder="File name / upload reference">
+              </div>
+            </div>
+            <button type="button" onclick="addDocRow()" style="background:none; border:1px dashed #b8956a; color:#b8956a; padding:7px 18px; cursor:pointer; font-size:13px; font-family:inherit; margin-top:10px;">+ Add Document</button>
+          </div>
+
+          <!-- SECTION K: VERIFICATION -->
+          <div class="apl-section">
+            <div class="apl-section-title" style="background:#f0ece2; padding:10px 14px; border-left:3px solid #b8956a; margin-bottom:18px;">K — Verification</div>
             <div class="apl-grid">
               <div class="calc-group">
                 <label class="calc-label" for="apl-place">Place</label>
-                <input type="text" id="apl-place" placeholder="e.g. Bengaluru">
+                <input type="text" id="apl-place" placeholder="City">
               </div>
               <div class="calc-group">
                 <label class="calc-label" for="apl-sign-date">Date</label>
@@ -681,7 +976,7 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
           </div>
 
           <div class="calc-disclaimer">
-            <strong>Disclaimer:</strong> This generator produces a draft pre-filled APL-05 for reference and internal use. It does not constitute a filed appeal and carries no legal effect until submitted through the official GSTAT portal or in the prescribed manner. Always verify the generated document against the official FORM GST APL-05 and applicable rules before use. This tool does not provide legal advice.
+            <strong>Disclaimer:</strong> This generator produces a draft for internal preparation only. It does not constitute a filed appeal and carries no legal effect until submitted through the official GSTAT portal. Always verify against the official FORM GST APL-05 and applicable rules before use. This tool does not provide legal advice.
           </div>
 
           <div style="text-align:center; margin-top:10px;">
@@ -1087,24 +1382,25 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
   })();
 
   /* ══════════════════════════════════════════════════════════
-     LIMITATION CALCULATOR
+     APPEAL LIMITATION CALCULATOR
   ══════════════════════════════════════════════════════════ */
   (function () {
-    var typeEl = document.getElementById('ld-type');
-    var dateEl = document.getElementById('ld-date');
-    var result = document.getElementById('ld-result');
-    var cards  = document.getElementById('ld-cards');
+    var ldType   = '107';
+    var pill107  = document.getElementById('ld-pill-107');
+    var pill112  = document.getElementById('ld-pill-112');
+    var dateEl   = document.getElementById('ld-date');
+    var result   = document.getElementById('ld-result');
+    var cards    = document.getElementById('ld-cards');
+    var condBox  = document.getElementById('ld-cond-box');
+    var condRows = document.getElementById('ld-cond-rows');
 
     var AMNESTY_FROM = new Date('2017-07-01T00:00:00');
     var AMNESTY_TO   = new Date('2026-03-31T00:00:00');
     var AMNESTY_LAST = new Date('2026-06-30T00:00:00');
 
-    var config = {
-      '107':     { months: 3, condMonths: 0, amnesty: false },
-      '112':     { months: 3, condMonths: 0, amnesty: true  },
-      '107cond': { months: 3, condMonths: 1, amnesty: false },
-      '112cond': { months: 3, condMonths: 1, amnesty: true  }
-    };
+    function cr(label, val, warn) {
+      return '<div class="calc-row' + (warn ? '' : '') + '" style="' + (warn ? 'color:#b8956a;font-weight:600;' : '') + '"><span>' + label + '</span><span class="val">' + val + '</span></div>';
+    }
 
     function statusCard(lastDate, today, label) {
       var days = daysBetween(today, lastDate);
@@ -1117,23 +1413,29 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
     }
 
     function compute() {
-      var v = typeEl.value, raw = dateEl.value;
-      if (!raw) { result.style.display = 'none'; return; }
-      var cfg       = config[v];
-      var orderDate = new Date(raw + 'T00:00:00');
-      var today     = new Date(); today.setHours(0,0,0,0);
-      var normalLast = addMonths(orderDate, cfg.months);
-      var condLast   = cfg.condMonths ? addMonths(normalLast, cfg.condMonths) : null;
-      var amnestyApplies = cfg.amnesty && orderDate >= AMNESTY_FROM && orderDate <= AMNESTY_TO;
+      var raw = dateEl.value;
+      if (!raw) { result.style.display = 'none'; condBox.style.display = 'none'; return; }
 
-      var periodText = cfg.months + ' months from date of receipt';
-      if (cfg.condMonths)  periodText += ' + up to ' + cfg.condMonths + ' month condonation';
-      if (amnestyApplies)  periodText += ' (amnesty period excluded)';
+      var orderDate  = new Date(raw + 'T00:00:00');
+      var today      = new Date(); today.setHours(0,0,0,0);
+      var normalLast = addMonths(orderDate, 3);
+      var condLast   = addMonths(normalLast, 1);   /* max 1 month condonation under Sec 107(4) / 112(4) */
+      var is112      = ldType === '112';
+      var amnestyApplies = is112 && orderDate >= AMNESTY_FROM && orderDate <= AMNESTY_TO;
+
+      var effectiveLast = amnestyApplies ? AMNESTY_LAST : normalLast;
+      var delayFromEffective = daysBetween(effectiveLast, today); /* positive = delay */
+      var isLate = delayFromEffective > 0;
+
+      /* period text */
+      var periodText = '3 months from date of receipt';
+      if (amnestyApplies) periodText += ' — amnesty extended last date: 30 June 2026';
 
       document.getElementById('ld-r-orderdate').textContent = fmtDate(orderDate);
       document.getElementById('ld-r-period').textContent    = periodText;
       document.getElementById('ld-r-today').textContent     = fmtDate(today);
 
+      /* main date cards */
       var html = '';
       if (amnestyApplies) {
         var aDays = daysBetween(today, AMNESTY_LAST);
@@ -1141,26 +1443,56 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
         var aSub  = aPast
           ? 'Extended window has expired (' + Math.abs(aDays) + ' day' + (Math.abs(aDays) !== 1 ? 's' : '') + ' ago)'
           : (aDays === 0 ? 'Last date is today' : aDays + ' day' + (aDays !== 1 ? 's' : '') + ' remaining');
-        html += '<div class="date-result-card amnesty ' + (aPast ? 'urgent' : 'ok') + '"><div class="dr-label">Last date — amnesty period excluded (Sec 112 appeal)</div><div class="dr-date">30 June 2026</div><div class="dr-sub">' + aSub + '</div></div>';
+        html += '<div class="date-result-card amnesty ' + (aPast ? 'urgent' : 'ok') + '"><div class="dr-label">Last date — amnesty period excluded (Sec 112)</div><div class="dr-date">30 June 2026</div><div class="dr-sub">' + aSub + '</div></div>';
         var nDays = daysBetween(today, normalLast);
         var nPast = nDays < 0;
-        html += '<div class="date-result-card"><div class="dr-label">Normal 3-month period (without exclusion — for reference only)</div><div class="dr-date">' + fmtDate(normalLast) + '</div><div class="dr-sub">' + (nPast ? 'Expired ' + Math.abs(nDays) + ' day' + (Math.abs(nDays) !== 1 ? 's' : '') + ' ago' : 'In ' + nDays + ' day' + (nDays !== 1 ? 's' : '')) + '</div></div>';
+        html += '<div class="date-result-card"><div class="dr-label">Normal 3-month last date (for reference)</div><div class="dr-date">' + fmtDate(normalLast) + '</div><div class="dr-sub">' + (nPast ? 'Expired ' + Math.abs(nDays) + ' day' + (Math.abs(nDays) !== 1 ? 's' : '') + ' ago' : 'In ' + nDays + ' day' + (nDays !== 1 ? 's' : '')) + '</div></div>';
       } else {
         html += statusCard(normalLast, today, 'Last date to file appeal');
-        if (condLast) {
-          var cDays = daysBetween(today, condLast);
-          var cPast = cDays < 0;
-          var cSub  = cPast ? 'Condonation window has also expired' : (cDays === 0 ? 'Last date for condonation is today' : 'Condonation window closes in ' + cDays + ' day' + (cDays !== 1 ? 's' : ''));
-          html += '<div class="date-result-card ' + (cPast ? 'urgent' : '') + '"><div class="dr-label">Last date with condonation (if applicable)</div><div class="dr-date">' + fmtDate(condLast) + '</div><div class="dr-sub">' + cSub + '</div></div>';
-        }
-        if (cfg.amnesty && orderDate > AMNESTY_TO) {
+        if (is112 && orderDate > AMNESTY_TO) {
           html += '<div class="date-result-card"><div class="dr-label">Amnesty / special window</div><div class="dr-date" style="font-size:17px;color:#7a8a9a;">Not applicable</div><div class="dr-sub">Order received after 31 March 2026 — normal limitation applies.</div></div>';
         }
       }
       cards.innerHTML = html;
       result.style.display = 'block';
+
+      /* condonation box — only when late */
+      if (isLate) {
+        var condLastForType = amnestyApplies ? addMonths(AMNESTY_LAST, 1) : condLast;
+        var condRemaining   = daysBetween(today, condLastForType);
+        var condOpen        = condRemaining >= 0;
+        var daysLate        = delayFromEffective;
+
+        var chtml = '';
+        chtml += cr('Delay beyond last date', daysLate + ' day' + (daysLate !== 1 ? 's' : ''));
+        chtml += cr('Condonation provision', is112 ? 'Section 112(4) of CGST Act, 2017' : 'Section 107(4) of CGST Act, 2017');
+        chtml += cr('Maximum condonation period', '1 month from the last date of filing');
+        chtml += cr('Condonation last date', fmtDate(condLastForType));
+        if (condOpen) {
+          chtml += cr('Condonation window', condRemaining === 0 ? 'Closes today — file immediately' : 'Open — ' + condRemaining + ' day' + (condRemaining !== 1 ? 's' : '') + ' remaining', true);
+          chtml += '<div class="calc-flag warn" style="margin-top:14px;">A condonation application must be filed with the appeal explaining sufficient cause for the delay. Condonation is discretionary and not a right.</div>';
+        } else {
+          var overCond = Math.abs(condRemaining);
+          chtml += cr('Condonation window', 'Expired ' + overCond + ' day' + (overCond !== 1 ? 's' : '') + ' ago');
+          chtml += '<div class="calc-flag warn" style="margin-top:14px;">Both the normal limitation period and the statutory condonation window under ' + (is112 ? 'Section 112(4)' : 'Section 107(4)') + ' have expired. An appeal may still be filed but will require specific grounds and judicial indulgence beyond the statutory window.</div>';
+        }
+        condRows.innerHTML = chtml;
+        condBox.style.display = 'block';
+      } else {
+        condBox.style.display = 'none';
+      }
     }
-    typeEl.addEventListener('change', compute);
+
+    pill107.addEventListener('click', function () {
+      ldType = '107';
+      pill107.classList.add('active'); pill112.classList.remove('active');
+      compute();
+    });
+    pill112.addEventListener('click', function () {
+      ldType = '112';
+      pill112.classList.add('active'); pill107.classList.remove('active');
+      compute();
+    });
     dateEl.addEventListener('change', compute);
     var t = new Date();
     dateEl.value = t.getFullYear() + '-' + String(t.getMonth()+1).padStart(2,'0') + '-' + String(t.getDate()).padStart(2,'0');
@@ -1276,6 +1608,68 @@ select:focus, input:focus { outline: none; border-color: #b8956a; box-shadow: 0 
 })();
 </script>
 <script>
+/* ── APL-05 multi-respondent ── */
+var aplRespCount = 1;
+function addRespondent() {
+  aplRespCount++;
+  var n = aplRespCount;
+  var wrap = document.getElementById('apl-respondents-wrap');
+  var div = document.createElement('div');
+  div.className = 'apl-resp-block apl-grid';
+  div.setAttribute('data-resp', n);
+  div.style.cssText = 'margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid #e8e4dc;';
+  div.innerHTML = '<div style="grid-column:1/-1; display:flex; justify-content:space-between; align-items:center;">'
+    + '<span style="font-size:12.5px; color:#7a8a9a; font-weight:600;">Respondent ' + n + '</span>'
+    + '<button type="button" onclick="this.closest(\'.apl-resp-block\').remove()" style="background:none; border:none; color:#b8956a; cursor:pointer; font-size:12px; padding:0;">Remove</button>'
+    + '</div>'
+    + '<div class="calc-group"><label class="calc-label">Designation</label>'
+    + '<input type="text" id="apl-resp-' + n + '-desig" placeholder="e.g. Commissioner of State Tax"></div>'
+    + '<div class="calc-group"><label class="calc-label">Office / Commissionerate</label>'
+    + '<input type="text" id="apl-resp-' + n + '-office" placeholder="Office details"></div>';
+  wrap.appendChild(div);
+}
+
+/* ── APL-05 document checklist row ── */
+var aplDocCount = 10;
+function addDocRow() {
+  aplDocCount++;
+  var n = aplDocCount;
+  var list = document.getElementById('apl-docs-list');
+  var div = document.createElement('div');
+  div.className = 'apl-doc-row';
+  div.innerHTML = '<div class="apl-doc-label"><input type="text" style="width:100%; border:1px solid #d4cfc5; padding:7px 10px; font-size:13.5px; font-family:inherit; color:#1a2a3a;" placeholder="Document description"></div>'
+    + '<input type="text" class="apl-doc-ref" id="doc-' + n + '" placeholder="File name / upload reference">'
+    + '<button type="button" onclick="this.closest(\'.apl-doc-row\').remove()" style="background:none; border:none; color:#b8956a; cursor:pointer; font-size:12px; padding:0 4px; flex-shrink:0;">✕</button>';
+  list.appendChild(div);
+}
+
+/* ── APL-05 toggle pill wiring ── */
+(function () {
+  var toggleGroups = [
+    { pills: ['apl-pos-yes','apl-pos-no'],   field: 'apl-pos',  reveals: [] },
+    { pills: ['apl-129-yes','apl-129-no'],   field: 'apl-129',  reveals: [{ val: 'Yes', id: 'apl-129-mkt-wrap' }] },
+    { pills: ['apl-lim-yes','apl-lim-no'],   field: 'apl-lim',  reveals: [{ val: 'No',  id: 'apl-cond-wrap'   }] },
+    { pills: ['apl-pend-yes','apl-pend-no'], field: 'apl-pend', reveals: [{ val: 'Yes', id: 'apl-pend-wrap'   }] },
+    { pills: ['apl-stay-yes','apl-stay-no'], field: 'apl-stay', reveals: [{ val: 'Yes', id: 'apl-stay-wrap'   }] }
+  ];
+  toggleGroups.forEach(function (grp) {
+    grp.pills.forEach(function (pid) {
+      var el = document.getElementById(pid);
+      if (!el) return;
+      el.addEventListener('click', function () {
+        var val = el.getAttribute('data-val');
+        document.getElementById(grp.field).value = val;
+        grp.pills.forEach(function (p) { document.getElementById(p).classList.remove('active'); });
+        el.classList.add('active');
+        grp.reveals.forEach(function (r) {
+          var w = document.getElementById(r.id);
+          if (w) w.style.display = (val === r.val) ? 'block' : 'none';
+        });
+      });
+    });
+  });
+})();
+
 function generateAPL05() {
   var status = document.getElementById('apl-gen-status');
   var btn    = document.getElementById('apl-generate-btn');
@@ -1289,27 +1683,8 @@ function generateAPL05() {
     function v(id) { var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; }
     function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
     function fmtAmt(s) { var n = parseFloat((s||'').replace(/[^0-9.]/g,'')); return isNaN(n) || n===0 ? '' : 'Rs ' + Math.round(n).toLocaleString('en-IN'); }
-    function fmtDate(s) {
+    function fmtD(s) {
       if (!s) return '—';
-      var p = s.split('-'); if (p.length !== 3) return s;
-      var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-      return parseInt(p[2]) + ' ' + months[parseInt(p[1])-1] + ' ' + p[0];
-    }
-    function acts() {
-      var a = [];
-      ['cgst','sgst','igst','cess'].forEach(function(k) {
-        var el = document.getElementById('apl-act-'+k);
-        if (el && el.checked) a.push(el.value);
-      });
-      return a.length ? a.join(', ') : '—';
-    }
-    function catVal() {
-      var c = v('apl-category'); return c === 'Other' ? v('apl-category-other') : c || '—';
-    }
-
-    /* ── data helpers ── */
-    function fmtDate(s) {
-      if (!s) return '';
       var p = s.split('-'); if (p.length !== 3) return s;
       var mo = ['January','February','March','April','May','June','July','August','September','October','November','December'];
       return parseInt(p[2]) + ' ' + mo[parseInt(p[1])-1] + ' ' + p[0];
@@ -1319,14 +1694,16 @@ function generateAPL05() {
       [{k:'igst',l:'IGST'},{k:'cgst',l:'CGST'},{k:'sgst',l:'SGST/UTGST'},{k:'cess',l:'Cess'}].forEach(function(x){
         var el = document.getElementById('apl-act-'+x.k); if (el && el.checked) a.push(x.l);
       });
-      return a.length ? a.join(', ') : '';
+      return a.length ? a.join(', ') : '—';
     }
-    function catVal() { var c = v('apl-category'); return c === 'Other' ? v('apl-category-other') : c; }
+    function catVal() {
+      var c = v('apl-category'); return c === 'Other' ? (v('apl-category-other') || '—') : (c || '—');
+    }
 
     /* ── HTML builder ── */
-    var S = ''; /* accumulate HTML string */
+    var S = '';
     function row(label, val, no) {
-      S += '<tr><td class="lbl">' + (no ? '<b>'+no+'.</b>&nbsp;' : '') + esc(label) + '</td><td>' + esc(val||'') + '</td></tr>';
+      S += '<tr><td class="lbl">' + (no ? '<b>'+no+'.</b>&nbsp;' : '') + esc(label) + '</td><td>' + esc(val||'—') + '</td></tr>';
     }
     function hdr(text) {
       S += '<tr><td colspan="2" class="sec">' + esc(text) + '</td></tr>';
@@ -1386,27 +1763,73 @@ function generateAPL05() {
     var docName = (v('apl-gstin') || v('apl-name') || 'appeal').replace(/[^a-zA-Z0-9]/g,'_');
 
     /* main fields table */
-    hdr('APPELLANT DETAILS');
-    row('GSTIN / Temp ID / UIN',                   v('apl-gstin'),        '1');
-    row('Name of Appellant',                        v('apl-name'),         '2');
-    row('Address',                                  v('apl-address'),      '3');
-    row('State',                                    v('apl-state'),        '');
-    row('Phone / Email',                            v('apl-phone'),        '');
-    hdr('AUTHORIZED REPRESENTATIVE');
-    row('Name of AR',                               v('apl-ar-name'),      '4');
-    row('AR Registration No.',                      v('apl-ar-reg'),       '');
-    hdr('RESPONDENT');
-    row('Designation of Respondent',                v('apl-resp-desig'),   '5');
-    row('Office / Commissionerate',                 v('apl-resp-office'),  '');
-    hdr('ORDER UNDER APPEAL');
-    row('Order / APL-04 Reference No.',             v('apl-order-ref'),    '6');
-    row('Date of Order',                            fmtDate(v('apl-order-date')),    '7');
-    row('Date of Receipt of Order',                 fmtDate(v('apl-receipt-date')),  '8');
-    row('Authority that Passed the Order',          v('apl-authority'),    '9');
-    row('Original Order Reference (if applicable)', v('apl-orig-order'),   '10');
-    hdr('DISPUTE DETAILS');
-    row('Acts in Dispute',                          actsChk(),             '11');
-    row('Category of Dispute',                      catVal(),              '12');
+    /* A. Order Details */
+    hdr('A. ORDER DETAILS');
+    row('Type of Order Under Appeal',              v('apl-order-type'),              '1');
+    row('Order Reference No.',                     v('apl-order-ref'),               '2');
+    row('Date of Order',                           fmtD(v('apl-order-date')),        '3');
+    row('Date of Communication of Order',          fmtD(v('apl-comm-date')),         '4');
+    row('Date of Receipt of Order',                fmtD(v('apl-receipt-date')),      '5');
+    row('Designation of Authority',                v('apl-authority'),               '6');
+    row('Original Order Reference',                v('apl-orig-order'),              '7');
+    row('Date of Original Order',                  fmtD(v('apl-orig-order-date')),   '');
+    /* B. Case Details */
+    var issueEls = document.querySelectorAll('.apl-issue:checked');
+    var issues = Array.prototype.map.call(issueEls, function(e){ return e.value; }).join(', ') || '—';
+    hdr('B. CASE DETAILS');
+    row('Acts in Dispute',                         actsChk(),                        '8');
+    row('Issue Categories',                        issues,                           '9');
+    row('Dispute Classification',                  catVal(),                         '10');
+    /* C. Party Details */
+    hdr('C. APPELLANT DETAILS');
+    row('GSTIN / Temp ID / UIN',                   v('apl-gstin'),                   '11');
+    row('Name of Appellant',                       v('apl-name'),                    '12');
+    row('Address',                                 v('apl-address'),                 '13');
+    row('State',                                   v('apl-state'),                   '');
+    row('Mobile',                                  v('apl-phone'),                   '');
+    row('Email',                                   v('apl-email'),                   '');
+    hdr('C. RESPONDENT(S)');
+    var respBlocks = document.querySelectorAll('.apl-resp-block');
+    Array.prototype.forEach.call(respBlocks, function(blk, i) {
+      var n = blk.getAttribute('data-resp') || (i+1);
+      var desig  = (document.getElementById('apl-resp-'+n+'-desig')  || {}).value || '—';
+      var office = (document.getElementById('apl-resp-'+n+'-office') || {}).value || '—';
+      row('Respondent ' + (i+1) + ' — Designation',  desig,  i === 0 ? '14' : '');
+      row('Respondent ' + (i+1) + ' — Office',       office, '');
+    });
+    /* D. AR Details */
+    hdr('D. AUTHORISED REPRESENTATIVE');
+    row('Name',                                    v('apl-ar-name'),                 '15');
+    row('Enrolment / Registration No.',            v('apl-ar-reg'),                  '');
+    row('Mobile',                                  v('apl-ar-mobile'),               '');
+    row('Email',                                   v('apl-ar-email'),                '');
+    /* G. Statutory Declarations */
+    hdr('G. STATUTORY DECLARATIONS');
+    row('Place of supply in dispute',              v('apl-pos'),                     '16');
+    var sec129 = v('apl-129');
+    row('Goods detained / seized / confiscated (Sec 129/130)', sec129,               '17');
+    if (sec129 === 'Yes') row('Market value of seized / detained goods (Rs)',        v('apl-129-mkt'), '');
+    var limVal = v('apl-lim');
+    row('Appeal within limitation',                limVal === 'Yes' ? 'Yes — within time' : 'No — condonation sought', '18');
+    if (limVal === 'No') row('Grounds for condonation',                              v('apl-cond-grounds'), '');
+    var pendVal = v('apl-pend');
+    row('Other proceedings pending',               pendVal,                          '19');
+    if (pendVal === 'Yes') row('Details of pending proceedings',                     v('apl-pend-details'), '');
+    var stayVal = v('apl-stay');
+    row('Interim relief / stay sought',            stayVal,                          '20');
+    if (stayVal === 'Yes') row('Grounds for interim relief',                         v('apl-stay-grounds'), '');
+    /* H. Appellant Profile */
+    hdr('H. APPELLANT PROFILE (ANNEXURE D)');
+    row('Constitution of Appellant',               v('apl-constitution'),            '21');
+    row('Date of Incorporation / Commencement',    fmtD(v('apl-incorp-date')),       '');
+    row('Nature of Business',                      v('apl-nature-biz'),              '');
+    /* F. Court Fees */
+    hdr('F. COURT FEES [RULE 110(5)]');
+    row('Filing Fee Payable (Rs)',                  v('apl-fee-payable'),             '22');
+    row('Amount Paid (Rs)',                         v('apl-fee-paid'),                '');
+    row('Mode of Payment',                         v('apl-fee-mode'),                '');
+    row('CIN / Reference Number',                  v('apl-fee-cin'),                 '');
+    row('Date of Payment',                         fmtD(v('apl-fee-date')),          '');
 
     var fullHTML = '<!DOCTYPE html>'
       + '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
@@ -1417,47 +1840,87 @@ function generateAPL05() {
       + '<style>'
       + '@page { size: A4; margin: 2cm; }'
       + 'body { font-family: "Times New Roman", serif; font-size: 12pt; line-height: 1.0; color: #000; }'
-      + 'p, td, th, li { font-family: "Times New Roman", serif; font-size: 12pt; line-height: 1.0; }'
+      + 'p, td, th, li { font-family: "Times New Roman", serif; font-size: 12pt; line-height: 1.0; color: #000; }'
       + '.title { text-align: center; font-size: 16pt; font-weight: bold; margin: 0 0 4pt 0; }'
       + '.subtitle { text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 4pt 0; }'
-      + '.rule { text-align: center; font-size: 11pt; color: #555; margin: 0 0 16pt 0; }'
-      + 'table { border-collapse: collapse; width: 100%; margin-bottom: 14pt; }'
-      + 'td, th { border: 1pt solid #aaa; padding: 4pt 6pt; vertical-align: top; text-align: left; }'
-      + '.lbl { background: #f5f1e8; width: 35%; font-weight: normal; }'
-      + '.sec { background: #1a2a3a; color: #b8956a; font-weight: bold; font-size: 11pt; padding: 5pt 6pt; }'
-      + 'table.dem th { background: #1a2a3a; color: #b8956a; font-size: 10pt; text-align: center; padding: 4pt 3pt; }'
-      + 'table.dem th.sub { background: #2a3a4a; color: #d4cfc5; font-size: 9pt; font-weight: normal; }'
-      + 'table.dem td.act { background: #fafaf8; font-weight: bold; text-align: center; font-size: 11pt; }'
+      + '.rule { text-align: center; font-size: 11pt; margin: 0 0 16pt 0; }'
+      + 'table { border-collapse: collapse; width: 100%; margin-bottom: 14pt; table-layout: fixed; }'
+      + 'td, th { border: 1pt solid #000; padding: 4pt 6pt; vertical-align: top; text-align: left; word-wrap: break-word; }'
+      + '.lbl { width: 38%; font-weight: normal; }'
+      + '.sec { font-weight: bold; font-size: 11pt; padding: 5pt 6pt; border-bottom: 2pt solid #000; }'
+      + 'table.dem { font-size: 10pt; }'
+      + 'table.dem th { font-size: 10pt; text-align: center; padding: 4pt 3pt; font-weight: bold; }'
+      + 'table.dem th.sub { font-size: 9pt; font-weight: normal; }'
+      + 'table.dem td.act { font-weight: bold; text-align: center; font-size: 10pt; }'
       + 'table.dem td.amt { text-align: right; font-size: 10pt; }'
-      + 'table.dem tr.tot td { background: #f0ece2; font-size: 10pt; }'
-      + '.item-hdr { font-weight: bold; font-size: 12pt; margin: 16pt 0 6pt 0; border-bottom: 1pt solid #1a2a3a; padding-bottom: 3pt; }'
+      + 'table.dem tr.tot td { font-weight: bold; border-top: 2pt solid #000; }'
+      + '.item-hdr { font-weight: bold; font-size: 12pt; margin: 16pt 0 6pt 0; border-bottom: 2pt solid #000; padding-bottom: 3pt; }'
       + '.narrative { text-align: justify; margin: 0; white-space: pre-wrap; }'
       + '.ver-table td.lbl { width: 30%; }'
-      + '.note { font-size: 10pt; color: #666; font-style: italic; margin-top: 16pt; }'
+      + '.note { font-size: 10pt; font-style: italic; margin-top: 16pt; }'
       + '</style></head><body>'
       + '<p class="title">FORM GST APL-05</p>'
       + '<p class="subtitle">Appeal to the Appellate Tribunal</p>'
       + '<p class="rule">[See Rule 110(1) of CGST (Appellate Tribunal Procedure) Rules, 2024]</p>'
       + '<table>' + S + '</table>'
-      + '<p class="item-hdr">Item 20 — Details of Demand Involved in Appeal (amounts in Rs)</p>'
-      + demHTML
-      + '<p class="item-hdr">Item 21 — Pre-Deposit Details</p>'
-      + pdHTML
-      + '<p class="item-hdr">Item 13 — Statement of Facts</p>'
+
+      /* I. Narratives */
+      + '<p class="item-hdr">I. Statement of Facts</p>'
       + '<p class="narrative">' + esc(v('apl-facts') || '—') + '</p>'
-      + '<p class="item-hdr">Item 14 — Grounds of Appeal</p>'
+      + '<p class="item-hdr">I. Grounds of Appeal</p>'
       + '<p class="narrative">' + esc(v('apl-grounds') || '—') + '</p>'
-      + '<p class="item-hdr">Item 15 — Relief / Prayer</p>'
+      + '<p class="item-hdr">I. Relief / Prayer</p>'
       + '<p class="narrative">' + esc(v('apl-prayer') || '—') + '</p>'
-      + '<p class="item-hdr">Verification</p>'
+
+      /* E. Demand Details */
+      + '<p class="item-hdr">E. Details of Demand Involved in Appeal — amounts in Rs</p>'
+      + demHTML
+
+      /* E. Admitted Dues */
+      + '<p class="item-hdr">E. Part I — Admitted Dues Already Discharged [Section 112(8) — First Limb]</p>'
+      + (function(){
+          var admHTML = '<table class="dem"><thead><tr>'
+            + '<th style="width:12%">Act</th><th>Admitted Tax / ITC (Rs)</th><th>Admitted Interest (Rs)</th><th>Admitted Penalty / Fine / Fee (Rs)</th><th>Mode</th><th>Reference No.</th>'
+            + '</tr></thead><tbody>';
+          actKeys.forEach(function(ak){
+            admHTML += '<tr><td class="act">'+actNames[ak]+'</td>'
+              + '<td class="amt">'+esc(fmtAmt(v('adm-'+ak+'-tax')))+'</td>'
+              + '<td class="amt">'+esc(fmtAmt(v('adm-'+ak+'-int')))+'</td>'
+              + '<td class="amt">'+esc(fmtAmt(v('adm-'+ak+'-pen')))+'</td>'
+              + '<td>'+esc(v('adm-'+ak+'-mode'))+'</td>'
+              + '<td>'+esc(v('adm-'+ak+'-ref'))+'</td></tr>';
+          });
+          return admHTML + '</tbody></table>';
+        })()
+
+      /* E. Additional 10% Pre-Deposit */
+      + '<p class="item-hdr">E. Part II — Additional Pre-Deposit on Disputed Amount [Section 112(8) — Second Limb]</p>'
+      + pdHTML
+
+      /* J. Document Checklist */
+      + (function(){
+          var docRows = document.querySelectorAll('#apl-docs-list .apl-doc-row');
+          var docHTML = '<p class="item-hdr">J. Document Checklist</p><table><thead><tr><th style="width:5%">No.</th><th>Document</th><th style="width:35%">File Name / Upload Reference</th></tr></thead><tbody>';
+          Array.prototype.forEach.call(docRows, function(row, i){
+            var labelEl = row.querySelector('.apl-doc-label');
+            var refEl   = row.querySelector('.apl-doc-ref');
+            var label   = labelEl ? labelEl.textContent.trim() : '';
+            var ref     = refEl   ? (refEl.value || '').trim()  : '';
+            docHTML += '<tr><td style="text-align:center">'+(i+1)+'</td><td>'+esc(label)+'</td><td>'+esc(ref)+'</td></tr>';
+          });
+          return docHTML + '</tbody></table>';
+        })()
+
+      /* K. Verification */
+      + '<p class="item-hdr">K. Verification</p>'
       + '<p>I, <b>' + esc(v('apl-signatory')||'______________') + '</b>, '
       + esc(v('apl-designation')||'______________')
       + ', do hereby solemnly affirm and declare that the information given herein above is true and correct to the best of my knowledge and belief and nothing has been concealed therefrom.</p>'
       + '<table class="ver-table"><tr><td class="lbl">Place</td><td>' + esc(v('apl-place')) + '</td></tr>'
-      + '<tr><td class="lbl">Date</td><td>' + esc(fmtDate(v('apl-sign-date'))) + '</td></tr>'
-      + '<tr><td class="lbl">Name</td><td>' + esc(v('apl-signatory')) + '</td></tr>'
+      + '<tr><td class="lbl">Date</td><td>' + esc(fmtD(v('apl-sign-date'))) + '</td></tr>'
+      + '<tr><td class="lbl">Name of Signatory</td><td>' + esc(v('apl-signatory')) + '</td></tr>'
       + '<tr><td class="lbl">Designation / Capacity</td><td>' + esc(v('apl-designation')) + '</td></tr></table>'
-      + '<p class="note">This is a computer-generated draft. Verify all details against the official APL-05 before filing.</p>'
+      + '<p class="note">This is a computer-generated draft for reference only. It does not constitute a filed appeal. Verify all details against the official FORM GST APL-05 and the GSTAT portal before use.</p>'
       + '</body></html>';
 
     var blob = new Blob(['﻿' + fullHTML], { type: 'application/msword' });
