@@ -143,19 +143,28 @@
     var condoneCard = document.getElementById('lim-r-condone-card');
     var flagEl = document.getElementById('lim-r-flag');
     if (expired) {
-      condoneCard.style.display = 'block';
-      document.getElementById('lim-r-condone').textContent = fmtDate(condoneEnd);
-      var condSub = document.getElementById('lim-r-condone-sub');
-      if (!condoneExpired) {
-        condoneCard.className = 'date-result-card amnesty';
-        var daysLeft2 = Math.round((condoneEnd - now) / 86400000);
-        condSub.textContent = 'Condonation window still open — ' + daysLeft2 + ' day' + (daysLeft2 !== 1 ? 's' : '') + ' remaining. Sufficient cause must be shown.';
-        flagEl.style.display = 'none';
-      } else {
-        condoneCard.className = 'date-result-card urgent';
-        condSub.textContent = 'Condonation window has also expired.';
-        flagEl.textContent = 'Both the limitation period and the condonation window have expired. Filing at this stage may require the Court / Tribunal to exercise inherent powers or seek appropriate relief. This tool cannot advise on the legal remedy available — consult a lawyer.';
+      if (amnestyApplies) {
+        /* Amnesty cases: no condonation shown — position is uncertain */
+        condoneCard.style.display = 'none';
+        flagEl.innerHTML = '<strong>30 June 2026 has passed.</strong> Whether condonation under Section 112(4) is available beyond the amnesty window is not settled. Appeals filed after 1 July 2026 for orders covered by the amnesty period may not be admitted or the delay may not be condoned. Seek specific legal advice before proceeding.';
+        flagEl.className = 'calc-flag warn';
         flagEl.style.display = 'block';
+      } else {
+        condoneCard.style.display = 'block';
+        document.getElementById('lim-r-condone').textContent = fmtDate(condoneEnd);
+        var condSub = document.getElementById('lim-r-condone-sub');
+        if (!condoneExpired) {
+          condoneCard.className = 'date-result-card amnesty';
+          var daysLeft2 = Math.round((condoneEnd - now) / 86400000);
+          condSub.textContent = 'Condonation window still open — ' + daysLeft2 + ' day' + (daysLeft2 !== 1 ? 's' : '') + ' remaining. Sufficient cause must be shown.';
+          flagEl.style.display = 'none';
+        } else {
+          condoneCard.className = 'date-result-card urgent';
+          condSub.textContent = 'Condonation window has also expired.';
+          flagEl.textContent = 'Both the limitation period and the condonation window have expired. Filing at this stage may require the Court / Tribunal to exercise inherent powers or seek appropriate relief. This tool cannot advise on the legal remedy available — consult a lawyer.';
+          flagEl.className = 'calc-flag warn';
+          flagEl.style.display = 'block';
+        }
       }
     } else {
       condoneCard.style.display = 'none';
