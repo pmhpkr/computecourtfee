@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8309581100470150" crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GSTAT Court Fee Calculator | computecourtfee.com</title>
+<meta name="description" content="Calculate GSTAT filing fee for Section 112 appeals under Rule 110(5) of the GSTAT Procedure Rules 2025. Demand orders at Rs 1,000 per lakh, capped at Rs 25,000.">
+<link rel="canonical" href="https://www.computecourtfee.com/gstat-fee.html">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo"><span class="logo-accent">compute</span><span class="logo-main">courtfee</span><span class="logo-accent">.com</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="gstat-fee.html" class="active">GSTAT Fee</a>
+      <a href="predeposit.html">Pre-Deposit</a>
+      <a href="limitation.html">Limitation</a>
+      <a href="scn-limits.html">SCN Limits</a>
+      <a href="checklist.html">Checklist</a>
+      <a href="jurisdiction.html">Jurisdiction</a>
+      <a href="feedback.html">Feedback</a>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">GSTAT &middot; Section 112</div>
+    <h1 class="hero-title">Court Fee Calculator</h1>
+    <p class="hero-sub">Calculate the filing fee for a Section 112 appeal to the GST Appellate Tribunal, per Rule 110(5) of the GSTAT Procedure Rules, 2025.</p>
+  </div>
+</div>
+
+<section class="content">
+  <div class="container">
+    <div class="calc-container">
+      <div class="calc-group">
+        <label class="calc-label">Order type</label>
+        <div class="pill-row">
+          <div class="pill active" id="g-pill-demand">Demand / Enforcement</div>
+          <div class="pill" id="g-pill-flat">Refund / Other Order</div>
+        </div>
+      </div>
+      <div id="g-flat-orderselect" class="calc-group hidden">
+        <label class="calc-label" for="g-flatType">Order subtype</label>
+        <select id="g-flatType">
+          <option value="refund">Refund Order</option>
+          <option value="registration">Registration Order</option>
+          <option value="recovery">Recovery Order</option>
+          <option value="enforcement_not129">Enforcement Order (not Section 129)</option>
+          <option value="lut">LUT Order</option>
+          <option value="other">Other Order</option>
+        </select>
+      </div>
+      <div id="g-demand-options" class="calc-group">
+        <label class="calc-label">What is in dispute?</label>
+        <div class="pill-row">
+          <div class="pill active" id="g-pill-tax">Tax / ITC demand</div>
+          <div class="pill" id="g-pill-penalty">Penalty only</div>
+        </div>
+      </div>
+      <div id="g-amount-group" class="calc-group">
+        <label class="calc-label" id="g-amount-label" for="g-amount">Disputed amount (Rs)</label>
+        <div class="input-wrap">
+          <span class="prefix">Rs</span>
+          <input type="text" id="g-amount" placeholder="e.g. 7,45,00,000" inputmode="numeric">
+        </div>
+      </div>
+      <div class="calc-result" id="g-result" style="display:none;">
+        <div id="g-demand-breakup">
+          <div class="calc-row"><span>Amount</span><span class="val" id="g-r-amount">—</span></div>
+          <div class="calc-row"><span>Lakhs (rounded up)</span><span class="val" id="g-r-lakhs">—</span></div>
+          <div class="calc-row"><span>Rate</span><span class="val">Rs 1,000 per lakh</span></div>
+          <div class="calc-row"><span>Calculated</span><span class="val" id="g-r-calc">—</span></div>
+        </div>
+        <div id="g-flat-breakup" class="hidden">
+          <div class="calc-row"><span>Order type</span><span class="val" id="g-r-subtype">—</span></div>
+          <div class="calc-row"><span>Fee basis</span><span class="val">Flat fee</span></div>
+        </div>
+        <div class="calc-flag" id="g-r-flag" style="display:none;"></div>
+        <div class="calc-total">
+          <span class="label">Filing Fee</span>
+          <span class="amount" id="g-r-total">—</span>
+        </div>
+      </div>
+      <div class="calc-disclaimer">
+        <strong>Disclaimer:</strong> This calculator is provided for reference only. The fee shown is an estimate based on Rule 110(5) of the GSTAT Procedure Rules, 2025. <strong>Do not rely solely on this calculation.</strong> Verify the applicable fee against the live GSTAT fee schedule and the official GSTAT portal before filing your appeal. Fee rules and caps are subject to amendment without notice.
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2026 computecourtfee.com &mdash; Not legal advice. &nbsp;|&nbsp; <a href="feedback.html">Feedback</a></p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  function fmtRs(n) { return 'Rs ' + Math.round(n).toLocaleString('en-IN'); }
+  function parseAmt(s) { var c = (s||'').replace(/[^0-9.]/g,''); return c ? parseFloat(c) : NaN; }
+
+  var orderClass = 'demand';
+  var dispType   = 'tax';
+  var pillDemand = document.getElementById('g-pill-demand');
+  var pillFlat   = document.getElementById('g-pill-flat');
+  var pillTax    = document.getElementById('g-pill-tax');
+  var pillPen    = document.getElementById('g-pill-penalty');
+  var flatSel    = document.getElementById('g-flat-orderselect');
+  var demOpts    = document.getElementById('g-demand-options');
+  var amtGrp     = document.getElementById('g-amount-group');
+  var amtLbl     = document.getElementById('g-amount-label');
+  var amtInp     = document.getElementById('g-amount');
+  var ftSel      = document.getElementById('g-flatType');
+  var result     = document.getElementById('g-result');
+  var demBr      = document.getElementById('g-demand-breakup');
+  var flatBr     = document.getElementById('g-flat-breakup');
+  var flagEl     = document.getElementById('g-r-flag');
+  var flatLabels = { refund:'Refund Order', registration:'Registration Order', recovery:'Recovery Order', enforcement_not129:'Enforcement (not Sec 129)', lut:'LUT Order', other:'Other Order' };
+
+  function setOC(c) {
+    orderClass = c;
+    pillDemand.classList.toggle('active', c === 'demand');
+    pillFlat.classList.toggle('active', c === 'flat');
+    flatSel.classList.toggle('hidden', c !== 'flat');
+    demOpts.classList.toggle('hidden', c !== 'demand');
+    amtGrp.classList.toggle('hidden', c !== 'demand');
+    compute();
+  }
+  function setDT(t) {
+    dispType = t;
+    pillTax.classList.toggle('active', t === 'tax');
+    pillPen.classList.toggle('active', t === 'penalty');
+    amtLbl.textContent = t === 'tax' ? 'Disputed tax / ITC amount (Rs)' : 'Disputed penalty amount (Rs)';
+    compute();
+  }
+  function compute() {
+    if (orderClass === 'flat') {
+      demBr.classList.add('hidden'); flatBr.classList.remove('hidden');
+      flagEl.style.display = 'none';
+      document.getElementById('g-r-subtype').textContent = flatLabels[ftSel.value];
+      document.getElementById('g-r-total').textContent = fmtRs(5000);
+      result.style.display = 'block'; return;
+    }
+    demBr.classList.remove('hidden'); flatBr.classList.add('hidden');
+    var r = parseAmt(amtInp.value);
+    if (isNaN(r) || r <= 0) { result.style.display = 'none'; return; }
+    var l = Math.ceil(r / 100000);
+    var c = l * 1000;
+    var f = c, msg = '';
+    if (c < 5000)       { f = 5000;  msg = 'Fee below Rs 5,000 minimum — floor applied.'; }
+    else if (c > 25000) { f = 25000; msg = 'Fee exceeds Rs 25,000 cap — ceiling applied.'; }
+    document.getElementById('g-r-amount').textContent = fmtRs(r);
+    document.getElementById('g-r-lakhs').textContent  = l.toLocaleString('en-IN');
+    document.getElementById('g-r-calc').textContent   = fmtRs(c);
+    document.getElementById('g-r-total').textContent  = fmtRs(f);
+    if (msg) { flagEl.textContent = msg; flagEl.style.display = 'block'; } else { flagEl.style.display = 'none'; }
+    result.style.display = 'block';
+  }
+  pillDemand.addEventListener('click', function () { setOC('demand'); });
+  pillFlat.addEventListener('click',   function () { setOC('flat'); });
+  pillTax.addEventListener('click',    function () { setDT('tax'); });
+  pillPen.addEventListener('click',    function () { setDT('penalty'); });
+  ftSel.addEventListener('change', compute);
+  amtInp.addEventListener('input', compute);
+})();
+</script>
+</body>
+</html>
