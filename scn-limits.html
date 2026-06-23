@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8309581100470150" crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SCN &amp; Order Time Limits | computecourtfee.com</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .scn-fy-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 12px; margin-top: 10px; }
+  .scn-fy-card { border: 1px solid #d4cfc5; padding: 16px 18px; background: #fff; cursor: pointer; transition: border-color .2s; user-select: none; }
+  .scn-fy-card:hover { border-color: #b8956a; }
+  .scn-fy-card.selected { border-color: #b8956a; background: #fdf8f2; }
+  .scn-fy-label { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #7a8a9a; margin-bottom: 4px; }
+  .scn-fy-title { font-size: 17px; color: #1a2a3a; }
+  .scn-result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 28px; }
+  .scn-section-head { grid-column: 1/-1; font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #b8956a; padding-bottom: 8px; border-bottom: 1px solid #d4cfc5; margin-top: 10px; }
+  .scn-date-card { background: #fff; border: 1px solid #d4cfc5; padding: 18px 20px; }
+  .scn-date-card .dc-label { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #7a8a9a; margin-bottom: 6px; }
+  .scn-date-card .dc-date { font-size: 20px; color: #1a2a3a; margin-bottom: 6px; }
+  .scn-date-card .dc-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 2px; letter-spacing: .04em; }
+  .badge-live   { background: #e8f4e8; color: #27735b; }
+  .badge-passed { background: #fdecea; color: #c0392b; }
+  .badge-today  { background: #fdf3e3; color: #b8956a; }
+  .scn-penalty-box { grid-column: 1/-1; background: #fdf8f2; border: 1px solid #b8956a; padding: 18px 22px; margin-top: 8px; }
+  .scn-penalty-box .pb-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #b8956a; margin-bottom: 12px; }
+  .scn-penalty-row { display: flex; justify-content: space-between; font-size: 14px; color: #2a3a4a; margin-bottom: 8px; }
+  .scn-penalty-row .pval { font-weight: 600; color: #1a2a3a; }
+  @media (max-width: 600px) { .scn-result-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo"><span class="logo-accent">compute</span><span class="logo-main">courtfee</span><span class="logo-accent">.com</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="gstat-fee.html">GSTAT Fee</a>
+      <a href="predeposit.html">Pre-Deposit</a>
+      <a href="limitation.html">Limitation</a>
+      <a href="scn-limits.html" class="active">SCN Limits</a>
+      <a href="checklist.html">Checklist</a>
+      <a href="feedback.html">Feedback</a>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Section 73 &amp; 74 · CGST Act</div>
+    <h1 class="hero-title">SCN &amp; Order Time Limits</h1>
+    <p class="hero-sub">Last dates to issue a Show Cause Notice and pass an Order under Section 73 (non-fraud) and Section 74 (fraud / wilful misstatement) for FY 2017-18 to 2023-24.</p>
+  </div>
+</div>
+
+<section class="content">
+  <div class="container">
+    <div class="calc-container" style="max-width:900px;">
+
+      <div class="calc-group">
+        <label class="calc-label">Select Financial Year</label>
+        <div class="scn-fy-grid" id="scn-fy-grid">
+          <!-- populated by JS -->
+        </div>
+      </div>
+
+      <div id="scn-result" style="display:none;">
+        <div class="calc-group" style="margin-bottom:0;">
+          <label class="calc-label" for="scn-disputed-amt" style="margin-top:24px;">Disputed tax amount (Rs) — for penalty comparison</label>
+          <div class="input-wrap">
+            <span class="prefix">Rs</span>
+            <input type="text" id="scn-disputed-amt" placeholder="Optional — enter to compare penalty" inputmode="numeric">
+          </div>
+        </div>
+
+        <div class="scn-result-grid" id="scn-result-grid">
+          <!-- populated by JS -->
+        </div>
+      </div>
+
+      <div class="calc-disclaimer" style="margin-top:30px;">
+        <strong>Disclaimer:</strong> The dates shown are based on Section 73 and 74 of the CGST Act, 2017 as amended, and applicable notifications issued under Section 168A. Dates for FY 2017-18 to 2019-20 reflect one-time extensions granted for COVID-19. Dates marked <strong>SCN</strong> refer to the last date to issue a show cause notice; <strong>Order</strong> dates refer to the last date to pass an adjudication order. Section 73 SCN must precede the order date by at least 3 months; Section 74 SCN by at least 6 months. These dates do not account for department-specific circulars, state-level notifications, or orders passed in pending proceedings. <strong>Verify against current notifications before relying on any date.</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2026 computecourtfee.com &mdash; Not legal advice. &nbsp;|&nbsp; <a href="feedback.html">Feedback</a></p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var SCN_DATA = {
+    '2017-18': { s73scn:'2023-09-30', s73ord:'2023-12-31', s74scn:'2024-02-05', s74ord:'2024-08-05' },
+    '2018-19': { s73scn:'2024-01-31', s73ord:'2024-04-30', s74scn:'2024-12-31', s74ord:'2025-06-30' },
+    '2019-20': { s73scn:'2024-05-31', s73ord:'2024-08-31', s74scn:'2025-06-30', s74ord:'2025-12-31' },
+    '2020-21': { s73scn:'2024-11-30', s73ord:'2025-02-28', s74scn:'2026-02-28', s74ord:'2026-08-31' },
+    '2021-22': { s73scn:'2025-09-30', s73ord:'2025-12-31', s74scn:'2026-08-31', s74ord:'2027-02-28' },
+    '2022-23': { s73scn:'2026-09-30', s73ord:'2026-12-31', s74scn:'2027-06-30', s74ord:'2027-12-31' },
+    '2023-24': { s73scn:'2027-09-30', s73ord:'2027-12-31', s74scn:'2029-06-30', s74ord:'2029-12-31' }
+  };
+  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var selectedFY = null;
+
+  function parseISO(s) { var p=s.split('-'); return new Date(+p[0],+p[1]-1,+p[2]); }
+  function fmtDate(d) { return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear(); }
+  function today() { var t=new Date(); t.setHours(0,0,0,0); return t; }
+  function fmtRs(n) { return 'Rs ' + Math.round(n).toLocaleString('en-IN'); }
+  function parseAmt(s) { var c=(s||'').replace(/[^0-9.]/g,''); return c ? parseFloat(c) : NaN; }
+
+  function badge(dateObj) {
+    var now = today();
+    if (dateObj < now) return '<span class="dc-badge badge-passed">Expired</span>';
+    if (dateObj.toDateString() === now.toDateString()) return '<span class="dc-badge badge-today">Today</span>';
+    var days = Math.round((dateObj - now) / 86400000);
+    return '<span class="dc-badge badge-live">Live &mdash; ' + days + ' day' + (days!==1?'s':'') + ' left</span>';
+  }
+
+  function dateCard(label, dateStr) {
+    var d = parseISO(dateStr);
+    return '<div class="scn-date-card"><div class="dc-label">' + label + '</div>'
+         + '<div class="dc-date">' + fmtDate(d) + '</div>'
+         + badge(d) + '</div>';
+  }
+
+  function render() {
+    if (!selectedFY) return;
+    var d = SCN_DATA[selectedFY];
+    var amt = parseAmt(document.getElementById('scn-disputed-amt').value);
+    var grid = document.getElementById('scn-result-grid');
+    var html = '';
+
+    html += '<div class="scn-section-head">Section 73 &mdash; Non-Fraud / Genuine Error (3-year period)</div>';
+    html += dateCard('Last date for SCN', d.s73scn);
+    html += dateCard('Last date for Order', d.s73ord);
+
+    html += '<div class="scn-section-head">Section 74 &mdash; Fraud / Wilful Misstatement (5-year period)</div>';
+    html += dateCard('Last date for SCN', d.s74scn);
+    html += dateCard('Last date for Order', d.s74ord);
+
+    if (!isNaN(amt) && amt > 0) {
+      html += '<div class="scn-penalty-box">'
+            + '<div class="pb-title">Penalty Comparison for Disputed Tax of ' + fmtRs(amt) + '</div>'
+            + '<div class="scn-penalty-row"><span>Section 73 — penalty (non-fraud, paid before SCN)</span><span class="pval">Nil</span></div>'
+            + '<div class="scn-penalty-row"><span>Section 73 — penalty (paid after SCN, before order)</span><span class="pval">' + fmtRs(amt * 0.10) + ' (10%)</span></div>'
+            + '<div class="scn-penalty-row"><span>Section 73 — penalty (order passed)</span><span class="pval">' + fmtRs(amt * 0.10) + ' (10%, min)</span></div>'
+            + '<div class="scn-penalty-row"><span>Section 74 — penalty (fraud, paid before SCN)</span><span class="pval">' + fmtRs(amt * 0.15) + ' (15%)</span></div>'
+            + '<div class="scn-penalty-row"><span>Section 74 — penalty (paid after SCN, before order)</span><span class="pval">' + fmtRs(amt * 0.25) + ' (25%)</span></div>'
+            + '<div class="scn-penalty-row"><span>Section 74 — penalty (order passed)</span><span class="pval">' + fmtRs(amt * 1.00) + ' (100%)</span></div>'
+            + '</div>';
+    }
+
+    grid.innerHTML = html;
+    document.getElementById('scn-result').style.display = 'block';
+  }
+
+  var fyGrid = document.getElementById('scn-fy-grid');
+  Object.keys(SCN_DATA).forEach(function (fy) {
+    var card = document.createElement('div');
+    card.className = 'scn-fy-card';
+    card.innerHTML = '<div class="scn-fy-label">Financial Year</div><div class="scn-fy-title">FY ' + fy + '</div>';
+    card.addEventListener('click', function () {
+      document.querySelectorAll('.scn-fy-card').forEach(function (c) { c.classList.remove('selected'); });
+      card.classList.add('selected');
+      selectedFY = fy;
+      render();
+    });
+    fyGrid.appendChild(card);
+  });
+
+  document.getElementById('scn-disputed-amt').addEventListener('input', render);
+})();
+</script>
+</body>
+</html>

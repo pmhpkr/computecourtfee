@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8309581100470150" crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Appeal Limitation Calculator | computecourtfee.com</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo"><span class="logo-accent">compute</span><span class="logo-main">courtfee</span><span class="logo-accent">.com</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="gstat-fee.html">GSTAT Fee</a>
+      <a href="predeposit.html">Pre-Deposit</a>
+      <a href="limitation.html" class="active">Limitation</a>
+      <a href="scn-limits.html">SCN Limits</a>
+      <a href="checklist.html">Checklist</a>
+      <a href="feedback.html">Feedback</a>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Section 107 &amp; 112 · CGST Act</div>
+    <h1 class="hero-title">Appeal Limitation Calculator</h1>
+    <p class="hero-sub">Calculate the last date to file an appeal under Section 107 (first appeal) or Section 112 (GSTAT), and find the outer condonation limit when the period has expired.</p>
+  </div>
+</div>
+
+<section class="content">
+  <div class="container">
+    <div class="calc-container">
+      <div class="calc-group">
+        <label class="calc-label">Appeal type</label>
+        <div class="pill-row">
+          <div class="pill active" id="lim-pill-107">Section 107 — First Appeal</div>
+          <div class="pill" id="lim-pill-112">Section 112 — GSTAT Appeal</div>
+        </div>
+      </div>
+      <div class="calc-group">
+        <label class="calc-label" for="lim-receipt-date">Date of receipt of the order</label>
+        <input type="date" id="lim-receipt-date">
+      </div>
+      <div class="calc-result" id="lim-result" style="display:none;">
+        <div class="calc-row"><span>Date of receipt</span><span class="val" id="lim-r-receipt">—</span></div>
+        <div class="calc-row"><span>Limitation period</span><span class="val" id="lim-r-period">—</span></div>
+        <div class="date-result-grid" style="margin-top:18px;">
+          <div class="date-result-card" id="lim-r-deadline-card">
+            <div class="dr-label">Last date to file appeal</div>
+            <div class="dr-date" id="lim-r-deadline">—</div>
+            <div class="dr-sub" id="lim-r-status">—</div>
+          </div>
+          <div class="date-result-card" id="lim-r-condone-card" style="display:none;">
+            <div class="dr-label">Outer limit for condonation</div>
+            <div class="dr-date" id="lim-r-condone">—</div>
+            <div class="dr-sub" id="lim-r-condone-sub">—</div>
+          </div>
+        </div>
+        <div class="calc-flag warn" id="lim-r-flag" style="display:none;"></div>
+      </div>
+      <div class="calc-disclaimer">
+        <strong>Disclaimer:</strong> Section 107(1) provides a <strong>three-month</strong> limitation period for first appeals from the date of receipt of the order. The first appellate authority may condone delay up to a further one month on sufficient cause (S. 107(4)). Section 112(1) provides a <strong>three-month</strong> limitation for appeals to GSTAT, with condonation of up to a further three months (S. 112(4)). Limitation periods are subject to exclusion for time spent in legal proceedings (S. 14, Limitation Act). Court holidays and gazette notifications may further affect the deadline. <strong>This tool is indicative only — verify the applicable limitation against the statute and case law before filing.</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2026 computecourtfee.com &mdash; Not legal advice. &nbsp;|&nbsp; <a href="feedback.html">Feedback</a></p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var appealType = '107';
+  var pill107 = document.getElementById('lim-pill-107');
+  var pill112 = document.getElementById('lim-pill-112');
+  var receiptInp = document.getElementById('lim-receipt-date');
+  var result = document.getElementById('lim-result');
+  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  function fmtDate(d) { return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear(); }
+  function addMonths(d, m) { var r = new Date(d); r.setMonth(r.getMonth() + m); return r; }
+  function today() { var t = new Date(); t.setHours(0,0,0,0); return t; }
+
+  function compute() {
+    var v = receiptInp.value;
+    if (!v) { result.style.display = 'none'; return; }
+    var receipt = new Date(v + 'T00:00:00');
+    var limitPeriod = appealType === '107' ? 3 : 3;
+    var condPeriod  = appealType === '107' ? 1 : 3;
+    var deadline    = addMonths(receipt, limitPeriod);
+    var condoneEnd  = addMonths(deadline, condPeriod);
+    var now         = today();
+    var expired     = now > deadline;
+    var condoneExpired = now > condoneEnd;
+
+    document.getElementById('lim-r-receipt').textContent = fmtDate(receipt);
+    document.getElementById('lim-r-period').textContent  = limitPeriod + ' months (Sec ' + appealType + (appealType==='107'?'(1)':'(1)') + ')';
+
+    var deadlineCard = document.getElementById('lim-r-deadline-card');
+    document.getElementById('lim-r-deadline').textContent = fmtDate(deadline);
+    var statusEl = document.getElementById('lim-r-status');
+    if (!expired) {
+      deadlineCard.className = 'date-result-card ok';
+      var daysLeft = Math.round((deadline - now) / 86400000);
+      statusEl.textContent = daysLeft + ' day' + (daysLeft !== 1 ? 's' : '') + ' remaining as of today.';
+    } else {
+      deadlineCard.className = 'date-result-card urgent';
+      statusEl.textContent = 'This date has passed — check condonation window.';
+    }
+
+    var condoneCard = document.getElementById('lim-r-condone-card');
+    var flagEl = document.getElementById('lim-r-flag');
+    if (expired) {
+      condoneCard.style.display = 'block';
+      document.getElementById('lim-r-condone').textContent = fmtDate(condoneEnd);
+      var condSub = document.getElementById('lim-r-condone-sub');
+      if (!condoneExpired) {
+        condoneCard.className = 'date-result-card amnesty';
+        var daysLeft2 = Math.round((condoneEnd - now) / 86400000);
+        condSub.textContent = 'Condonation window still open — ' + daysLeft2 + ' day' + (daysLeft2 !== 1 ? 's' : '') + ' remaining. Sufficient cause must be shown.';
+        flagEl.style.display = 'none';
+      } else {
+        condoneCard.className = 'date-result-card urgent';
+        condSub.textContent = 'Condonation window has also expired.';
+        flagEl.textContent = 'Both the limitation period and the condonation window have expired. Filing at this stage may require the Court / Tribunal to exercise inherent powers or seek appropriate relief. This tool cannot advise on the legal remedy available — consult a lawyer.';
+        flagEl.style.display = 'block';
+      }
+    } else {
+      condoneCard.style.display = 'none';
+      flagEl.style.display = 'none';
+    }
+    result.style.display = 'block';
+  }
+
+  pill107.addEventListener('click', function () { appealType='107'; pill107.classList.add('active'); pill112.classList.remove('active'); compute(); });
+  pill112.addEventListener('click', function () { appealType='112'; pill112.classList.add('active'); pill107.classList.remove('active'); compute(); });
+  receiptInp.addEventListener('change', compute);
+  receiptInp.addEventListener('input', compute);
+})();
+</script>
+</body>
+</html>

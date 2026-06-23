@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8309581100470150" crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pre-Deposit Calculator | computecourtfee.com</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .pd-act-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 0; }
+  .pd-act-grid .calc-group { margin-bottom: 0; }
+  .pd-act-header { font-size: 13px; font-weight: 600; letter-spacing: 0.7px; text-transform: uppercase; color: #b8956a; margin-bottom: 16px; margin-top: 4px; }
+  .pd-paid-section { margin-top: 28px; padding-top: 22px; border-top: 1px dashed #d4cfc5; }
+  @media (max-width: 700px) { .pd-act-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo"><span class="logo-accent">compute</span><span class="logo-main">courtfee</span><span class="logo-accent">.com</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="gstat-fee.html">GSTAT Fee</a>
+      <a href="predeposit.html" class="active">Pre-Deposit</a>
+      <a href="limitation.html">Limitation</a>
+      <a href="scn-limits.html">SCN Limits</a>
+      <a href="checklist.html">Checklist</a>
+      <a href="feedback.html">Feedback</a>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Section 107 &amp; 112</div>
+    <h1 class="hero-title">Pre-Deposit Calculator</h1>
+    <p class="hero-sub">Calculate the mandatory pre-deposit under Section 107 (first appeal, 10%) or Section 112 (GSTAT appeal, 20%) of the CGST Act, 2017.</p>
+  </div>
+</div>
+
+<section class="content">
+  <div class="container">
+    <div class="calc-container">
+      <div class="calc-group">
+        <label class="calc-label">Appeal stage</label>
+        <div class="pill-row">
+          <div class="pill active" id="pd-pill-107">Section 107 — First Appeal</div>
+          <div class="pill" id="pd-pill-112">Section 112 — GSTAT Appeal</div>
+        </div>
+      </div>
+      <div class="calc-group">
+        <label class="calc-label">Nature of the demand in dispute</label>
+        <div class="pill-row">
+          <div class="pill active" id="pd-pill-tax">Tax / ITC demand</div>
+          <div class="pill" id="pd-pill-penonly">Penalty only</div>
+          <div class="pill" id="pd-pill-intonly">Interest / fee only</div>
+        </div>
+      </div>
+
+      <div id="pd-tax-inputs">
+        <div class="calc-group" style="margin-bottom:8px;">
+          <div class="pd-act-header">Disputed tax / ITC amounts — enter whichever apply</div>
+          <div class="pd-act-grid">
+            <div class="calc-group">
+              <label class="calc-label" for="pd-igst">IGST (Rs)</label>
+              <div class="input-wrap"><span class="prefix">Rs</span>
+                <input type="text" id="pd-igst" placeholder="Leave blank if not applicable" inputmode="numeric">
+              </div>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label" for="pd-cgst">CGST (Rs)</label>
+              <div class="input-wrap"><span class="prefix">Rs</span>
+                <input type="text" id="pd-cgst" placeholder="Leave blank if not applicable" inputmode="numeric">
+              </div>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label" for="pd-sgst">SGST (Rs)</label>
+              <div class="input-wrap"><span class="prefix">Rs</span>
+                <input type="text" id="pd-sgst" placeholder="Leave blank if not applicable" inputmode="numeric">
+              </div>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label" for="pd-utgst">UTGST (Rs)</label>
+              <div class="input-wrap"><span class="prefix">Rs</span>
+                <input type="text" id="pd-utgst" placeholder="Leave blank if not applicable" inputmode="numeric">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pd-paid-section hidden" id="pd-paid-section">
+          <div class="pd-act-header">Pre-deposit already paid at Section 107 stage — enter whichever apply</div>
+          <div class="pd-act-grid">
+            <div class="calc-group">
+              <label class="calc-label" for="pd-paid-igst">IGST paid (Rs)</label>
+              <div class="input-wrap"><span class="prefix">Rs</span>
+                <input type="text" id="pd-paid-igst" placeholder="0" inputmode="numeric">
+              </div>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label" for="pd-paid-cgst">CGST paid (Rs)</label>
+              <div class="input-wrap"><span class="prefix">Rs</span>
+                <input type="text" id="pd-paid-cgst" placeholder="0" inputmode="numeric">
+              </div>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label" for="pd-paid-sgst">SGST paid (Rs)</label>
+              <div class="input-wrap"><span class="prefix">Rs</span>
+                <input type="text" id="pd-paid-sgst" placeholder="0" inputmode="numeric">
+              </div>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label" for="pd-paid-utgst">UTGST paid (Rs)</label>
+              <div class="input-wrap"><span class="prefix">Rs</span>
+                <input type="text" id="pd-paid-utgst" placeholder="0" inputmode="numeric">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-group hidden" id="pd-penonly-group">
+        <label class="calc-label" for="pd-penonly-amt">Disputed penalty amount (Rs)</label>
+        <div class="input-wrap">
+          <span class="prefix">Rs</span>
+          <input type="text" id="pd-penonly-amt" placeholder="e.g. 5,00,000" inputmode="numeric">
+        </div>
+      </div>
+
+      <div class="calc-group hidden" id="pd-filing-date-group">
+        <label class="calc-label" for="pd-filing-date">Date of filing the appeal</label>
+        <input type="date" id="pd-filing-date">
+      </div>
+
+      <div class="calc-result" id="pd-result" style="display:none;">
+        <div id="pd-result-rows"></div>
+        <div class="calc-flag" id="pd-r-flag" style="display:none;"></div>
+        <div class="calc-total">
+          <span class="label" id="pd-total-label">Total Pre-Deposit Required</span>
+          <span class="amount" id="pd-r-total">—</span>
+        </div>
+        <div class="calc-flag" id="pd-r-note2" style="display:none; margin-top:12px;"></div>
+      </div>
+
+      <div class="calc-disclaimer">
+        <strong>Disclaimer:</strong> Pre-deposit under Section 107(6)(b) is computed at <strong>10%</strong> of the disputed tax or ITC amount (max Rs 20 crore per Act). Under Section 112(8)(b) for GSTAT appeals, it is <strong>20%</strong> of the remaining disputed amount (max Rs 50 crore per Act), in addition to what was paid at the Section 107 stage. The cap applies separately to each Act at each stage. For <strong>penalty-only orders</strong>: no pre-deposit was required for appeals filed before 1 October 2025; a 10% pre-deposit on the penalty amount is required for appeals filed on or after 1 October 2025 (Finance Act, 2025). For <strong>interest / fee only orders</strong>: no pre-deposit is required. <strong>Do not rely solely on this calculation.</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2026 computecourtfee.com &mdash; Not legal advice. &nbsp;|&nbsp; <a href="feedback.html">Feedback</a></p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var stage    = '107';
+  var dispType = 'tax';
+  var CAP_107  = 20 * 10000000;
+  var CAP_112  = 50 * 10000000;
+  var FINANCE_ACT = new Date('2025-10-01T00:00:00');
+
+  var pill107       = document.getElementById('pd-pill-107');
+  var pill112       = document.getElementById('pd-pill-112');
+  var pillTax       = document.getElementById('pd-pill-tax');
+  var pillPenOnly   = document.getElementById('pd-pill-penonly');
+  var pillIntOnly   = document.getElementById('pd-pill-intonly');
+  var taxInputsDiv  = document.getElementById('pd-tax-inputs');
+  var paidSection   = document.getElementById('pd-paid-section');
+  var penOnlyGrp    = document.getElementById('pd-penonly-group');
+  var filingDateGrp = document.getElementById('pd-filing-date-group');
+  var igstInp       = document.getElementById('pd-igst');
+  var cgstInp       = document.getElementById('pd-cgst');
+  var sgstInp       = document.getElementById('pd-sgst');
+  var utgstInp      = document.getElementById('pd-utgst');
+  var paidIgst      = document.getElementById('pd-paid-igst');
+  var paidCgst      = document.getElementById('pd-paid-cgst');
+  var paidSgst      = document.getElementById('pd-paid-sgst');
+  var paidUtgst     = document.getElementById('pd-paid-utgst');
+  var penOnlyInp    = document.getElementById('pd-penonly-amt');
+  var filingDateInp = document.getElementById('pd-filing-date');
+  var result        = document.getElementById('pd-result');
+  var resultRows    = document.getElementById('pd-result-rows');
+  var flagEl        = document.getElementById('pd-r-flag');
+  var note2         = document.getElementById('pd-r-note2');
+
+  var _t = new Date();
+  filingDateInp.value = _t.getFullYear() + '-' + String(_t.getMonth()+1).padStart(2,'0') + '-' + String(_t.getDate()).padStart(2,'0');
+
+  function fmtRs(n) { return 'Rs ' + Math.round(n).toLocaleString('en-IN'); }
+  function parseAmt(s) { var c = (s||'').replace(/[^0-9.]/g,''); return c ? parseFloat(c) : NaN; }
+  function show(el) { el.classList.remove('hidden'); }
+  function hide(el) { el.classList.add('hidden'); }
+
+  function syncVisibility() {
+    var isTax = dispType === 'tax';
+    var isPen = dispType === 'penonly';
+    isTax ? show(taxInputsDiv) : hide(taxInputsDiv);
+    (isTax && stage === '112') ? show(paidSection) : hide(paidSection);
+    isPen ? show(penOnlyGrp)    : hide(penOnlyGrp);
+    isPen ? show(filingDateGrp) : hide(filingDateGrp);
+    compute();
+  }
+
+  function capDeposit(amt) {
+    var rate   = stage === '112' ? 0.20 : 0.10;
+    var cap    = stage === '112' ? CAP_112 : CAP_107;
+    var raw    = amt * rate;
+    var capped = Math.min(raw, cap);
+    return { raw: raw, capped: capped, hit: raw > cap, rate: rate, cap: cap };
+  }
+
+  function actBlock(actName, disputed, dep, paid112) {
+    var pct     = (dep.rate * 100).toFixed(0) + '%';
+    var capAmt  = 'Rs ' + (dep.cap / 10000000) + ' crore';
+    var capNote = dep.hit ? ' <em style="color:#b8956a;">(capped at ' + capAmt + ')</em>' : '';
+    var html = '<div class="calc-row" style="font-weight:600;color:#1a2a3a;border-bottom:1px solid #e8e6e0;padding-bottom:8px;margin-bottom:4px;margin-top:14px;">'
+             + '<span>' + actName + '</span><span class="val"></span></div>';
+    html += '<div class="calc-row"><span>Disputed amount</span><span class="val">' + fmtRs(disputed) + '</span></div>';
+    html += '<div class="calc-row"><span>Pre-deposit required (' + pct + (dep.hit ? ', capped' : '') + ')</span><span class="val">' + fmtRs(dep.capped) + capNote + '</span></div>';
+    if (paid112 !== null) {
+      html += '<div class="calc-row"><span>Pre-deposit already paid (Sec 107)</span><span class="val">' + fmtRs(paid112) + '</span></div>';
+      var net = Math.max(0, dep.capped - paid112);
+      html += '<div class="calc-row" style="font-weight:600;color:#1a2a3a;"><span>Net additional pre-deposit (Sec 112)</span><span class="val">' + fmtRs(net) + '</span></div>';
+    }
+    return html;
+  }
+
+  function showFlag(msg, warn) {
+    flagEl.innerHTML = msg;
+    flagEl.className = 'calc-flag' + (warn ? ' warn' : '');
+    flagEl.style.display = 'block';
+  }
+
+  function setStage(s) { stage = s; pill107.classList.toggle('active', s==='107'); pill112.classList.toggle('active', s==='112'); syncVisibility(); }
+  function setDisp(t)  { dispType = t; pillTax.classList.toggle('active', t==='tax'); pillPenOnly.classList.toggle('active', t==='penonly'); pillIntOnly.classList.toggle('active', t==='intonly'); syncVisibility(); }
+
+  function compute() {
+    result.style.display = 'none';
+    flagEl.style.display = 'none';
+    note2.style.display  = 'none';
+    resultRows.innerHTML = '';
+
+    if (dispType === 'intonly') {
+      resultRows.innerHTML = '<div class="calc-row"><span>Nature of demand</span><span class="val">Interest / fee only</span></div>'
+                           + '<div class="calc-row"><span>Pre-deposit rate</span><span class="val">Nil</span></div>';
+      document.getElementById('pd-total-label').textContent = 'Pre-Deposit Required';
+      document.getElementById('pd-r-total').textContent     = 'Nil';
+      showFlag('Section 107(6) requires pre-deposit only on "tax in dispute." The Finance Act, 2025 amendment extended this specifically to penalty — interest and fee remain outside the pre-deposit requirement.', true);
+      result.style.display = 'block'; return;
+    }
+
+    if (dispType === 'penonly') {
+      var pen = parseAmt(penOnlyInp.value);
+      if (isNaN(pen) || pen <= 0) return;
+      var filingDate = filingDateInp.value ? new Date(filingDateInp.value + 'T00:00:00') : new Date();
+      var postAct    = filingDate >= FINANCE_ACT;
+      document.getElementById('pd-total-label').textContent = 'Pre-Deposit Required';
+      if (stage === '107') {
+        if (postAct) {
+          resultRows.innerHTML = '<div class="calc-row"><span>Disputed penalty</span><span class="val">' + fmtRs(pen) + '</span></div>'
+                               + '<div class="calc-row"><span>Pre-deposit rate</span><span class="val">10% of penalty (Sec 107(6), Finance Act 2025)</span></div>';
+          document.getElementById('pd-r-total').textContent = fmtRs(pen * 0.10);
+          showFlag('Finance Act, 2025 amendment applies (effective 1 October 2025) — 10% of the disputed penalty amount is required as pre-deposit.', false);
+        } else {
+          resultRows.innerHTML = '<div class="calc-row"><span>Disputed penalty</span><span class="val">' + fmtRs(pen) + '</span></div>'
+                               + '<div class="calc-row"><span>Pre-deposit rate</span><span class="val">Nil (pre-Finance Act, 2025)</span></div>';
+          document.getElementById('pd-r-total').textContent = 'Nil';
+          showFlag('For appeals filed before 1 October 2025, Section 107(6) required pre-deposit only on "tax in dispute." Penalty is not tax — no pre-deposit required on a penalty-only order for appeals filed before that date.', true);
+        }
+      } else {
+        resultRows.innerHTML = '<div class="calc-row"><span>Disputed penalty</span><span class="val">' + fmtRs(pen) + '</span></div>'
+                             + '<div class="calc-row"><span>Pre-deposit rate</span><span class="val">10% of penalty (Sec 112(8), Finance Act 2025 position)</span></div>';
+        document.getElementById('pd-r-total').textContent = fmtRs(pen * 0.10);
+        showFlag('Verify the applicable pre-deposit for a Section 112 penalty-only appeal — transitional provisions under the Finance Act, 2025 amendment may affect the amount payable.', true);
+      }
+      result.style.display = 'block'; return;
+    }
+
+    var acts = [
+      { name:'IGST',  inp: igstInp,  paid: paidIgst  },
+      { name:'CGST',  inp: cgstInp,  paid: paidCgst  },
+      { name:'SGST',  inp: sgstInp,  paid: paidSgst  },
+      { name:'UTGST', inp: utgstInp, paid: paidUtgst }
+    ];
+    var html='', totalReq=0, totalPaid=0, totalNet=0, anyAct=false, anyCapped=false;
+    var is112    = stage === '112';
+    var stageRef = is112 ? 'Sec 112(8)(b)' : 'Sec 107(6)(b)';
+
+    acts.forEach(function (a) {
+      var amt = parseAmt(a.inp.value);
+      if (isNaN(amt) || amt <= 0) return;
+      anyAct = true;
+      var dep  = capDeposit(amt);
+      var paid = is112 ? (parseAmt(a.paid.value) || 0) : null;
+      if (dep.hit) anyCapped = true;
+      html += actBlock(a.name, amt, dep, paid);
+      totalReq += dep.capped;
+      if (is112) { var p = Math.min(paid, dep.capped); totalPaid += p; totalNet += Math.max(0, dep.capped - p); }
+    });
+    if (!anyAct) return;
+
+    var rateLabel = is112 ? '20%, capped at Rs 50 crore per Act' : '10%, capped at Rs 20 crore per Act';
+    html += '<div class="calc-row" style="margin-top:14px;border-top:1px solid #e8e6e0;padding-top:10px;">'
+          + '<span>Rate</span><span class="val">' + rateLabel + ' (' + stageRef + ')</span></div>';
+    resultRows.innerHTML = html;
+
+    if (is112) {
+      document.getElementById('pd-total-label').textContent = 'Net Additional Pre-Deposit Required (Sec 112)';
+      document.getElementById('pd-r-total').textContent     = fmtRs(totalNet);
+      note2.innerHTML = 'Total required at Sec 112 stage: <strong>' + fmtRs(totalReq) + '</strong> — less paid at Sec 107 stage: <strong>' + fmtRs(totalPaid) + '</strong> — net payable: <strong>' + fmtRs(totalNet) + '</strong>.';
+      note2.style.display = 'block';
+    } else {
+      document.getElementById('pd-total-label').textContent = 'Total Pre-Deposit Required';
+      document.getElementById('pd-r-total').textContent     = fmtRs(totalReq);
+    }
+    if (anyCapped) showFlag('Cap applied — the ' + (is112?'20%':'10%') + ' calculation exceeded Rs ' + (is112?'50':'20') + ' crore for one or more Acts.', false);
+    result.style.display = 'block';
+  }
+
+  pill107.addEventListener('click', function () { setStage('107'); });
+  pill112.addEventListener('click', function () { setStage('112'); });
+  pillTax.addEventListener('click',     function () { setDisp('tax'); });
+  pillPenOnly.addEventListener('click', function () { setDisp('penonly'); });
+  pillIntOnly.addEventListener('click', function () { setDisp('intonly'); });
+  [igstInp, cgstInp, sgstInp, utgstInp, paidIgst, paidCgst, paidSgst, paidUtgst, penOnlyInp].forEach(function (el) { el.addEventListener('input', compute); });
+  filingDateInp.addEventListener('change', compute);
+})();
+</script>
+</body>
+</html>
