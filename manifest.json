@@ -4,8 +4,8 @@
   "description": "GST litigation tools — GSTAT fee, pre-deposit, limitation, SCN limits and more",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1e1a2e",
-  "theme_color": "#1e1a2e",
+  "background_color": "#e8f0fa",
+  "theme_color": "#e8f0fa",
   "icons": [
     {
       "src": "icon-192.png",

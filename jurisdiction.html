@@ -8,41 +8,44 @@
 <meta name="description" content="Find the GSTAT bench for any district in India. Search by district or state to get bench name, sitting members, hearing categories and days. Based on S.O. 5063(E) and Office Order 3/2026.">
 <link rel="canonical" href="https://www.computecourtfee.com/jurisdiction.html">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1e1a2e">
+<meta name="theme-color" content="#e8f0fa">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
   .jx-step { margin-bottom: 28px; }
   .jx-state-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 10px; margin-top: 12px; }
-  .jx-state-btn { border: 1px solid #ccc8dc; background: #fff; padding: 12px 16px; font-size: 14px; font-family: 'Garamond','Book Antiqua',serif; color: #2a2a4a; cursor: pointer; text-align: left; transition: border-color .2s, background .2s; }
-  .jx-state-btn:hover { border-color: #9a7ab8; color: #9a7ab8; }
-  .jx-state-btn.selected { border-color: #9a7ab8; background: #f5f0fd; color: #1e1a2e; font-weight: 600; }
+  .jx-state-btn { border: 1px solid #d0e4f8; background: #fff; padding: 12px 16px; font-size: 14px; font-family: 'Garamond','Book Antiqua',serif; color: #1a2535; cursor: pointer; text-align: left; transition: border-color .2s, background .2s; }
+  .jx-state-btn:hover { border-color: #2a6cb8; color: #2a6cb8; }
+  .jx-state-btn.selected { border-color: #2a6cb8; background: #eaf3fd; color:#1a2535; font-weight: 600; }
   .jx-district-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; }
   .jx-district-select { flex: 1; min-width: 220px; }
-  .jx-result { margin-top: 32px; padding-top: 28px; border-top: 2px solid #ccc8dc; }
-  .jx-bench-name { font-family: 'Garamond','Book Antiqua',serif; font-size: 26px; color: #1e1a2e; margin-bottom: 6px; }
-  .jx-bench-state { font-size: 14px; color: #9a7ab8; letter-spacing: .04em; margin-bottom: 22px; text-transform: uppercase; font-weight: 600; }
-  .jx-cat-block { border: 1px solid #e0dce8; margin-bottom: 14px; }
-  .jx-cat-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #f7f5fd; border-bottom: 1px solid #e0dce8; }
-  .jx-cat-label { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #9a7ab8; }
-  .jx-cat-days { font-size: 12px; color: #7a7a9a; }
+  .jx-result { margin-top: 32px; padding-top: 28px; border-top: 2px solid #d0e4f8; }
+  .jx-bench-name { font-family: 'Garamond','Book Antiqua',serif; font-size: 26px; color:#1a2535; margin-bottom: 6px; }
+  .jx-bench-state { font-size: 14px; color: #2a6cb8; letter-spacing: .04em; margin-bottom: 22px; text-transform: uppercase; font-weight: 600; }
+  .jx-cat-block { border: 1px solid #d0e4f8; margin-bottom: 14px; }
+  .jx-cat-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #f8fbff; border-bottom: 1px solid #d0e4f8; }
+  .jx-cat-label { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #2a6cb8; }
+  .jx-cat-days { font-size: 12px; color: #5a7a9a; }
   .jx-cat-body { padding: 14px 16px; }
-  .jx-member { font-size: 14px; color: #2a2a4a; line-height: 1.7; }
-  .jx-member + .jx-member { padding-top: 6px; border-top: 1px dashed #e0dce8; margin-top: 6px; }
-  .jx-member-role { font-size: 12px; color: #7a7a9a; }
-  .jx-note { margin-top: 16px; font-size: 13px; color: #7a7a9a; background: #f5f0fd; border: 1px solid #d8d0e8; padding: 12px 16px; line-height: 1.8; }
-  .jx-cat-desc { margin-top: 24px; padding-top: 20px; border-top: 1px dashed #ccc8dc; }
-  .jx-cat-desc-title { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #7a7a9a; margin-bottom: 12px; }
+  .jx-member { font-size: 14px; color: #1a2535; line-height: 1.7; }
+  .jx-member + .jx-member { padding-top: 6px; border-top: 1px dashed #d0e4f8; margin-top: 6px; }
+  .jx-member-role { font-size: 12px; color: #5a7a9a; }
+  .jx-note { margin-top: 16px; font-size: 13px; color: #5a7a9a; background: #eaf3fd; border: 1px solid #c8daf0; padding: 12px 16px; line-height: 1.8; }
+  .jx-cat-desc { margin-top: 24px; padding-top: 20px; border-top: 1px dashed #d0e4f8; }
+  .jx-cat-desc-title { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #5a7a9a; margin-bottom: 12px; }
   .jx-cat-desc-block { margin-bottom: 14px; }
-  .jx-cat-desc-head { font-size: 13px; font-weight: 700; color: #1e1a2e; margin-bottom: 6px; }
-  .jx-cat-desc-list { font-size: 13px; color: #7a7a9a; line-height: 1.9; padding-left: 16px; }
+  .jx-cat-desc-head { font-size: 13px; font-weight: 700; color:#1a2535; margin-bottom: 6px; }
+  .jx-cat-desc-list { font-size: 13px; color: #5a7a9a; line-height: 1.9; padding-left: 16px; }
   .jx-search-wrap { position: relative; }
-  .jx-search-input { width: 100%; padding: 13px 13px 13px 40px; border: 1px solid #ccc8dc; font-size: 15px; font-family: 'Garamond','Book Antiqua',serif; color: #1e1a2e; background: #fff; }
-  .jx-search-input:focus { outline: none; border-color: #9a7ab8; }
-  .jx-search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #9a7ab8; font-size: 16px; pointer-events: none; }
-  .jx-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #ccc8dc; border-top: none; max-height: 260px; overflow-y: auto; z-index: 100; display: none; }
-  .jx-suggestion { padding: 10px 16px; font-size: 14px; color: #2a2a4a; cursor: pointer; border-bottom: 1px solid #f0ece4; }
-  .jx-suggestion:hover, .jx-suggestion.focused { background: #f5f0fd; color: #9a7ab8; }
-  .jx-suggestion .jx-sug-state { font-size: 12px; color: #7a7a9a; display: block; }
+  .jx-search-input { width: 100%; padding: 13px 13px 13px 40px; border: 1px solid #d0e4f8; font-size: 15px; font-family: 'Garamond','Book Antiqua',serif; color:#1a2535; background: #fff; }
+  .jx-search-input:focus { outline: none; border-color: #2a6cb8; }
+  .jx-search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #2a6cb8; font-size: 16px; pointer-events: none; }
+  .jx-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #d0e4f8; border-top: none; max-height: 260px; overflow-y: auto; z-index: 100; display: none; }
+  .jx-suggestion { padding: 10px 16px; font-size: 14px; color: #1a2535; cursor: pointer; border-bottom: 1px solid #f0ece4; }
+  .jx-suggestion:hover, .jx-suggestion.focused { background: #eaf3fd; color: #2a6cb8; }
+  .jx-suggestion .jx-sug-state { font-size: 12px; color: #5a7a9a; display: block; }
 </style>
 </head>
 <body>
@@ -121,7 +124,7 @@
             <li>Any other matter not covered under Category I or II</li>
           </ul>
         </div>
-        <div style="font-size:12px; color:#7a7a9a; margin-top:8px;">Note: All cases initially listed before a Division Bench; referred to Single Bench only if the Division Bench finds no question of law is involved (amount &lt; Rs 50 lakhs).</div>
+        <div style="font-size:12px; color:#5a7a9a; margin-top:8px;">Note: All cases initially listed before a Division Bench; referred to Single Bench only if the Division Bench finds no question of law is involved (amount &lt; Rs 50 lakhs).</div>
       </div>
 
       <div class="calc-disclaimer" style="margin-top:24px;">
