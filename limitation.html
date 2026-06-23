@@ -64,6 +64,7 @@
           </div>
         </div>
         <div class="calc-flag warn" id="lim-r-flag" style="display:none;"></div>
+        <div id="lim-r-amnesty-note" style="display:none; margin-top:14px; padding:12px 16px; background:#fdf8f2; border:1px solid #e8d8b8; border-left:3px solid #b8956a; font-size:13.5px; color:#5a4a3a; line-height:1.8;"></div>
       </div>
       <div class="calc-disclaimer">
         <strong>Disclaimer:</strong> Section 107(1) provides a <strong>three-month</strong> limitation period for first appeals from the date of receipt of the order. The first appellate authority may condone delay up to a further one month on sufficient cause (S. 107(4)). Section 112(1) provides a <strong>three-month</strong> limitation for appeals to GSTAT, with condonation of up to a further three months (S. 112(4)). Limitation periods are subject to exclusion for time spent in legal proceedings (S. 14, Limitation Act). Court holidays and gazette notifications may further affect the deadline. <strong>This tool is indicative only — verify the applicable limitation against the statute and case law before filing.</strong>
@@ -91,31 +92,52 @@
   function addMonths(d, m) { var r = new Date(d); r.setMonth(r.getMonth() + m); return r; }
   function today() { var t = new Date(); t.setHours(0,0,0,0); return t; }
 
+  var AMNESTY_FROM = new Date('2017-07-01T00:00:00');
+  var AMNESTY_TO   = new Date('2026-03-31T00:00:00');
+  var AMNESTY_LAST = new Date('2026-06-30T00:00:00');
+
   function compute() {
     var v = receiptInp.value;
     if (!v) { result.style.display = 'none'; return; }
     var receipt = new Date(v + 'T00:00:00');
-    var limitPeriod = appealType === '107' ? 3 : 3;
+    var is112   = appealType === '112';
     var condPeriod  = appealType === '107' ? 1 : 3;
-    var deadline    = addMonths(receipt, limitPeriod);
-    var condoneEnd  = addMonths(deadline, condPeriod);
-    var now         = today();
-    var expired     = now > deadline;
+    var normalLast  = addMonths(receipt, 3);
+    var amnestyApplies = is112 && receipt >= AMNESTY_FROM && receipt <= AMNESTY_TO;
+    var effectiveLast  = amnestyApplies ? AMNESTY_LAST : normalLast;
+    var condoneEnd     = addMonths(effectiveLast, condPeriod);
+    var now            = today();
+    var expired        = now > effectiveLast;
     var condoneExpired = now > condoneEnd;
 
     document.getElementById('lim-r-receipt').textContent = fmtDate(receipt);
-    document.getElementById('lim-r-period').textContent  = limitPeriod + ' months (Sec ' + appealType + (appealType==='107'?'(1)':'(1)') + ')';
+    var periodText = '3 months (Sec ' + appealType + '(1))';
+    if (amnestyApplies) periodText += ' — amnesty window: last date 30 June 2026';
+    document.getElementById('lim-r-period').textContent = periodText;
 
     var deadlineCard = document.getElementById('lim-r-deadline-card');
-    document.getElementById('lim-r-deadline').textContent = fmtDate(deadline);
+    document.getElementById('lim-r-deadline').textContent = fmtDate(effectiveLast);
     var statusEl = document.getElementById('lim-r-status');
     if (!expired) {
       deadlineCard.className = 'date-result-card ok';
-      var daysLeft = Math.round((deadline - now) / 86400000);
+      var daysLeft = Math.round((effectiveLast - now) / 86400000);
       statusEl.textContent = daysLeft + ' day' + (daysLeft !== 1 ? 's' : '') + ' remaining as of today.';
     } else {
       deadlineCard.className = 'date-result-card urgent';
       statusEl.textContent = 'This date has passed — check condonation window.';
+    }
+
+    /* show normal 3-month date as reference when amnesty applies */
+    var amnestyNote = document.getElementById('lim-r-amnesty-note');
+    if (amnestyApplies) {
+      amnestyNote.style.display = 'block';
+      amnestyNote.innerHTML = '<strong>Section 112 — Amnesty / Special Window:</strong> Since the order was received between 1 July 2017 and 31 March 2026, the limitation period is extended to <strong>30 June 2026</strong> (amnesty period excluded per GSTAT notification). Normal 3-month date would have been ' + fmtDate(normalLast) + '.';
+    } else {
+      amnestyNote.style.display = 'none';
+      if (is112 && receipt > AMNESTY_TO) {
+        amnestyNote.style.display = 'block';
+        amnestyNote.innerHTML = 'Order received after 31 March 2026 — normal 3-month limitation applies. Amnesty extension is not applicable.';
+      }
     }
 
     var condoneCard = document.getElementById('lim-r-condone-card');
