@@ -77,7 +77,7 @@
         <div id="lim-r-amnesty-note" style="display:none; margin-top:14px; padding:12px 16px; background:#eaf3fd; border:1px solid #c8daf0; border-left:3px solid #2a6cb8; font-size:13.5px; color:#5a4a3a; line-height:1.8;"></div>
       </div>
       <div class="calc-disclaimer">
-        <strong>Disclaimer:</strong> Section 107(1) provides a <strong>three-month</strong> limitation period for first appeals from the date of receipt of the order. The first appellate authority may condone delay up to a further one month on sufficient cause (S. 107(4)). Section 112(1) provides a <strong>three-month</strong> limitation for appeals to GSTAT, with condonation of up to a further three months (S. 112(4)). Limitation periods are subject to exclusion for time spent in legal proceedings (S. 14, Limitation Act). Court holidays and gazette notifications may further affect the deadline. <strong>This tool is indicative only — verify the applicable limitation against the statute and case law before filing.</strong>
+        <strong>Disclaimer:</strong> Section 107(1) provides a <strong>three-month</strong> limitation for first appeals from the date of receipt of the order; the first appellate authority may condone delay up to a further one month on sufficient cause (S. 107(4)). Section 112(1) provides a <strong>three-month</strong> limitation for GSTAT appeals, with condonation of up to a further three months on sufficient cause shown to the Tribunal (<strong>S. 112(6)</strong>). For orders communicated before 1 April 2026, Notification S.O. 4220(E) dated 17 September 2025 (issued under S. 112(1)) fixes 30 June 2026 as the last date; with S. 112(6) condonation, the outer limit is 30 September 2026. The GSTAT President's staggered portal filing windows (administrative orders under Rule 123 of the GSTAT Procedure Rules) regulate portal access, not legal limitation — missing an assigned window does not bar filing in a later window within the statutory deadline. <strong>Verify the applicable limitation against the statute before filing.</strong>
       </div>
     </div>
   </div>
@@ -138,14 +138,16 @@
       statusEl.textContent = daysLeft === 0 ? 'Last date is ' + asOf + '.' : daysLeft + ' day' + (daysLeft !== 1 ? 's' : '') + ' remaining ' + asOf + '.';
     } else {
       deadlineCard.className = 'date-result-card urgent';
-      statusEl.textContent = (usingFiling ? 'Already expired by the date of filing.' : 'This date has passed.') + ' — check condonation window.';
+      var daysLate = Math.round((now - effectiveLast) / 86400000);
+      statusEl.innerHTML = (usingFiling ? 'Already expired by the date of filing.' : 'This date has passed.')
+        + ' <strong>Delay: ' + daysLate + ' day' + (daysLate !== 1 ? 's' : '') + '.</strong> Check condonation window.';
     }
 
     /* show normal 3-month date as reference when amnesty applies */
     var amnestyNote = document.getElementById('lim-r-amnesty-note');
     if (amnestyApplies) {
       amnestyNote.style.display = 'block';
-      amnestyNote.innerHTML = '<strong>Section 112 — Tribunal Non-Constitution Exclusion:</strong> Since GSTAT was not constituted during 1 July 2017 to 31 March 2026, that period is excluded from the limitation count. Effective last date for filing is <strong>30 June 2026</strong>. Normal 3-month date would have been ' + fmtDate(normalLast) + '.';
+      amnestyNote.innerHTML = '<strong>Tribunal Non-Constitution Exclusion applies</strong> (Notification S.O. 4220(E) dated 17 September 2025 under S. 112(1)): for orders communicated before 1 April 2026, the last date to file is <strong>30 June 2026</strong>. Normal 3-month date would have been ' + fmtDate(normalLast) + '. If the portal shows a staggered window, that is an administrative measure only — it does not affect legal limitation.';
     } else {
       amnestyNote.style.display = 'none';
       if (is112 && receipt > AMNESTY_TO) {
@@ -157,28 +159,30 @@
     var condoneCard = document.getElementById('lim-r-condone-card');
     var flagEl = document.getElementById('lim-r-flag');
     if (expired) {
-      if (amnestyApplies) {
-        /* Amnesty cases: no condonation shown — position is uncertain */
-        condoneCard.style.display = 'none';
-        flagEl.innerHTML = '<strong>30 June 2026 has passed.</strong> Whether condonation under Section 112(4) is available beyond the tribunal non-constitution exclusion period is not settled. Appeals filed after 1 July 2026 for orders covered by this exclusion may not be admitted or the delay may not be condoned. Seek specific legal advice before proceeding.';
+      condoneCard.style.display = 'block';
+      document.getElementById('lim-r-condone').textContent = fmtDate(condoneEnd);
+      var condSub = document.getElementById('lim-r-condone-sub');
+      if (!condoneExpired) {
+        var daysLeft2 = Math.round((condoneEnd - now) / 86400000);
+        condoneCard.className = 'date-result-card amnesty';
+        if (amnestyApplies) {
+          /* S.112(6) condonation confirmed — outer limit 30 Sep 2026. Discretionary, requires sufficient cause. */
+          condSub.innerHTML = 'Section 112(6) condonation window — ' + daysLeft2 + ' day' + (daysLeft2 !== 1 ? 's' : '') + ' remaining. Sufficient cause must be shown to the Tribunal.';
+          flagEl.innerHTML = '<strong>30 June 2026 has passed.</strong> Section 112(6) permits the Tribunal to condone delay up to a further 3 months (outer limit: 30 September 2026), but this is discretionary — sufficient cause for the delay after 30 June 2026 must be clearly demonstrated. The safer position is always to file before 30 June 2026.';
+        } else {
+          condSub.textContent = 'Condonation window still open — ' + daysLeft2 + ' day' + (daysLeft2 !== 1 ? 's' : '') + ' remaining. Sufficient cause must be shown (S. 112(6)).';
+          flagEl.style.display = 'none';
+        }
         flagEl.className = 'calc-flag warn';
         flagEl.style.display = 'block';
       } else {
-        condoneCard.style.display = 'block';
-        document.getElementById('lim-r-condone').textContent = fmtDate(condoneEnd);
-        var condSub = document.getElementById('lim-r-condone-sub');
-        if (!condoneExpired) {
-          condoneCard.className = 'date-result-card amnesty';
-          var daysLeft2 = Math.round((condoneEnd - now) / 86400000);
-          condSub.textContent = 'Condonation window still open — ' + daysLeft2 + ' day' + (daysLeft2 !== 1 ? 's' : '') + ' remaining. Sufficient cause must be shown.';
-          flagEl.style.display = 'none';
-        } else {
-          condoneCard.className = 'date-result-card urgent';
-          condSub.textContent = 'Condonation window has also expired.';
-          flagEl.textContent = 'Both the limitation period and the condonation window have expired. Filing at this stage may require the Court / Tribunal to exercise inherent powers or seek appropriate relief. This tool cannot advise on the legal remedy available — consult a lawyer.';
-          flagEl.className = 'calc-flag warn';
-          flagEl.style.display = 'block';
-        }
+        condoneCard.className = 'date-result-card urgent';
+        condSub.textContent = 'Section 112(6) condonation outer limit has also expired.';
+        flagEl.innerHTML = amnestyApplies
+          ? 'Both the 30 June 2026 statutory deadline and the 30 September 2026 Section 112(6) condonation outer limit have expired. The only remaining avenue is a writ petition under Article 226, which is discretionary and is not a substitute for statutory appeal.'
+          : 'Both the limitation period and the Section 112(6) condonation window have expired. Writ jurisdiction under Article 226 remains, but it is discretionary and not a substitute for statutory appeal. Consult a lawyer.';
+        flagEl.className = 'calc-flag warn';
+        flagEl.style.display = 'block';
       }
     } else {
       condoneCard.style.display = 'none';

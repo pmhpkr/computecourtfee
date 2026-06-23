@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GSTAT Court Fee Calculator | computecourtfee.com</title>
-<meta name="description" content="Calculate GSTAT filing fee for Section 112 appeals under Rule 110(5) of the GSTAT Procedure Rules 2025. Demand orders at Rs 1,000 per lakh, capped at Rs 25,000.">
+<meta name="description" content="Calculate GSTAT filing fee for Section 112 appeals under Rule 110(5) of the CGST Rules, 2017. Demand orders at Rs 1,000 per completed lakh, minimum Rs 5,000, capped at Rs 25,000.">
 <link rel="canonical" href="https://www.computecourtfee.com/gstat-fee.html">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#e8f0fa">
@@ -36,7 +36,7 @@
   <div class="container">
     <div class="hero-eyebrow">GSTAT &middot; Section 112</div>
     <h1 class="hero-title">Court Fee Calculator</h1>
-    <p class="hero-sub">Calculate the filing fee for a Section 112 appeal to the GST Appellate Tribunal, per Rule 110(5) of the GSTAT Procedure Rules, 2025.</p>
+    <p class="hero-sub">Calculate the filing fee for a Section 112 appeal to the GST Appellate Tribunal, per Rule 110(5) of the CGST Rules, 2017 (cross-referenced in the GSTAT Procedure Rules, 2025).</p>
   </div>
 </div>
 
@@ -78,8 +78,8 @@
       <div class="calc-result" id="g-result" style="display:none;">
         <div id="g-demand-breakup">
           <div class="calc-row"><span>Amount</span><span class="val" id="g-r-amount">—</span></div>
-          <div class="calc-row"><span>Lakhs (rounded up)</span><span class="val" id="g-r-lakhs">—</span></div>
-          <div class="calc-row"><span>Rate</span><span class="val">Rs 1,000 per lakh</span></div>
+          <div class="calc-row"><span>Lakhs (portal rounds up; see note)</span><span class="val" id="g-r-lakhs">—</span></div>
+          <div class="calc-row"><span>Rate</span><span class="val">Rs 1,000 per lakh (Rule 110(5), CGST Rules)</span></div>
           <div class="calc-row"><span>Calculated</span><span class="val" id="g-r-calc">—</span></div>
         </div>
         <div id="g-flat-breakup" class="hidden">
@@ -93,7 +93,7 @@
         </div>
       </div>
       <div class="calc-disclaimer">
-        <strong>Disclaimer:</strong> This calculator is provided for reference only. The fee shown is an estimate based on Rule 110(5) of the GSTAT Procedure Rules, 2025. <strong>Do not rely solely on this calculation.</strong> Verify the applicable fee against the live GSTAT fee schedule and the official GSTAT portal before filing your appeal. Fee rules and caps are subject to amendment without notice.
+        <strong>Disclaimer:</strong> The fee is computed under <strong>Rule 110(5) of the CGST Rules, 2017</strong>, cross-referenced in Rule 119 of the GSTAT (Procedure) Rules, 2025 (G.S.R. 256(E) dated 24 April 2025). The rule reads: "One thousand rupees for every one lakh rupees of tax or ITC involved… subject to a maximum of twenty-five thousand rupees and a minimum of five thousand rupees." Two live disputes: (1) the Rs 5,000 minimum is a floor <em>within</em> the formula — there is no statutory basis for adding it on top of the computed fee, contrary to how some argue the portal behaves; (2) the rule contains no "or part thereof" language, so a strict reading charges only for completed lakh units, not fractional ones — this calculator follows portal behaviour (rounds up) to match what will be charged. <strong>Verify the fee on the official GSTAT portal before payment.</strong>
       </div>
     </div>
   </div>
@@ -155,16 +155,29 @@
     demBr.classList.remove('hidden'); flatBr.classList.add('hidden');
     var r = parseAmt(amtInp.value);
     if (isNaN(r) || r <= 0) { result.style.display = 'none'; return; }
+    /* Rule 110(5) has no "or part thereof" clause — strict reading supports Math.floor (completed lakhs only).
+       The portal currently applies Math.ceil. This calculator follows portal behaviour to match what you will
+       actually be asked to pay; if your amount is an exact multiple of Rs 1 lakh the two approaches agree. */
     var l = Math.ceil(r / 100000);
+    var hasPartial = (r % 100000) !== 0;
     var c = l * 1000;
     var f = c, msg = '';
-    if (c < 5000)       { f = 5000;  msg = 'Fee below Rs 5,000 minimum — floor applied.'; }
-    else if (c > 25000) { f = 25000; msg = 'Fee exceeds Rs 25,000 cap — ceiling applied.'; }
+    if (c < 5000) {
+      f = 5000;
+      /* Rule 110(5) places Rs 5,000 as a floor within the formula — it is not added on top of the
+         calculated fee. There is a live dispute about whether the portal correctly implements this. */
+      msg = 'Fee below Rs 5,000 minimum — floor applied (Rule 110(5)).';
+    } else if (c > 25000) {
+      f = 25000;
+      msg = 'Fee exceeds Rs 25,000 cap — ceiling applied (Rule 110(5)).';
+    } else if (hasPartial) {
+      msg = 'Note: Rule 110(5) contains no "or part thereof" clause. Portal rounds up partial lakhs; strict rule reading charges completed lakhs only. Verify on the GSTAT portal before payment.';
+    }
     document.getElementById('g-r-amount').textContent = fmtRs(r);
     document.getElementById('g-r-lakhs').textContent  = l.toLocaleString('en-IN');
     document.getElementById('g-r-calc').textContent   = fmtRs(c);
     document.getElementById('g-r-total').textContent  = fmtRs(f);
-    if (msg) { flagEl.textContent = msg; flagEl.style.display = 'block'; } else { flagEl.style.display = 'none'; }
+    if (msg) { flagEl.innerHTML = msg; flagEl.style.display = 'block'; } else { flagEl.style.display = 'none'; }
     result.style.display = 'block';
   }
   pillDemand.addEventListener('click', function () { setOC('demand'); });

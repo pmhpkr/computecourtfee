@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pre-Deposit Calculator | computecourtfee.com</title>
-<meta name="description" content="Calculate mandatory pre-deposit for GST appeals — 10% under Section 107 (first appeal) and 20% under Section 112 (GSTAT), both capped at Rs 20 crore per Act.">
+<meta name="description" content="Calculate mandatory pre-deposit for GST appeals — 10% under Section 107 (first appeal) and an additional 10% under Section 112 (GSTAT), both capped at Rs 20 crore per Act.">
 <link rel="canonical" href="https://www.computecourtfee.com/predeposit.html">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#e8f0fa">
@@ -43,7 +43,7 @@
   <div class="container">
     <div class="hero-eyebrow">Section 107 &amp; 112</div>
     <h1 class="hero-title">Pre-Deposit Calculator</h1>
-    <p class="hero-sub">Calculate the mandatory pre-deposit under Section 107 (first appeal, 10%) or Section 112 (GSTAT appeal, 20%) of the CGST Act, 2017.</p>
+    <p class="hero-sub">Calculate the mandatory pre-deposit under Section 107 (first appeal, 10%) or Section 112 (GSTAT appeal, additional 10%) of the CGST Act, 2017.</p>
   </div>
 </div>
 
@@ -151,7 +151,7 @@
       </div>
 
       <div class="calc-disclaimer">
-        <strong>Disclaimer:</strong> Pre-deposit under Section 107(6)(b) is computed at <strong>10%</strong> of the disputed tax or ITC amount (max Rs 20 crore per Act). Under Section 112(8)(b) for GSTAT appeals, it is <strong>20%</strong> of the remaining disputed amount (max Rs 20 crore per Act, as amended), in addition to what was paid at the Section 107 stage. The cap applies separately to each Act at each stage. For <strong>penalty-only orders</strong>: no pre-deposit was required for appeals filed before 1 October 2025; a 10% pre-deposit on the penalty amount is required for appeals filed on or after 1 October 2025 (Finance Act, 2025). For <strong>interest / fee only orders</strong>: no pre-deposit is required. <strong>Do not rely solely on this calculation.</strong>
+        <strong>Disclaimer:</strong> Pre-deposit under Section 107(6)(b) is computed at <strong>10%</strong> of the disputed tax or ITC amount (max Rs 20 crore per Act). Under Section 112(8)(b) for GSTAT appeals, it is an <strong>additional 10%</strong> of the remaining disputed amount (max Rs 20 crore per Act, as amended by Finance (No. 2) Act 2024 w.e.f. 1 November 2024), over and above the 10% already deposited at the Section 107 stage — making the combined total 20%. The cap applies separately to each Act at each stage. For <strong>penalty-only orders</strong>: no pre-deposit was required for appeals filed before 1 October 2025; a 10% pre-deposit on the penalty amount is required for appeals filed on or after 1 October 2025 (Finance Act, 2025). For <strong>interest / fee only orders</strong>: no pre-deposit is required. <strong>Do not rely solely on this calculation.</strong>
       </div>
     </div>
   </div>
@@ -214,25 +214,24 @@
   }
 
   function capDeposit(amt) {
-    var rate   = stage === '112' ? 0.20 : 0.10;
+    var rate   = 0.10;
     var cap    = stage === '112' ? CAP_112 : CAP_107;
     var raw    = amt * rate;
     var capped = Math.min(raw, cap);
     return { raw: raw, capped: capped, hit: raw > cap, rate: rate, cap: cap };
   }
 
-  function actBlock(actName, disputed, dep, paid112) {
+  function actBlock(actName, disputed, dep, paid107) {
     var pct     = (dep.rate * 100).toFixed(0) + '%';
     var capAmt  = 'Rs ' + (dep.cap / 10000000) + ' crore';
     var capNote = dep.hit ? ' <em style="color:#2a6cb8;">(capped at ' + capAmt + ')</em>' : '';
     var html = '<div class="calc-row" style="font-weight:600;color:#1a2535;border-bottom:1px solid #d0e4f8;padding-bottom:8px;margin-bottom:4px;margin-top:14px;">'
              + '<span>' + actName + '</span><span class="val"></span></div>';
-    html += '<div class="calc-row"><span>Disputed amount</span><span class="val">' + fmtRs(disputed) + '</span></div>';
+    html += '<div class="calc-row"><span>Disputed tax amount</span><span class="val">' + fmtRs(disputed) + '</span></div>';
     html += '<div class="calc-row"><span>Pre-deposit required (' + pct + (dep.hit ? ', capped' : '') + ')</span><span class="val">' + fmtRs(dep.capped) + capNote + '</span></div>';
-    if (paid112 !== null) {
-      html += '<div class="calc-row"><span>Pre-deposit already paid (Sec 107)</span><span class="val">' + fmtRs(paid112) + '</span></div>';
-      var net = Math.max(0, dep.capped - paid112);
-      html += '<div class="calc-row" style="font-weight:600;color:#1a2535;"><span>Net additional pre-deposit (Sec 112)</span><span class="val">' + fmtRs(net) + '</span></div>';
+    if (paid107 !== null) {
+      /* Sec 107 amount shown for reference — Sec 112 deposit is ADDITIONAL to it, not reduced by it (Sec 112(8)(b): "in addition to the amount paid under sub-section (6) of section 107") */
+      html += '<div class="calc-row" style="color:#5a7a9a;font-size:16px;"><span>Sec 107 deposit already paid (reference)</span><span class="val" style="color:#5a7a9a;">' + fmtRs(paid107) + '</span></div>';
     }
     return html;
   }
@@ -294,7 +293,7 @@
       { name:'SGST',  inp: sgstInp,  paid: paidSgst  },
       { name:'UTGST', inp: utgstInp, paid: paidUtgst }
     ];
-    var html='', totalReq=0, totalPaid=0, totalNet=0, anyAct=false, anyCapped=false;
+    var html='', totalReq=0, totalPaid107=0, anyAct=false, anyCapped=false;
     var is112    = stage === '112';
     var stageRef = is112 ? 'Sec 112(8)(b)' : 'Sec 107(6)(b)';
 
@@ -302,30 +301,32 @@
       var amt = parseAmt(a.inp.value);
       if (isNaN(amt) || amt <= 0) return;
       anyAct = true;
-      var dep  = capDeposit(amt);
-      var paid = is112 ? (parseAmt(a.paid.value) || 0) : null;
+      var dep     = capDeposit(amt);
+      var paid107 = is112 ? (parseAmt(a.paid.value) || 0) : null;
       if (dep.hit) anyCapped = true;
-      html += actBlock(a.name, amt, dep, paid);
+      html += actBlock(a.name, amt, dep, paid107);
       totalReq += dep.capped;
-      if (is112) { var p = Math.min(paid, dep.capped); totalPaid += p; totalNet += Math.max(0, dep.capped - p); }
+      if (is112 && paid107 !== null) totalPaid107 += paid107;
     });
     if (!anyAct) return;
 
-    var rateLabel = is112 ? '20%, capped at Rs 20 crore per Act' : '10%, capped at Rs 20 crore per Act';
+    var rateLabel = is112 ? '10% additional, capped at Rs 20 crore per Act (Sec 112(8)(b))' : '10%, capped at Rs 20 crore per Act (Sec 107(6)(b))';
     html += '<div class="calc-row" style="margin-top:14px;border-top:1px solid #d0e4f8;padding-top:10px;">'
-          + '<span>Rate</span><span class="val">' + rateLabel + ' (' + stageRef + ')</span></div>';
+          + '<span>Rate</span><span class="val">' + rateLabel + '</span></div>';
     resultRows.innerHTML = html;
 
     if (is112) {
-      document.getElementById('pd-total-label').textContent = 'Net Additional Pre-Deposit Required (Sec 112)';
-      document.getElementById('pd-r-total').textContent     = fmtRs(totalNet);
-      note2.innerHTML = 'Total required at Sec 112 stage: <strong>' + fmtRs(totalReq) + '</strong> — less paid at Sec 107 stage: <strong>' + fmtRs(totalPaid) + '</strong> — net payable: <strong>' + fmtRs(totalNet) + '</strong>.';
+      document.getElementById('pd-total-label').textContent = 'Additional Pre-Deposit Required (Sec 112)';
+      document.getElementById('pd-r-total').textContent     = fmtRs(totalReq);
+      note2.innerHTML = 'Sec 107 deposit already paid: <strong>' + fmtRs(totalPaid107) + '</strong> &nbsp;+&nbsp; '
+                      + 'Sec 112 additional deposit now required: <strong>' + fmtRs(totalReq) + '</strong> &nbsp;= &nbsp;'
+                      + 'Combined total across both stages: <strong>' + fmtRs(totalPaid107 + totalReq) + '</strong>.';
       note2.style.display = 'block';
     } else {
       document.getElementById('pd-total-label').textContent = 'Total Pre-Deposit Required';
       document.getElementById('pd-r-total').textContent     = fmtRs(totalReq);
     }
-    if (anyCapped) showFlag('Cap applied — the ' + (is112?'20%':'10%') + ' calculation exceeded Rs 20 crore for one or more Acts.', false);
+    if (anyCapped) showFlag('Cap applied — the 10% calculation exceeded Rs 20 crore for one or more Acts and has been limited to Rs 20 crore per Act.', false);
     result.style.display = 'block';
   }
 
