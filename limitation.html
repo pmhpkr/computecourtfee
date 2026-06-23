@@ -48,6 +48,10 @@
         <label class="calc-label" for="lim-receipt-date">Date of receipt of the order</label>
         <input type="date" id="lim-receipt-date">
       </div>
+      <div class="calc-group">
+        <label class="calc-label" for="lim-filing-date">Date of filing / proposed filing <span style="color:#7a8a9a;font-weight:400;">— optional</span></label>
+        <input type="date" id="lim-filing-date">
+      </div>
       <div class="calc-result" id="lim-result" style="display:none;">
         <div class="calc-row"><span>Date of receipt</span><span class="val" id="lim-r-receipt">—</span></div>
         <div class="calc-row"><span>Limitation period</span><span class="val" id="lim-r-period">—</span></div>
@@ -85,6 +89,7 @@
   var pill107 = document.getElementById('lim-pill-107');
   var pill112 = document.getElementById('lim-pill-112');
   var receiptInp = document.getElementById('lim-receipt-date');
+  var filingInp  = document.getElementById('lim-filing-date');
   var result = document.getElementById('lim-result');
   var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
@@ -106,7 +111,9 @@
     var amnestyApplies = is112 && receipt >= AMNESTY_FROM && receipt <= AMNESTY_TO;
     var effectiveLast  = amnestyApplies ? AMNESTY_LAST : normalLast;
     var condoneEnd     = addMonths(effectiveLast, condPeriod);
-    var now            = today();
+    var filingRaw  = filingInp.value;
+    var now        = filingRaw ? new Date(filingRaw + 'T00:00:00') : today();
+    var usingFiling = !!filingRaw;
     var expired        = now > effectiveLast;
     var condoneExpired = now > condoneEnd;
 
@@ -118,13 +125,14 @@
     var deadlineCard = document.getElementById('lim-r-deadline-card');
     document.getElementById('lim-r-deadline').textContent = fmtDate(effectiveLast);
     var statusEl = document.getElementById('lim-r-status');
+    var asOf = usingFiling ? ('as of ' + fmtDate(now)) : 'as of today';
     if (!expired) {
       deadlineCard.className = 'date-result-card ok';
       var daysLeft = Math.round((effectiveLast - now) / 86400000);
-      statusEl.textContent = daysLeft + ' day' + (daysLeft !== 1 ? 's' : '') + ' remaining as of today.';
+      statusEl.textContent = daysLeft === 0 ? 'Last date is ' + asOf + '.' : daysLeft + ' day' + (daysLeft !== 1 ? 's' : '') + ' remaining ' + asOf + '.';
     } else {
       deadlineCard.className = 'date-result-card urgent';
-      statusEl.textContent = 'This date has passed — check condonation window.';
+      statusEl.textContent = (usingFiling ? 'Already expired by the date of filing.' : 'This date has passed.') + ' — check condonation window.';
     }
 
     /* show normal 3-month date as reference when amnesty applies */
@@ -173,6 +181,8 @@
     result.style.display = 'block';
   }
 
+  filingInp.addEventListener('change', compute);
+  filingInp.addEventListener('input', compute);
   pill107.addEventListener('click', function () { appealType='107'; pill107.classList.add('active'); pill112.classList.remove('active'); compute(); });
   pill112.addEventListener('click', function () { appealType='112'; pill112.classList.add('active'); pill107.classList.remove('active'); compute(); });
   receiptInp.addEventListener('change', compute);
