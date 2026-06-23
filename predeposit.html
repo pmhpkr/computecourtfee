@@ -5,14 +5,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pre-Deposit Calculator | computecourtfee.com</title>
-<meta name="description" content="Calculate mandatory pre-deposit for GST appeals — 10% under Section 107 (first appeal) and 20% under Section 112 (GSTAT), with caps of Rs 20 crore and Rs 50 crore per Act.">
+<meta name="description" content="Calculate mandatory pre-deposit for GST appeals — 10% under Section 107 (first appeal) and 20% under Section 112 (GSTAT), both capped at Rs 20 crore per Act.">
 <link rel="canonical" href="https://www.computecourtfee.com/predeposit.html">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1e1a2e">
 <link rel="stylesheet" href="style.css">
 <style>
   .pd-act-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 0; }
   .pd-act-grid .calc-group { margin-bottom: 0; }
-  .pd-act-header { font-size: 13px; font-weight: 600; letter-spacing: 0.7px; text-transform: uppercase; color: #b8956a; margin-bottom: 16px; margin-top: 4px; }
-  .pd-paid-section { margin-top: 28px; padding-top: 22px; border-top: 1px dashed #d4cfc5; }
+  .pd-act-header { font-size: 13px; font-weight: 600; letter-spacing: 0.7px; text-transform: uppercase; color: #9a7ab8; margin-bottom: 16px; margin-top: 4px; }
+  .pd-paid-section { margin-top: 28px; padding-top: 22px; border-top: 1px dashed #ccc8dc; }
   @media (max-width: 700px) { .pd-act-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -20,6 +22,7 @@
 <nav class="navbar">
   <div class="container">
     <a href="index.html" class="logo"><span class="logo-accent">compute</span><span class="logo-main">courtfee</span><span class="logo-accent">.com</span></a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Open menu">&#9776;</button>
     <div class="nav-links">
       <a href="index.html">Home</a>
       <a href="gstat-fee.html">GSTAT Fee</a>
@@ -145,7 +148,7 @@
       </div>
 
       <div class="calc-disclaimer">
-        <strong>Disclaimer:</strong> Pre-deposit under Section 107(6)(b) is computed at <strong>10%</strong> of the disputed tax or ITC amount (max Rs 20 crore per Act). Under Section 112(8)(b) for GSTAT appeals, it is <strong>20%</strong> of the remaining disputed amount (max Rs 50 crore per Act), in addition to what was paid at the Section 107 stage. The cap applies separately to each Act at each stage. For <strong>penalty-only orders</strong>: no pre-deposit was required for appeals filed before 1 October 2025; a 10% pre-deposit on the penalty amount is required for appeals filed on or after 1 October 2025 (Finance Act, 2025). For <strong>interest / fee only orders</strong>: no pre-deposit is required. <strong>Do not rely solely on this calculation.</strong>
+        <strong>Disclaimer:</strong> Pre-deposit under Section 107(6)(b) is computed at <strong>10%</strong> of the disputed tax or ITC amount (max Rs 20 crore per Act). Under Section 112(8)(b) for GSTAT appeals, it is <strong>20%</strong> of the remaining disputed amount (max Rs 20 crore per Act, as amended), in addition to what was paid at the Section 107 stage. The cap applies separately to each Act at each stage. For <strong>penalty-only orders</strong>: no pre-deposit was required for appeals filed before 1 October 2025; a 10% pre-deposit on the penalty amount is required for appeals filed on or after 1 October 2025 (Finance Act, 2025). For <strong>interest / fee only orders</strong>: no pre-deposit is required. <strong>Do not rely solely on this calculation.</strong>
       </div>
     </div>
   </div>
@@ -162,7 +165,7 @@
   var stage    = '107';
   var dispType = 'tax';
   var CAP_107  = 20 * 10000000;
-  var CAP_112  = 50 * 10000000;
+  var CAP_112  = 20 * 10000000;
   var FINANCE_ACT = new Date('2025-10-01T00:00:00');
 
   var pill107       = document.getElementById('pd-pill-107');
@@ -218,15 +221,15 @@
   function actBlock(actName, disputed, dep, paid112) {
     var pct     = (dep.rate * 100).toFixed(0) + '%';
     var capAmt  = 'Rs ' + (dep.cap / 10000000) + ' crore';
-    var capNote = dep.hit ? ' <em style="color:#b8956a;">(capped at ' + capAmt + ')</em>' : '';
-    var html = '<div class="calc-row" style="font-weight:600;color:#1a2a3a;border-bottom:1px solid #e8e6e0;padding-bottom:8px;margin-bottom:4px;margin-top:14px;">'
+    var capNote = dep.hit ? ' <em style="color:#9a7ab8;">(capped at ' + capAmt + ')</em>' : '';
+    var html = '<div class="calc-row" style="font-weight:600;color:#1e1a2e;border-bottom:1px solid #e0dce8;padding-bottom:8px;margin-bottom:4px;margin-top:14px;">'
              + '<span>' + actName + '</span><span class="val"></span></div>';
     html += '<div class="calc-row"><span>Disputed amount</span><span class="val">' + fmtRs(disputed) + '</span></div>';
     html += '<div class="calc-row"><span>Pre-deposit required (' + pct + (dep.hit ? ', capped' : '') + ')</span><span class="val">' + fmtRs(dep.capped) + capNote + '</span></div>';
     if (paid112 !== null) {
       html += '<div class="calc-row"><span>Pre-deposit already paid (Sec 107)</span><span class="val">' + fmtRs(paid112) + '</span></div>';
       var net = Math.max(0, dep.capped - paid112);
-      html += '<div class="calc-row" style="font-weight:600;color:#1a2a3a;"><span>Net additional pre-deposit (Sec 112)</span><span class="val">' + fmtRs(net) + '</span></div>';
+      html += '<div class="calc-row" style="font-weight:600;color:#1e1a2e;"><span>Net additional pre-deposit (Sec 112)</span><span class="val">' + fmtRs(net) + '</span></div>';
     }
     return html;
   }
@@ -305,8 +308,8 @@
     });
     if (!anyAct) return;
 
-    var rateLabel = is112 ? '20%, capped at Rs 50 crore per Act' : '10%, capped at Rs 20 crore per Act';
-    html += '<div class="calc-row" style="margin-top:14px;border-top:1px solid #e8e6e0;padding-top:10px;">'
+    var rateLabel = is112 ? '20%, capped at Rs 20 crore per Act' : '10%, capped at Rs 20 crore per Act';
+    html += '<div class="calc-row" style="margin-top:14px;border-top:1px solid #e0dce8;padding-top:10px;">'
           + '<span>Rate</span><span class="val">' + rateLabel + ' (' + stageRef + ')</span></div>';
     resultRows.innerHTML = html;
 
@@ -319,7 +322,7 @@
       document.getElementById('pd-total-label').textContent = 'Total Pre-Deposit Required';
       document.getElementById('pd-r-total').textContent     = fmtRs(totalReq);
     }
-    if (anyCapped) showFlag('Cap applied — the ' + (is112?'20%':'10%') + ' calculation exceeded Rs ' + (is112?'50':'20') + ' crore for one or more Acts.', false);
+    if (anyCapped) showFlag('Cap applied — the ' + (is112?'20%':'10%') + ' calculation exceeded Rs 20 crore for one or more Acts.', false);
     result.style.display = 'block';
   }
 
@@ -332,5 +335,6 @@
   filingDateInp.addEventListener('change', compute);
 })();
 </script>
+<script src="main.js"></script>
 </body>
 </html>

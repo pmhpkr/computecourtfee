@@ -7,12 +7,15 @@
 <title>GSTAT Court Fee Calculator | computecourtfee.com</title>
 <meta name="description" content="Calculate GSTAT filing fee for Section 112 appeals under Rule 110(5) of the GSTAT Procedure Rules 2025. Demand orders at Rs 1,000 per lakh, capped at Rs 25,000.">
 <link rel="canonical" href="https://www.computecourtfee.com/gstat-fee.html">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1e1a2e">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <nav class="navbar">
   <div class="container">
     <a href="index.html" class="logo"><span class="logo-accent">compute</span><span class="logo-main">courtfee</span><span class="logo-accent">.com</span></a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Open menu">&#9776;</button>
     <div class="nav-links">
       <a href="index.html">Home</a>
       <a href="gstat-fee.html" class="active">GSTAT Fee</a>
@@ -169,5 +172,6 @@
   amtInp.addEventListener('input', compute);
 })();
 </script>
+<script src="main.js"></script>
 </body>
 </html>

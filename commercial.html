@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8309581100470150" crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Karnataka Commercial Court Fee | computecourtfee.com</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo"><span class="logo-accent">compute</span><span class="logo-main">courtfee</span><span class="logo-accent">.com</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="gstat-fee.html">GSTAT Fee</a>
+      <a href="predeposit.html">Pre-Deposit</a>
+      <a href="limitation.html">Limitation</a>
+      <a href="scn-limits.html">SCN Limits</a>
+      <a href="checklist.html">Checklist</a>
+      <a href="commercial.html" class="active">Commercial</a>
+      <a href="feedback.html">Feedback</a>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Karnataka · Civil Courts</div>
+    <h1 class="hero-title">Commercial Court Fee Calculator</h1>
+    <p class="hero-sub">Ad valorem court fee on money recovery plaints under Schedule I, Article 1 of the Karnataka Court-Fees and Suits Valuation Act, 1958.</p>
+  </div>
+</div>
+
+<section class="content">
+  <div class="container">
+    <div class="calc-container">
+      <div class="calc-group">
+        <label class="calc-label" for="kc-amount">Suit value / claim amount (Rs)</label>
+        <div class="input-wrap">
+          <span class="prefix">Rs</span>
+          <input type="text" id="kc-amount" placeholder="e.g. 25,00,000" inputmode="numeric">
+        </div>
+      </div>
+
+      <div class="calc-result" id="kc-result" style="display:none;">
+        <div class="calc-row"><span>Suit value</span><span class="val" id="kc-r-amount">—</span></div>
+        <div class="calc-row"><span>Applicable slab</span><span class="val" id="kc-r-slab">—</span></div>
+        <div class="calc-row"><span>Base fee</span><span class="val" id="kc-r-base">—</span></div>
+        <div class="calc-row"><span>Marginal fee on excess</span><span class="val" id="kc-r-marginal">—</span></div>
+        <div class="calc-flag" id="kc-r-flag" style="display:none;"></div>
+        <div class="calc-total">
+          <span class="label">Court Fee Payable</span>
+          <span class="amount" id="kc-r-total">—</span>
+        </div>
+      </div>
+
+      <div class="slab-table-wrap">
+        <table class="slab-table" id="kc-slab-table">
+          <thead>
+            <tr>
+              <th>Suit Value</th>
+              <th>Rate</th>
+              <th>Maximum</th>
+            </tr>
+          </thead>
+          <tbody id="kc-slab-tbody">
+            <!-- populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="calc-disclaimer">
+        <strong>Disclaimer:</strong> This calculator is based on Schedule I, Article 1 of the Karnataka Court-Fees and Suits Valuation Act, 1958 and applicable amendments. Fee rates and slabs are subject to amendment by the State Government. <strong>Verify the current fee schedule from the Karnataka High Court website or the court registry before filing.</strong> This calculator does not account for additional process fees, e-court fees, or commercial courts surcharge that may separately apply.
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2026 computecourtfee.com &mdash; Not legal advice. &nbsp;|&nbsp; <a href="feedback.html">Feedback</a></p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  /* Karnataka Court-Fees and Suits Valuation Act 1958, Sch I Art 1 (ad valorem) */
+  var SLABS = [
+    { upTo:  500,       base: 0,     rate: 0.080, baseOn: 0,     label: 'Up to Rs 500'                       },
+    { upTo:  1000,      base: 40,    rate: 0.060, baseOn: 500,   label: 'Rs 501 – Rs 1,000'                  },
+    { upTo:  5000,      base: 70,    rate: 0.040, baseOn: 1000,  label: 'Rs 1,001 – Rs 5,000'                },
+    { upTo:  10000,     base: 230,   rate: 0.030, baseOn: 5000,  label: 'Rs 5,001 – Rs 10,000'               },
+    { upTo:  50000,     base: 380,   rate: 0.020, baseOn: 10000, label: 'Rs 10,001 – Rs 50,000'              },
+    { upTo:  100000,    base: 1180,  rate: 0.015, baseOn: 50000, label: 'Rs 50,001 – Rs 1,00,000'            },
+    { upTo:  200000,    base: 1930,  rate: 0.012, baseOn: 100000,label: 'Rs 1,00,001 – Rs 2,00,000'          },
+    { upTo:  500000,    base: 3130,  rate: 0.010, baseOn: 200000,label: 'Rs 2,00,001 – Rs 5,00,000'          },
+    { upTo:  1000000,   base: 6130,  rate: 0.008, baseOn: 500000,label: 'Rs 5,00,001 – Rs 10,00,000'         },
+    { upTo:  2000000,   base: 10130, rate: 0.006, baseOn:1000000,label: 'Rs 10,00,001 – Rs 20,00,000'        },
+    { upTo:  Infinity,  base: 16130, rate: 0.004, baseOn:2000000,label: 'Above Rs 20,00,000 (max Rs 75,000)' }
+  ];
+  var MAX_FEE = 75000;
+
+  function fmtRs(n) { return 'Rs ' + Math.round(n).toLocaleString('en-IN'); }
+  function parseAmt(s) { var c=(s||'').replace(/[^0-9.]/g,''); return c ? parseFloat(c) : NaN; }
+
+  /* build slab table */
+  var tbody = document.getElementById('kc-slab-tbody');
+  SLABS.forEach(function (s) {
+    var tr = document.createElement('tr');
+    var maxCell = s.upTo === Infinity ? 'Rs 75,000' : '—';
+    tr.innerHTML = '<td>' + s.label + '</td>'
+                 + '<td>' + (s.rate*100).toFixed(1) + '%</td>'
+                 + '<td>' + maxCell + '</td>';
+    tr.dataset.slabIndex = SLABS.indexOf(s);
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('kc-amount').addEventListener('input', function () {
+    var amt = parseAmt(this.value);
+    var result = document.getElementById('kc-result');
+    if (isNaN(amt) || amt <= 0) { result.style.display='none'; tbody.querySelectorAll('tr').forEach(function(r){r.classList.remove('active-slab');}); return; }
+
+    var slabIdx = 0;
+    for (var i = 0; i < SLABS.length; i++) { if (amt <= SLABS[i].upTo) { slabIdx = i; break; } }
+    var s       = SLABS[slabIdx];
+    var excess  = amt - s.baseOn;
+    var marginal = excess * s.rate;
+    var raw     = s.base + marginal;
+    var fee     = Math.min(raw, MAX_FEE);
+    var capped  = raw > MAX_FEE;
+
+    document.getElementById('kc-r-amount').textContent   = fmtRs(amt);
+    document.getElementById('kc-r-slab').textContent     = s.label;
+    document.getElementById('kc-r-base').textContent     = fmtRs(s.base);
+    document.getElementById('kc-r-marginal').textContent = fmtRs(marginal) + ' (' + (s.rate*100).toFixed(1) + '% on excess of ' + fmtRs(s.baseOn) + ')';
+    document.getElementById('kc-r-total').textContent    = fmtRs(fee);
+
+    var flagEl = document.getElementById('kc-r-flag');
+    if (capped) { flagEl.textContent = 'Fee capped at the statutory maximum of Rs 75,000.'; flagEl.style.display='block'; }
+    else { flagEl.style.display='none'; }
+
+    tbody.querySelectorAll('tr').forEach(function(r,i){
+      r.classList.toggle('active-slab', i === slabIdx);
+    });
+    result.style.display = 'block';
+  });
+})();
+</script>
+</body>
+</html>

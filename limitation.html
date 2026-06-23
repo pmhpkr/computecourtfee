@@ -7,12 +7,15 @@
 <title>Appeal Limitation Calculator | computecourtfee.com</title>
 <meta name="description" content="Find the last date to file a GST appeal under Section 107 or Section 112. Shows condonation window automatically when the limitation period has expired.">
 <link rel="canonical" href="https://www.computecourtfee.com/limitation.html">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1e1a2e">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <nav class="navbar">
   <div class="container">
     <a href="index.html" class="logo"><span class="logo-accent">compute</span><span class="logo-main">courtfee</span><span class="logo-accent">.com</span></a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Open menu">&#9776;</button>
     <div class="nav-links">
       <a href="index.html">Home</a>
       <a href="gstat-fee.html">GSTAT Fee</a>
@@ -49,7 +52,7 @@
         <input type="date" id="lim-receipt-date">
       </div>
       <div class="calc-group">
-        <label class="calc-label" for="lim-filing-date">Date of filing / proposed filing <span style="color:#7a8a9a;font-weight:400;">— optional</span></label>
+        <label class="calc-label" for="lim-filing-date">Date of filing / proposed filing <span style="color:#7a7a9a;font-weight:400;">— optional</span></label>
         <input type="date" id="lim-filing-date">
       </div>
       <div class="calc-result" id="lim-result" style="display:none;">
@@ -68,7 +71,7 @@
           </div>
         </div>
         <div class="calc-flag warn" id="lim-r-flag" style="display:none;"></div>
-        <div id="lim-r-amnesty-note" style="display:none; margin-top:14px; padding:12px 16px; background:#fdf8f2; border:1px solid #e8d8b8; border-left:3px solid #b8956a; font-size:13.5px; color:#5a4a3a; line-height:1.8;"></div>
+        <div id="lim-r-amnesty-note" style="display:none; margin-top:14px; padding:12px 16px; background:#f5f0fd; border:1px solid #d8d0e8; border-left:3px solid #9a7ab8; font-size:13.5px; color:#5a4a3a; line-height:1.8;"></div>
       </div>
       <div class="calc-disclaimer">
         <strong>Disclaimer:</strong> Section 107(1) provides a <strong>three-month</strong> limitation period for first appeals from the date of receipt of the order. The first appellate authority may condone delay up to a further one month on sufficient cause (S. 107(4)). Section 112(1) provides a <strong>three-month</strong> limitation for appeals to GSTAT, with condonation of up to a further three months (S. 112(4)). Limitation periods are subject to exclusion for time spent in legal proceedings (S. 14, Limitation Act). Court holidays and gazette notifications may further affect the deadline. <strong>This tool is indicative only — verify the applicable limitation against the statute and case law before filing.</strong>
@@ -119,7 +122,7 @@
 
     document.getElementById('lim-r-receipt').textContent = fmtDate(receipt);
     var periodText = '3 months (Sec ' + appealType + '(1))';
-    if (amnestyApplies) periodText += ' — amnesty window: last date 30 June 2026';
+    if (amnestyApplies) periodText += ' — tribunal non-constitution exclusion: last date 30 June 2026';
     document.getElementById('lim-r-period').textContent = periodText;
 
     var deadlineCard = document.getElementById('lim-r-deadline-card');
@@ -139,12 +142,12 @@
     var amnestyNote = document.getElementById('lim-r-amnesty-note');
     if (amnestyApplies) {
       amnestyNote.style.display = 'block';
-      amnestyNote.innerHTML = '<strong>Section 112 — Amnesty / Special Window:</strong> Since the order was received between 1 July 2017 and 31 March 2026, the limitation period is extended to <strong>30 June 2026</strong> (amnesty period excluded per GSTAT notification). Normal 3-month date would have been ' + fmtDate(normalLast) + '.';
+      amnestyNote.innerHTML = '<strong>Section 112 — Tribunal Non-Constitution Exclusion:</strong> Since GSTAT was not constituted during 1 July 2017 to 31 March 2026, that period is excluded from the limitation count. Effective last date for filing is <strong>30 June 2026</strong>. Normal 3-month date would have been ' + fmtDate(normalLast) + '.';
     } else {
       amnestyNote.style.display = 'none';
       if (is112 && receipt > AMNESTY_TO) {
         amnestyNote.style.display = 'block';
-        amnestyNote.innerHTML = 'Order received after 31 March 2026 — normal 3-month limitation applies. Amnesty extension is not applicable.';
+        amnestyNote.innerHTML = 'Order received after 31 March 2026 — normal 3-month limitation applies. Tribunal non-constitution exclusion is not applicable.';
       }
     }
 
@@ -154,7 +157,7 @@
       if (amnestyApplies) {
         /* Amnesty cases: no condonation shown — position is uncertain */
         condoneCard.style.display = 'none';
-        flagEl.innerHTML = '<strong>30 June 2026 has passed.</strong> Whether condonation under Section 112(4) is available beyond the amnesty window is not settled. Appeals filed after 1 July 2026 for orders covered by the amnesty period may not be admitted or the delay may not be condoned. Seek specific legal advice before proceeding.';
+        flagEl.innerHTML = '<strong>30 June 2026 has passed.</strong> Whether condonation under Section 112(4) is available beyond the tribunal non-constitution exclusion period is not settled. Appeals filed after 1 July 2026 for orders covered by this exclusion may not be admitted or the delay may not be condoned. Seek specific legal advice before proceeding.';
         flagEl.className = 'calc-flag warn';
         flagEl.style.display = 'block';
       } else {
@@ -189,5 +192,6 @@
   receiptInp.addEventListener('input', compute);
 })();
 </script>
+<script src="main.js"></script>
 </body>
 </html>
