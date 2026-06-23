@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8309581100470150" crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GSTAT Bench Jurisdiction Finder | computecourtfee.com</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .jx-step { margin-bottom: 28px; }
+  .jx-state-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 10px; margin-top: 12px; }
+  .jx-state-btn { border: 1px solid #d4cfc5; background: #fff; padding: 12px 16px; font-size: 14px; font-family: 'Garamond','Book Antiqua',serif; color: #2a3a4a; cursor: pointer; text-align: left; transition: border-color .2s, background .2s; }
+  .jx-state-btn:hover { border-color: #b8956a; color: #b8956a; }
+  .jx-state-btn.selected { border-color: #b8956a; background: #fdf8f2; color: #1a2a3a; font-weight: 600; }
+  .jx-district-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; }
+  .jx-district-select { flex: 1; min-width: 220px; }
+  .jx-result { margin-top: 32px; padding-top: 28px; border-top: 2px solid #d4cfc5; }
+  .jx-bench-name { font-family: 'Garamond','Book Antiqua',serif; font-size: 26px; color: #1a2a3a; margin-bottom: 6px; }
+  .jx-bench-state { font-size: 14px; color: #b8956a; letter-spacing: .04em; margin-bottom: 22px; text-transform: uppercase; font-weight: 600; }
+  .jx-cat-block { border: 1px solid #e8e6e0; margin-bottom: 14px; }
+  .jx-cat-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #f5f1e8; border-bottom: 1px solid #e8e6e0; }
+  .jx-cat-label { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #b8956a; }
+  .jx-cat-days { font-size: 12px; color: #7a8a9a; }
+  .jx-cat-body { padding: 14px 16px; }
+  .jx-member { font-size: 14px; color: #2a3a4a; line-height: 1.7; }
+  .jx-member + .jx-member { padding-top: 6px; border-top: 1px dashed #e8e6e0; margin-top: 6px; }
+  .jx-member-role { font-size: 12px; color: #7a8a9a; }
+  .jx-note { margin-top: 16px; font-size: 13px; color: #7a8a9a; background: #fdf8f2; border: 1px solid #e8d8b8; padding: 12px 16px; line-height: 1.8; }
+  .jx-cat-desc { margin-top: 24px; padding-top: 20px; border-top: 1px dashed #d4cfc5; }
+  .jx-cat-desc-title { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #7a8a9a; margin-bottom: 12px; }
+  .jx-cat-desc-block { margin-bottom: 14px; }
+  .jx-cat-desc-head { font-size: 13px; font-weight: 700; color: #1a2a3a; margin-bottom: 6px; }
+  .jx-cat-desc-list { font-size: 13px; color: #7a8a9a; line-height: 1.9; padding-left: 16px; }
+  .jx-search-wrap { position: relative; }
+  .jx-search-input { width: 100%; padding: 13px 13px 13px 40px; border: 1px solid #d4cfc5; font-size: 15px; font-family: 'Garamond','Book Antiqua',serif; color: #1a2a3a; background: #fff; }
+  .jx-search-input:focus { outline: none; border-color: #b8956a; }
+  .jx-search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #b8956a; font-size: 16px; pointer-events: none; }
+  .jx-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #d4cfc5; border-top: none; max-height: 260px; overflow-y: auto; z-index: 100; display: none; }
+  .jx-suggestion { padding: 10px 16px; font-size: 14px; color: #2a3a4a; cursor: pointer; border-bottom: 1px solid #f0ece4; }
+  .jx-suggestion:hover, .jx-suggestion.focused { background: #fdf8f2; color: #b8956a; }
+  .jx-suggestion .jx-sug-state { font-size: 12px; color: #7a8a9a; display: block; }
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo"><span class="logo-accent">compute</span><span class="logo-main">courtfee</span><span class="logo-accent">.com</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="gstat-fee.html">GSTAT Fee</a>
+      <a href="predeposit.html">Pre-Deposit</a>
+      <a href="limitation.html">Limitation</a>
+      <a href="scn-limits.html">SCN Limits</a>
+      <a href="checklist.html">Checklist</a>
+      <a href="jurisdiction.html" class="active">Jurisdiction</a>
+      <a href="feedback.html">Feedback</a>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">GSTAT · Section 109 · S.O. 5063(E)</div>
+    <h1 class="hero-title">Bench Jurisdiction Finder</h1>
+    <p class="hero-sub">Find the GSTAT bench for your district — including bench composition, members, hearing categories and sitting days.</p>
+  </div>
+</div>
+
+<section class="content">
+  <div class="container">
+    <div class="calc-container" style="max-width:860px;">
+
+      <div class="jx-step">
+        <label class="calc-label">Search by district or state</label>
+        <div class="jx-search-wrap">
+          <span class="jx-search-icon">⌕</span>
+          <input type="text" class="jx-search-input" id="jx-search" placeholder="Type district or state name…" autocomplete="off">
+          <div class="jx-suggestions" id="jx-suggestions"></div>
+        </div>
+      </div>
+
+      <div id="jx-result" style="display:none;"></div>
+
+      <div class="jx-cat-desc" id="jx-cat-ref">
+        <div class="jx-cat-desc-title">Reference — Case Categories (Office Order No. 3/GSTAT/PB/2026)</div>
+        <div class="jx-cat-desc-block">
+          <div class="jx-cat-desc-head">Category I — Tax Demand & Substantive Issues</div>
+          <ul class="jx-cat-desc-list">
+            <li>Misclassification of goods or services</li>
+            <li>Wrong applicability of a notification</li>
+            <li>Incorrect determination of time / value of supply</li>
+            <li>Incorrect admissibility or denial of ITC / blocking of credit</li>
+            <li>Liability to pay tax; registration requirement</li>
+            <li>Determination of tax not paid or short paid — Section 73 or 74</li>
+            <li>Excess ITC availed / utilised — Section 73 or 74</li>
+          </ul>
+        </div>
+        <div class="jx-cat-desc-block">
+          <div class="jx-cat-desc-head">Category II — Registration, Refund & Assessment</div>
+          <ul class="jx-cat-desc-list">
+            <li>Rejection / acceptance of registration applications or amendments</li>
+            <li>Suspension, cancellation or revocation of registration</li>
+            <li>Composition scheme denial; GSTP disqualification</li>
+            <li>Recovery, protective assessment, non-filer assessment</li>
+            <li>Refund orders (provisional, rejected, withheld, granted)</li>
+            <li>Provisional assessment; re-credit in credit ledger</li>
+          </ul>
+        </div>
+        <div class="jx-cat-desc-block">
+          <div class="jx-cat-desc-head">Category III — Seizure, Penalty & Residual</div>
+          <ul class="jx-cat-desc-list">
+            <li>Seizure / confiscation of goods, books or property</li>
+            <li>Rectification / withdrawal of an earlier order</li>
+            <li>Provisional attachment of property</li>
+            <li>Penalty orders; compounding of offences</li>
+            <li>Any other matter not covered under Category I or II</li>
+          </ul>
+        </div>
+        <div style="font-size:12px; color:#7a8a9a; margin-top:8px;">Note: All cases initially listed before a Division Bench; referred to Single Bench only if the Division Bench finds no question of law is involved (amount &lt; Rs 50 lakhs).</div>
+      </div>
+
+      <div class="calc-disclaimer" style="margin-top:24px;">
+        <strong>Disclaimer:</strong> Jurisdiction is based on S.O. 5063(E) dated 26 November 2024 (as amended) and Office Order No. 3/GSTAT/PB/2026 dated 14 May 2026. Bench composition and sitting arrangements are subject to change. Verify current arrangements from the official GSTAT portal or registry before filing. This tool is for reference only and does not constitute legal advice.
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2026 computecourtfee.com &mdash; Not legal advice. &nbsp;|&nbsp; <a href="feedback.html">Feedback</a></p>
+  </div>
+</footer>
+
+<script>
+(function () {
+
+/* ── BENCH DATA ─────────────────────────────────────────────────────────── */
+var BENCHES = {
+  vijayawada: {
+    name: 'Vijayawada Bench',
+    state: 'Andhra Pradesh',
+    note: 'Also handles Vishakhapatnam jurisdiction. VP has discretion to hear Vishakhapatnam matters via virtual, hybrid or physical mode.',
+    cats: [
+      { cat: 'I, II & III (incl. Vishakhapatnam)', days: 'All working days',
+        members: [['Sh. Bhaskar Reddy Vemireddy','Vice-President'],['Sh. Satish Kumar Agrawal','Technical Member – Centre (Raipur Bench, temporary arrangement)']] }
+    ]
+  },
+  guwahati: {
+    name: 'Guwahati Bench',
+    state: 'Assam, Arunachal Pradesh, Manipur & Meghalaya (+ Circuit Benches at Aizawal, Kohima, Agartala)',
+    cats: [
+      { cat: 'I, II & III', days: 'All working days',
+        members: [['Sh. Somnath Ganguli','Vice-President'],['Sh. Jogiranjan Panigrahi','Technical Member – Centre']] }
+    ]
+  },
+  patna: {
+    name: 'Patna Bench',
+    state: 'Bihar',
+    cats: [
+      { cat: 'I', days: 'Monday, Tuesday, Wednesday',
+        members: [['Sh. Manoj Shankar','Vice-President'],['Sh. Sanjay Kumar Mawandia','Technical Member – State']] },
+      { cat: 'II', days: 'Thursday, Friday',
+        members: [['Sh. Manoj Kumar Sinha','Judicial Member'],['Sh. Sanjay Kumar Mawandia','Technical Member – State']] }
+    ]
+  },
+  raipur: {
+    name: 'Raipur Bench',
+    state: 'Chhattisgarh',
+    cats: [
+      { cat: 'I, II & III', days: 'All working days',
+        members: [['Sh. Pradeep Kumar Vyas','Vice-President'],['Sh. Chandra Bhushan Singh','Technical Member – State']] }
+    ]
+  },
+  delhi: {
+    name: 'Delhi Bench',
+    state: 'Delhi (NCT)',
+    cats: [
+      { cat: 'I', days: 'Monday, Tuesday, Wednesday',
+        members: [['Sh. Sanjay Kumar Aggarwal','Vice-President'],['Sh. Rajiv Kapoor','Technical Member – Centre']] },
+      { cat: 'II', days: 'Thursday, Friday',
+        members: [['Sh. Arun Kumar Singal','Judicial Member'],['Sh. Rajiv Kapoor','Technical Member – Centre']] }
+    ]
+  },
+  ahmedabad: {
+    name: 'Ahmedabad Bench',
+    state: 'Gujarat',
+    cats: [
+      { cat: 'I', days: 'All working days',
+        members: [['Sh. Gunvantlal Manchanddas Patel','Vice-President'],['Sh. Pramod Kumar Singh','Technical Member – Centre']] },
+      { cat: 'II', days: 'All working days',
+        members: [['Ms. Shailaja Shashikant Sawant','Judicial Member'],['Sh. Dineshkumar Vajeshanker Trivedi','Technical Member – State']] }
+    ]
+  },
+  surat: {
+    name: 'Surat Bench',
+    state: 'Gujarat',
+    cats: [
+      { cat: 'I, II & III', days: 'All working days',
+        members: [['Sh. Sanjaykumar Dwivedi','Judicial Member'],['Sh. Rameshkumar Gokalbhai Hadvani','Technical Member – State']] }
+    ]
+  },
+  rajkot: {
+    name: 'Rajkot Bench',
+    state: 'Gujarat',
+    cats: [
+      { cat: 'I, II & III', days: 'All working days',
+        members: [['Sh. Pramod Kumar Rai','Judicial Member'],['Sh. Kishori Lal','Technical Member – Centre']] }
+    ]
+  },
+  gurugram: {
+    name: 'Gurugram Bench',
+    state: 'Haryana',
+    note: 'Hissar (circuit/virtual) on Thursday–Friday: Sh. Vimal Kumar Sapra (JM) + Sh. Sandeep Kumar, TM(C).',
+    cats: [
+      { cat: 'I, II & III', days: 'Monday, Tuesday, Wednesday',
+        members: [['Sh. Rakesh Syal','Vice-President'],['Sh. Sandeep Kumar','Technical Member – Centre']] }
+    ]
+  },
+  hissar: {
+    name: 'Hissar (Circuit / Virtual Hearing)',
+    state: 'Haryana',
+    note: 'Circuit bench of Gurugram. Members travel from / attend virtually from Gurugram.',
+    cats: [
+      { cat: 'I, II & III', days: 'Thursday, Friday (circuit / virtual)',
+        members: [['Sh. Vimal Kumar Sapra','Judicial Member'],['Sh. Sandeep Kumar','Technical Member – Centre (Gurugram)']] }
+    ]
+  },
+  shimla: {
+    name: 'Shimla Bench',
+    state: 'Himachal Pradesh',
+    cats: [
+      { cat: 'I', days: 'Monday, Tuesday, Wednesday',
+        members: [['Sh. Ajai Kumar Srivastava','Vice-President'],['Sh. Hir Bhagat Negi','Technical Member – Centre']] },
+      { cat: 'II', days: 'Thursday, Friday',
+        members: [['Sh. Ajai Kumar Srivastava','Vice-President'],['Sh. Amit Kashyap','Technical Member – State']] }
+    ]
+  },
+  jammu: {
+    name: 'Jammu Bench',
+    state: 'Jammu & Kashmir',
+    note: 'Srinagar matters (listed below) are heard on Friday by the same members.',
+    cats: [
+      { cat: 'I, II & III', days: 'Monday, Tuesday, Wednesday, Thursday',
+        members: [['Sh. Jitendra Kumar Singh','Vice-President'],['Sh. Pramod Kumar','Technical Member – Centre']] }
+    ]
+  },
+  srinagar: {
+    name: 'Srinagar Bench',
+    state: 'Jammu & Kashmir / Ladakh',
+    note: 'Members from Jammu Bench sit at Srinagar on Fridays.',
+    cats: [
+      { cat: 'I, II & III', days: 'Friday',
+        members: [['Sh. Jitendra Kumar Singh','Vice-President (Jammu)'],['Sh. Pramod Kumar','Technical Member – Centre (Jammu)']] }
+    ]
+  },
+  ranchi: {
+    name: 'Ranchi Bench',
+    state: 'Jharkhand',
+    cats: [
+      { cat: 'I, II & III', days: 'All working days',
+        members: [['Sh. Tushsar Kanti Satapathy','Vice-President'],['Sh. Bijoy Bihari Mohapatra','Technical Member – Centre']] }
+    ]
+  },
+  bengaluru: {
+    name: 'Bengaluru Bench',
+    state: 'Karnataka',
+    cats: [
+      { cat: 'I', days: 'All working days',
+        members: [['Sh. H G Nagarathna','Vice-President'],['Sh. Jagannatha Sagar Dasappa','Technical Member – State']] },
+      { cat: 'II', days: 'All working days',
+        members: [['Sh. Srikanth Venkatraman','Judicial Member'],['Ms. Sudha Koka','Technical Member – Centre']] },
+      { cat: 'III', days: 'All working days',
+        members: [['Sh. Prabhakaran P M','Judicial Member'],['Sh. Ravi Jesuraj S','Technical Member – State']] }
+    ]
+  },
+  ernakulam: {
+    name: 'Ernakulam Bench',
+    state: 'Kerala & Lakshadweep',
+    note: 'Thiruvananthapuram matters heard on Thursday–Friday by the same members.',
+    cats: [
+      { cat: 'I, II & III', days: 'Monday, Tuesday, Wednesday',
+        members: [['Sh. Subramanya Viswanatha Rayaprol','Vice-President'],['Sh. Ramamoorthi Sriram','Technical Member – Centre']] }
+    ]
+  },
+  thiruvananthapuram: {
+    name: 'Thiruvananthapuram Bench',
+    state: 'Kerala',
+    note: 'Members from Ernakulam Bench sit at Thiruvananthapuram on Thursday and Friday.',
+    cats: [
+      { cat: 'I, II & III', days: 'Thursday, Friday',
+        members: [['Sh. Subramanya Viswanatha Rayaprol','Vice-President (Ernakulam)'],['Sh. Ramamoorthi Sriram','Technical Member – Centre (Ernakulam)']] }
+    ]
+  },
+  bhopal: {
+    name: 'Bhopal Bench',
+    state: 'Madhya Pradesh',
+    note: 'Technical Member deputed from Nagpur Bench.',
+    cats: [
+      { cat: 'I', days: 'Thursday',
+        members: [['Sh. Roopesh Chandra Varshney','Vice-President'],['Sh. Sunil Kumar Das','Technical Member – Centre (Nagpur Bench)']] },
+      { cat: 'II', days: 'Friday',
+        members: [['Sh. Upendra Kumar Singh','Judicial Member'],['Sh. Sunil Kumar Das','Technical Member – Centre (Nagpur Bench)']] }
+    ]
+  },
+  mumbai: {
+    name: 'Mumbai Bench',
+    state: 'Maharashtra (Mumbai City & Mumbai Suburban)',
+    cats: [
+      { cat: 'I', days: 'Monday, Tuesday, Wednesday',
+        members: [['Sh. Atul Madhukar Kurhekar','Judicial Member'],['Sh. J. Michael Kennedy','Technical Member – Centre']] },
+      { cat: 'II', days: 'Thursday, 1st / 2nd / 3rd Friday',
+        members: [['Sh. Atul Madhukar Kurhekar','Judicial Member'],['Sh. David Thomas Alvaris','Technical Member – State']] }
+    ]
+  },
+  panaji: {
+    name: 'Panaji (Circuit Bench)',
+    state: 'Goa',
+    note: 'Circuit bench from Mumbai — same members sit at Panaji on the 4th and 5th Friday of each month.',
+    cats: [
+      { cat: 'I, II & III', days: '4th and 5th Friday',
+        members: [['Sh. Atul Madhukar Kurhekar','Judicial Member (Mumbai)'],['Sh. David Thomas Alvaris','Technical Member – State (Mumbai)']] }
+    ]
+  },
+  nagpur: {
+    name: 'Nagpur Bench',
+    state: 'Maharashtra',
+    note: 'VP handles administrative work on Thursday and Friday.',
+    cats: [
+      { cat: 'I, II & III', days: 'Monday, Tuesday, Wednesday',
+        members: [['Sh. Rajeev Purushottam Pande','Vice-President'],['Sh. Sunil Kumar Das','Technical Member – Centre']] }
+    ]
+  },
+  pune: {
+    name: 'Pune Bench',
+    state: 'Maharashtra',
+    cats: [
+      { cat: 'I, II & III', days: 'All working days',
+        members: [['Sh. Shridhar Mahadeo Bhosale','Judicial Member'],['Sh. Nirmal Kumar Soren','Technical Member – Centre']] }
+    ]
+  },
+  thane: {
+    name: 'Thane Bench',
+    state: 'Maharashtra',
+    cats: [
+      { cat: 'I, II & III', days: 'All working days',
+        members: [['Sh. Ramesh Nair','Judicial Member'],['Sh. Prallhad Shrikrishna Paranjape','Technical Member – State']] }
+    ]
+  },
+  sambhajinagar: {
+    name: 'Chhatrapati Sambhajinagar Bench',
+    state: 'Maharashtra',
+    cats: [
+      { cat: 'I, II & III', days: 'All working days',
+        members: [['Sh. Dharnendra Kumar Rana','Judicial Member (Mumbai)'],['Sh. Bhausaheb Vishram Borhade','Technical Member – State']] }
+    ]
+  },
+  cuttack: {
+    name: 'Cuttack Bench',
+    state: 'Odisha',
+    cats: [
+      { cat: 'I', days: 'Monday, Tuesday, Wednesday',
+        members: [['Ms. Suchismita Misra','Vice-President'],['Sh. Ranjan Kumar Sahoo','Technical Member – Centre']] },
+      { cat: 'II', days: 'Thursday, Friday',
+        members: [['Ms. Suchismita Misra','Vice-President'],['Sh. Ananda Satpathy','Technical Member – State']] }
+    ]
+  },
+  chandigarh: {
+    name: 'Chandigarh Bench',
+    state: 'Punjab & Chandigarh',
+    cats: [
+      { cat: 'I, II & III', days: 'All working days',
+        members: [['Sh. Jatinder Pal Singh','Judicial Member'],['Sh. Pradeep Kumar Goel','Technical Member – Centre']] }
+    ]
+  },
+  jalandhar: {
+    name: 'Jalandhar Bench',
+    state: 'Punjab',
+    cats: [
+      { cat: 'I, II & III', days: 'All working days',
+        members: [['Sh. Suman Jain','Vice-President'],['Sh. Harpinderpal Singh Ghotra','Technical Member – State']] }
+    ]
+  },
+  jaipur: {
+    name: 'Jaipur Bench',
+    state: 'Rajasthan',
+    cats: [
+      { cat: 'I', days: 'Monday, Tuesday, Wednesday',
+        members: [['Sh. Vishesh Sharma','Vice-President'],['Sh. Sunil Kumar Sinha','Technical Member – Centre']] },
+      { cat: 'II', days: 'Thursday, Friday',
+        members: [['Sh. Hemant Bajaj','Judicial Member'],['Sh. Sunil Kumar Sinha','Technical Member – Centre']] }
+    ]
+  },
+  jodhpur: {
+    name: 'Jodhpur Bench',
+    state: 'Rajasthan',
+    cats: [
+      { cat: 'I', days: 'Monday, Tuesday, Wednesday',
+        members: [['Ms. Jaishree Ahuja','Judicial Member'],['Sh. Ram Niwas','Technical Member – Centre']] },
+      { cat: 'II', days: 'Thursday, Friday',
+        members: [['Sh. Rajkumar Sharma','Judicial Member'],['Sh. Ram Niwas','Technical Member – Centre']] }
+    ]
+  },
+  chennai: {
+    name: 'Chennai Bench',
+    state: 'Tamil Nadu',
+    cats: [
+      { cat: 'I', days: 'Monday, Tuesday',
+        members: [['Sh. Praveen Kumar Jain','Vice-President'],['Sh. Shaik Khader Rahman','Technical Member – Centre']] },
+      { cat: 'II', days: 'Wednesday',
+        members: [['Sh. Praveen Kumar Jain','Vice-President'],['Sh. M Mathew Jolly','Technical Member – Centre (Coimbatore)']] }
+    ]
+  },
+  coimbatore: {
+    name: 'Coimbatore Bench',
+    state: 'Tamil Nadu',
+    cats: [
+      { cat: 'I, II & III', days: 'Thursday',
+        members: [['Sh. Praveen Kumar Jain','Vice-President'],['Sh. M Mathew Jolly','Technical Member – Centre']] }
+    ]
+  },
+  madurai: {
+    name: 'Madurai Bench',
+    state: 'Tamil Nadu',
+    cats: [
+      { cat: 'I, II & III', days: '1st, 2nd and 3rd Friday',
+        members: [['Sh. Praveen Kumar Jain','Vice-President'],['Sh. Shaik Khader Rahman','Technical Member – Centre']] }
+    ]
+  },
+  puducherry: {
+    name: 'Puducherry (Circuit Bench)',
+    state: 'Puducherry',
+    note: 'Circuit bench from Chennai / Tamil Nadu VP.',
+    cats: [
+      { cat: 'I, II & III', days: '4th and 5th Friday',
+        members: [['Sh. Praveen Kumar Jain','Vice-President'],['Sh. Shaik Khader Rahman','Technical Member – Centre']] }
+    ]
+  },
+  hyderabad: {
+    name: 'Hyderabad Bench',
+    state: 'Telangana',
+    cats: [
+      { cat: 'I', days: 'Monday, Tuesday, Wednesday',
+        members: [['Sh. Sushil Kumar Sharma','Vice-President'],['Sh. Duvvuri Krishna Srinivas','Technical Member – Centre']] },
+      { cat: 'II', days: 'Thursday, Friday',
+        members: [['Sh. A P Ravi','Judicial Member'],['Sh. Duvvuri Krishna Srinivas','Technical Member – Centre']] }
+    ]
+  },
+  lucknow: {
+    name: 'Lucknow Bench',
+    state: 'Uttar Pradesh',
+    cats: [
+      { cat: 'I', days: 'All working days',
+        members: [['Sh. Santosh Kumar Srivastava','Judicial Member'],['Sh. Alok Chopra','Technical Member – Centre']] },
+      { cat: 'II', days: 'All working days',
+        members: [['Sh. Narendra Kumar','Judicial Member'],['Sh. Arvind Kumar','Technical Member – State']] }
+    ]
+  },
+  prayagraj: {
+    name: 'Prayagraj Bench',
+    state: 'Uttar Pradesh',
+    cats: [
+      { cat: 'I, II & III', days: 'All working days',
+        members: [['Sh. Mahtab Ahmad','Judicial Member'],['Sh. Ashish Varma','Technical Member – Centre']] }
+    ]
+  },
+  varanasi: {
+    name: 'Varanasi Bench',
+    state: 'Uttar Pradesh',
+    cats: [
+      { cat: 'I, II & III', days: 'All working days',
+        members: [['Sh. Narendra Bahadur Yadav','Judicial Member'],['Sh. Ananjai Kumar Rai','Technical Member – State']] }
+    ]
+  },
+  ghaziabad: {
+    name: 'Ghaziabad Bench',
+    state: 'Uttar Pradesh',
+    cats: [
+      { cat: 'I, II & III', days: 'All working days',
+        members: [['Sh. Sanjay Kumar Chandhariyavi','Vice-President'],['Ms. Sungita Sharma','Technical Member – Centre']] }
+    ]
+  },
+  agra: {
+    name: 'Agra Bench',
+    state: 'Uttar Pradesh',
+    cats: [
+      { cat: 'I, II & III', days: 'All working days',
+        members: [['Sh. Ajeet Singh','Judicial Member'],['Sh. Vivek Kumar','Technical Member – State']] }
+    ]
+  },
+  dehradun: {
+    name: 'Dehradun Bench',
+    state: 'Uttarakhand',
+    cats: [
+      { cat: 'I', days: 'Monday, Tuesday, Wednesday',
+        members: [['Sh. Naresh Katyal','Vice-President'],['Sh. Amand Shah','Technical Member – Centre']] },
+      { cat: 'II', days: 'Thursday, Friday',
+        members: [['Sh. Rajesh Jain','Judicial Member'],['Sh. Amand Shah','Technical Member – Centre']] }
+    ]
+  },
+  kolkata: {
+    name: 'Kolkata Bench',
+    state: 'West Bengal, Sikkim & Andaman and Nicobar Islands',
+    cats: [
+      { cat: 'I', days: 'Monday, Tuesday, Wednesday',
+        members: [['Sh. Satya Gopal Chattopadhyay','Vice-President'],['Sh. Bijoy Kumar Kar','Technical Member – Centre']] },
+      { cat: 'II', days: 'Thursday, Friday',
+        members: [['Sh. Sunil Kumar Singh','Judicial Member'],['Sh. Bijoy Kumar Kar','Technical Member – Centre']] }
+    ]
+  }
+};
+
+/* ── DISTRICT → BENCH MAP ───────────────────────────────────────────────── */
+var DISTRICTS = [
+  /* Andhra Pradesh */
+  ['Krishna','Andhra Pradesh','vijayawada'],['NTR','Andhra Pradesh','vijayawada'],
+  ['Guntur','Andhra Pradesh','vijayawada'],['Palnadu','Andhra Pradesh','vijayawada'],
+  ['Bapatla','Andhra Pradesh','vijayawada'],['Prakasam','Andhra Pradesh','vijayawada'],
+  ['Sri Potti Sriramulu Nellore','Andhra Pradesh','vijayawada'],['Kurnool','Andhra Pradesh','vijayawada'],
+  ['Nandyal','Andhra Pradesh','vijayawada'],['Ananthapuramu','Andhra Pradesh','vijayawada'],
+  ['Sri Sathya Sai','Andhra Pradesh','vijayawada'],['YSR Kadapa','Andhra Pradesh','vijayawada'],
+  ['Annamayya','Andhra Pradesh','vijayawada'],['Tirupati','Andhra Pradesh','vijayawada'],
+  ['Chittoor','Andhra Pradesh','vijayawada'],
+  ['Srikakulam','Andhra Pradesh','vijayawada'],['Vizianagaram','Andhra Pradesh','vijayawada'],
+  ['Parvatipuram Manyam','Andhra Pradesh','vijayawada'],['Alluri Sitharama Raju','Andhra Pradesh','vijayawada'],
+  ['Visakhapatnam','Andhra Pradesh','vijayawada'],['Anakapalli','Andhra Pradesh','vijayawada'],
+  ['Kakinada','Andhra Pradesh','vijayawada'],['Dr. B. R. Ambedkar Konaseema','Andhra Pradesh','vijayawada'],
+  ['East Godavari','Andhra Pradesh','vijayawada'],['West Godavari','Andhra Pradesh','vijayawada'],
+  ['Eluru','Andhra Pradesh','vijayawada'],
+  /* Northeast (all → Guwahati) */
+  ['All districts — Assam','Assam','guwahati'],['All districts — Arunachal Pradesh','Arunachal Pradesh','guwahati'],
+  ['All districts — Manipur','Manipur','guwahati'],['All districts — Meghalaya','Meghalaya','guwahati'],
+  ['All districts — Mizoram','Mizoram','guwahati'],['All districts — Nagaland','Nagaland','guwahati'],
+  ['All districts — Tripura','Tripura','guwahati'],
+  /* Bihar */
+  ['All districts — Bihar','Bihar','patna'],
+  /* Chhattisgarh */
+  ['All districts — Chhattisgarh','Chhattisgarh','raipur'],
+  /* Delhi */
+  ['All districts — Delhi (NCT)','Delhi','delhi'],
+  /* Gujarat */
+  ['Ahmedabad','Gujarat','ahmedabad'],['Gandhinagar','Gujarat','ahmedabad'],
+  ['Banaskantha','Gujarat','ahmedabad'],['Mehsana','Gujarat','ahmedabad'],
+  ['Arvalli','Gujarat','ahmedabad'],['Patan','Gujarat','ahmedabad'],
+  ['Dahod','Gujarat','ahmedabad'],['Panchmahal','Gujarat','ahmedabad'],
+  ['Mahisagar','Gujarat','ahmedabad'],['Vadodara','Gujarat','ahmedabad'],
+  ['Chhotaudepur','Gujarat','ahmedabad'],['Sabarkantha','Gujarat','ahmedabad'],
+  ['Anand','Gujarat','surat'],['Kheda','Gujarat','surat'],
+  ['Tapi','Gujarat','surat'],['Narmada','Gujarat','surat'],
+  ['Navsari','Gujarat','surat'],['Bharuch','Gujarat','surat'],
+  ['Valsad','Gujarat','surat'],['Surat','Gujarat','surat'],
+  ['Dang','Gujarat','surat'],
+  ['Dadra and Nagar Haveli and Daman and Diu','UT','surat'],
+  ['Amreli','Gujarat','rajkot'],['Jamnagar','Gujarat','rajkot'],
+  ['Junagadh','Gujarat','rajkot'],['Porbandar','Gujarat','rajkot'],
+  ['Bhavnagar','Gujarat','rajkot'],['Morbi','Gujarat','rajkot'],
+  ['Rajkot','Gujarat','rajkot'],['Surendranagar','Gujarat','rajkot'],
+  ['Kutchh','Gujarat','rajkot'],['Gir-Somnath','Gujarat','rajkot'],
+  ['Devbhumi Dwarka','Gujarat','rajkot'],['Botad','Gujarat','rajkot'],
+  /* Haryana */
+  ['Gurugram','Haryana','gurugram'],['Charkhi Dadri','Haryana','gurugram'],
+  ['Faridabad','Haryana','gurugram'],['Jhajjar','Haryana','gurugram'],
+  ['Mahendragarh','Haryana','gurugram'],['Nuh','Haryana','gurugram'],
+  ['Palwal','Haryana','gurugram'],['Panipat','Haryana','gurugram'],
+  ['Rewari','Haryana','gurugram'],['Rohtak','Haryana','gurugram'],
+  ['Sonepat','Haryana','gurugram'],
+  ['Hisar','Haryana','hissar'],['Ambala','Haryana','hissar'],
+  ['Bhiwani','Haryana','hissar'],['Fatehabad','Haryana','hissar'],
+  ['Jind','Haryana','hissar'],['Kaithal','Haryana','hissar'],
+  ['Karnal','Haryana','hissar'],['Kurukshetra','Haryana','hissar'],
+  ['Panchkula','Haryana','hissar'],['Sirsa','Haryana','hissar'],
+  ['Yamunanagar','Haryana','hissar'],
+  /* Himachal Pradesh */
+  ['All districts — Himachal Pradesh','Himachal Pradesh','shimla'],
+  /* J&K and Ladakh */
+  ['Jammu','Jammu & Kashmir','jammu'],['Samba','Jammu & Kashmir','jammu'],
+  ['Kathua','Jammu & Kashmir','jammu'],['Rajouri','Jammu & Kashmir','jammu'],
+  ['Poonch','Jammu & Kashmir','jammu'],['Reasi','Jammu & Kashmir','jammu'],
+  ['Udhampur','Jammu & Kashmir','jammu'],['Ramban','Jammu & Kashmir','jammu'],
+  ['Doda','Jammu & Kashmir','jammu'],['Kishtwar','Jammu & Kashmir','jammu'],
+  ['Anantnag','Jammu & Kashmir','srinagar'],['Kulgam','Jammu & Kashmir','srinagar'],
+  ['Pulwama','Jammu & Kashmir','srinagar'],['Shopian','Jammu & Kashmir','srinagar'],
+  ['Srinagar','Jammu & Kashmir','srinagar'],['Budgam','Jammu & Kashmir','srinagar'],
+  ['Ganderbal','Jammu & Kashmir','srinagar'],['Baramulla','Jammu & Kashmir','srinagar'],
+  ['Bandipora','Jammu & Kashmir','srinagar'],['Kupwara','Jammu & Kashmir','srinagar'],
+  ['Leh','Ladakh','srinagar'],['Kargil','Ladakh','srinagar'],
+  /* Jharkhand */
+  ['All districts — Jharkhand','Jharkhand','ranchi'],
+  /* Karnataka */
+  ['All districts — Karnataka','Karnataka','bengaluru'],
+  /* Kerala & Lakshadweep */
+  ['Ernakulam','Kerala','ernakulam'],['Idukki','Kerala','ernakulam'],
+  ['Thrissur','Kerala','ernakulam'],['Palakkad','Kerala','ernakulam'],
+  ['Malappuram','Kerala','ernakulam'],['Kozhikode','Kerala','ernakulam'],
+  ['Wayanad','Kerala','ernakulam'],['Kannur','Kerala','ernakulam'],
+  ['Kasaragod','Kerala','ernakulam'],['Lakshadweep','UT','ernakulam'],
+  ['Thiruvananthapuram','Kerala','thiruvananthapuram'],['Kollam','Kerala','thiruvananthapuram'],
+  ['Alappuzha','Kerala','thiruvananthapuram'],['Pathanamthitta','Kerala','thiruvananthapuram'],
+  ['Kottayam','Kerala','thiruvananthapuram'],
+  /* Madhya Pradesh */
+  ['All districts — Madhya Pradesh','Madhya Pradesh','bhopal'],
+  /* Maharashtra & Goa */
+  ['Mumbai City','Maharashtra','mumbai'],['Mumbai Suburban','Maharashtra','mumbai'],
+  ['All districts — Goa','Goa','panaji'],
+  ['Pune','Maharashtra','pune'],['Kolhapur','Maharashtra','pune'],
+  ['Satara','Maharashtra','pune'],['Sangli','Maharashtra','pune'],
+  ['Ratnagiri','Maharashtra','pune'],['Sindhudurg','Maharashtra','pune'],
+  ['Solapur','Maharashtra','pune'],['Dharashiv','Maharashtra','pune'],
+  ['Thane','Maharashtra','thane'],['Palghar','Maharashtra','thane'],
+  ['Raigad','Maharashtra','thane'],
+  ['Nagpur','Maharashtra','nagpur'],['Chandrapur','Maharashtra','nagpur'],
+  ['Bhandara','Maharashtra','nagpur'],['Gondia','Maharashtra','nagpur'],
+  ['Gadchiroli','Maharashtra','nagpur'],['Wardha','Maharashtra','nagpur'],
+  ['Amravati','Maharashtra','nagpur'],['Yavatmal','Maharashtra','nagpur'],
+  ['Akola','Maharashtra','nagpur'],['Washim','Maharashtra','nagpur'],
+  ['Buldhana','Maharashtra','nagpur'],
+  ['Chhatrapati Sambhajinagar','Maharashtra','sambhajinagar'],['Beed','Maharashtra','sambhajinagar'],
+  ['Jalna','Maharashtra','sambhajinagar'],['Nashik','Maharashtra','sambhajinagar'],
+  ['Ahmednagar','Maharashtra','sambhajinagar'],['Nanded','Maharashtra','sambhajinagar'],
+  ['Latur','Maharashtra','sambhajinagar'],['Parbhani','Maharashtra','sambhajinagar'],
+  ['Hingoli','Maharashtra','sambhajinagar'],['Jalgaon','Maharashtra','sambhajinagar'],
+  ['Dhule','Maharashtra','sambhajinagar'],['Nandurbar','Maharashtra','sambhajinagar'],
+  /* Odisha */
+  ['All districts — Odisha','Odisha','cuttack'],
+  /* Punjab & Chandigarh */
+  ['Mohali','Punjab','chandigarh'],['Ropar','Punjab','chandigarh'],
+  ['Fatehgarh Sahib','Punjab','chandigarh'],['Patiala','Punjab','chandigarh'],
+  ['Sangrur','Punjab','chandigarh'],['Barnala','Punjab','chandigarh'],
+  ['Bathinda','Punjab','chandigarh'],['Fazilka','Punjab','chandigarh'],
+  ['Sri Muktsar Sahib','Punjab','chandigarh'],['Malerkotla','Punjab','chandigarh'],
+  ['Mansa','Punjab','chandigarh'],['Chandigarh','UT','chandigarh'],
+  ['Jalandhar','Punjab','jalandhar'],['Hoshiarpur','Punjab','jalandhar'],
+  ['Nawan Shahar','Punjab','jalandhar'],['Kapurthala','Punjab','jalandhar'],
+  ['Amritsar','Punjab','jalandhar'],['Tarn Taran','Punjab','jalandhar'],
+  ['Gurdaspur','Punjab','jalandhar'],['Pathankot','Punjab','jalandhar'],
+  ['Ludhiana','Punjab','jalandhar'],['Moga','Punjab','jalandhar'],
+  ['Ferozepur','Punjab','jalandhar'],['Faridkot','Punjab','jalandhar'],
+  /* Rajasthan */
+  ['Ajmer','Rajasthan','jaipur'],['Bhilwara','Rajasthan','jaipur'],
+  ['Tonk','Rajasthan','jaipur'],['Baran','Rajasthan','jaipur'],
+  ['Bundi','Rajasthan','jaipur'],['Jhalawar','Rajasthan','jaipur'],
+  ['Kota','Rajasthan','jaipur'],['Bharatpur','Rajasthan','jaipur'],
+  ['Dholpur','Rajasthan','jaipur'],['Karauli','Rajasthan','jaipur'],
+  ['Sawai Madhopur','Rajasthan','jaipur'],['Jaipur','Rajasthan','jaipur'],
+  ['Alwar','Rajasthan','jaipur'],['Jhunjhunu','Rajasthan','jaipur'],
+  ['Sikar','Rajasthan','jaipur'],['Dausa','Rajasthan','jaipur'],
+  ['Beawar','Rajasthan','jaipur'],['Kekri','Rajasthan','jaipur'],
+  ['Shahpura','Rajasthan','jaipur'],['Khairthal-Tijara','Rajasthan','jaipur'],
+  ['Gangapur City','Rajasthan','jaipur'],['Deeg','Rajasthan','jaipur'],
+  ['Jaipur Rural','Rajasthan','jaipur'],['Kotputli-Behrod','Rajasthan','jaipur'],
+  ['Neem Ka Thana','Rajasthan','jaipur'],['Dudu','Rajasthan','jaipur'],
+  ['Bikaner','Rajasthan','jodhpur'],['Churu','Rajasthan','jodhpur'],
+  ['Hanumangarh','Rajasthan','jodhpur'],['Shri Ganganagar','Rajasthan','jodhpur'],
+  ['Banswara','Rajasthan','jodhpur'],['Chittorgarh','Rajasthan','jodhpur'],
+  ['Dungarpur','Rajasthan','jodhpur'],['Udaipur','Rajasthan','jodhpur'],
+  ['Rajsamand','Rajasthan','jodhpur'],['Pratapgarh','Rajasthan','jodhpur'],
+  ['Barmer','Rajasthan','jodhpur'],['Jaisalmer','Rajasthan','jodhpur'],
+  ['Jalore','Rajasthan','jodhpur'],['Jodhpur','Rajasthan','jodhpur'],
+  ['Pali','Rajasthan','jodhpur'],['Sirohi','Rajasthan','jodhpur'],
+  ['Nagaur','Rajasthan','jodhpur'],['Anoopgarh','Rajasthan','jodhpur'],
+  ['Salumber','Rajasthan','jodhpur'],['Jodhpur Rural','Rajasthan','jodhpur'],
+  ['Falodi','Rajasthan','jodhpur'],['Balotra','Rajasthan','jodhpur'],
+  ['Sanchor','Rajasthan','jodhpur'],['Deedwana-Kuchaman','Rajasthan','jodhpur'],
+  /* Tamil Nadu & Puducherry */
+  ['Chennai','Tamil Nadu','chennai'],['Tiruvallur','Tamil Nadu','chennai'],
+  ['Chengalpattu','Tamil Nadu','chennai'],['Kancheepuram','Tamil Nadu','chennai'],
+  ['Cuddalore','Tamil Nadu','chennai'],['Villupuram','Tamil Nadu','chennai'],
+  ['Kallakurichi','Tamil Nadu','chennai'],['Vellore','Tamil Nadu','chennai'],
+  ['Thirupathur','Tamil Nadu','chennai'],['Ranipet','Tamil Nadu','chennai'],
+  ['Thiruvannamalai','Tamil Nadu','chennai'],
+  ['All districts — Puducherry','Puducherry','puducherry'],
+  ['Thiruvarur','Tamil Nadu','madurai'],['Mayiladuthurai','Tamil Nadu','madurai'],
+  ['Nagapattinam','Tamil Nadu','madurai'],['Thanjavur','Tamil Nadu','madurai'],
+  ['Tiruchirappalli','Tamil Nadu','madurai'],['Perambalur','Tamil Nadu','madurai'],
+  ['Pudukottai','Tamil Nadu','madurai'],['Ariyalur','Tamil Nadu','madurai'],
+  ['Madurai','Tamil Nadu','madurai'],['Dindigul','Tamil Nadu','madurai'],
+  ['Theni','Tamil Nadu','madurai'],['Virudhunagar','Tamil Nadu','madurai'],
+  ['Sivagangai','Tamil Nadu','madurai'],['Ramanathapuram','Tamil Nadu','madurai'],
+  ['Tirunelveli','Tamil Nadu','madurai'],['Tenkasi','Tamil Nadu','madurai'],
+  ['Thoothukudi','Tamil Nadu','madurai'],['Kanyakumari','Tamil Nadu','madurai'],
+  ['Coimbatore','Tamil Nadu','coimbatore'],['Nilgiris','Tamil Nadu','coimbatore'],
+  ['Tiruppur','Tamil Nadu','coimbatore'],['Erode','Tamil Nadu','coimbatore'],
+  ['Salem','Tamil Nadu','coimbatore'],['Namakkal','Tamil Nadu','coimbatore'],
+  ['Karur','Tamil Nadu','coimbatore'],['Dharmapuri','Tamil Nadu','coimbatore'],
+  ['Krishnagiri','Tamil Nadu','coimbatore'],
+  /* Telangana */
+  ['All districts — Telangana','Telangana','hyderabad'],
+  /* Uttar Pradesh */
+  ['Lucknow','Uttar Pradesh','lucknow'],['Hardoi','Uttar Pradesh','lucknow'],
+  ['Rae Bareli','Uttar Pradesh','lucknow'],['Sitapur','Uttar Pradesh','lucknow'],
+  ['Lakhimpur Kheri','Uttar Pradesh','lucknow'],['Unnao','Uttar Pradesh','lucknow'],
+  ['Kanpur Nagar','Uttar Pradesh','lucknow'],['Kanpur Dehat','Uttar Pradesh','lucknow'],
+  ['Bareilly','Uttar Pradesh','lucknow'],['Budaun','Uttar Pradesh','lucknow'],
+  ['Shahjahanpur','Uttar Pradesh','lucknow'],['Pilibhit','Uttar Pradesh','lucknow'],
+  ['Ayodhya','Uttar Pradesh','lucknow'],['Bara Banki','Uttar Pradesh','lucknow'],
+  ['Gonda','Uttar Pradesh','lucknow'],['Bahraich','Uttar Pradesh','lucknow'],
+  ['Balarampur','Uttar Pradesh','lucknow'],['Shrawasti','Uttar Pradesh','lucknow'],
+  ['Prayagraj','Uttar Pradesh','prayagraj'],['Pratapgarh','Uttar Pradesh','prayagraj'],
+  ['Fatehpur','Uttar Pradesh','prayagraj'],['Kaushambi','Uttar Pradesh','prayagraj'],
+  ['Amethi','Uttar Pradesh','prayagraj'],['Sultanpur','Uttar Pradesh','prayagraj'],
+  ['Banda','Uttar Pradesh','prayagraj'],['Chitrakoot','Uttar Pradesh','prayagraj'],
+  ['Hamirpur','Uttar Pradesh','prayagraj'],['Mahoba','Uttar Pradesh','prayagraj'],
+  ['Ambedkar Nagar','Uttar Pradesh','prayagraj'],
+  ['Varanasi','Uttar Pradesh','varanasi'],['Ghazipur','Uttar Pradesh','varanasi'],
+  ['Chandauli','Uttar Pradesh','varanasi'],['Jaunpur','Uttar Pradesh','varanasi'],
+  ['Azamgarh','Uttar Pradesh','varanasi'],['Ballia','Uttar Pradesh','varanasi'],
+  ['Mau','Uttar Pradesh','varanasi'],['Mirzapur','Uttar Pradesh','varanasi'],
+  ['Sonbhadra','Uttar Pradesh','varanasi'],['Bhadohi','Uttar Pradesh','varanasi'],
+  ['Gorakhpur','Uttar Pradesh','varanasi'],['Basti','Uttar Pradesh','varanasi'],
+  ['Siddharthnagar','Uttar Pradesh','varanasi'],['Sant Kabir Nagar','Uttar Pradesh','varanasi'],
+  ['Deoria','Uttar Pradesh','varanasi'],['Maharajganj','Uttar Pradesh','varanasi'],
+  ['Kushinagar','Uttar Pradesh','varanasi'],
+  ['Ghaziabad','Uttar Pradesh','ghaziabad'],['Hapur','Uttar Pradesh','ghaziabad'],
+  ['Bulandshahar','Uttar Pradesh','ghaziabad'],['Gautam Buddha Nagar','Uttar Pradesh','ghaziabad'],
+  ['Meerut','Uttar Pradesh','ghaziabad'],['Baghpat','Uttar Pradesh','ghaziabad'],
+  ['Saharanpur','Uttar Pradesh','ghaziabad'],['Shamli','Uttar Pradesh','ghaziabad'],
+  ['Muzaffarnagar','Uttar Pradesh','ghaziabad'],['Moradabad','Uttar Pradesh','ghaziabad'],
+  ['Amroha','Uttar Pradesh','ghaziabad'],['Sambhal','Uttar Pradesh','ghaziabad'],
+  ['Rampur','Uttar Pradesh','ghaziabad'],['Bijnor','Uttar Pradesh','ghaziabad'],
+  ['Agra','Uttar Pradesh','agra'],['Farrukhabad','Uttar Pradesh','agra'],
+  ['Auraiya','Uttar Pradesh','agra'],['Kannauj','Uttar Pradesh','agra'],
+  ['Mainpuri','Uttar Pradesh','agra'],['Firozabad','Uttar Pradesh','agra'],
+  ['Aligarh','Uttar Pradesh','agra'],['Etah','Uttar Pradesh','agra'],
+  ['Kasganj','Uttar Pradesh','agra'],['Mathura','Uttar Pradesh','agra'],
+  ['Hathras','Uttar Pradesh','agra'],['Jhansi','Uttar Pradesh','agra'],
+  ['Lalitpur','Uttar Pradesh','agra'],['Jalaun','Uttar Pradesh','agra'],
+  ['Etawah','Uttar Pradesh','agra'],
+  /* Uttarakhand */
+  ['All districts — Uttarakhand','Uttarakhand','dehradun'],
+  /* West Bengal, Sikkim, A&N */
+  ['All districts — West Bengal','West Bengal','kolkata'],
+  ['All districts — Sikkim','Sikkim','kolkata'],
+  ['All districts — Andaman and Nicobar Islands','UT','kolkata']
+];
+
+/* ── UI ─────────────────────────────────────────────────────────────────── */
+var searchInp = document.getElementById('jx-search');
+var sugBox    = document.getElementById('jx-suggestions');
+var resultEl  = document.getElementById('jx-result');
+var focusIdx  = -1;
+
+function normalize(s) { return s.toLowerCase().replace(/[^a-z0-9 ]/g,''); }
+
+searchInp.addEventListener('input', function () {
+  var q = normalize(this.value.trim());
+  sugBox.innerHTML = '';
+  focusIdx = -1;
+  if (q.length < 2) { sugBox.style.display='none'; return; }
+  var matches = DISTRICTS.filter(function (d) {
+    return normalize(d[0]).indexOf(q) !== -1 || normalize(d[1]).indexOf(q) !== -1;
+  }).slice(0, 18);
+  if (!matches.length) { sugBox.style.display='none'; return; }
+  matches.forEach(function (d, i) {
+    var el = document.createElement('div');
+    el.className = 'jx-suggestion';
+    el.innerHTML = '<strong>' + d[0] + '</strong><span class="jx-sug-state">' + d[1] + '</span>';
+    el.addEventListener('mousedown', function (e) { e.preventDefault(); selectEntry(d); });
+    sugBox.appendChild(el);
+  });
+  sugBox.style.display = 'block';
+});
+
+searchInp.addEventListener('keydown', function (e) {
+  var items = sugBox.querySelectorAll('.jx-suggestion');
+  if (!items.length) return;
+  if (e.key === 'ArrowDown') { e.preventDefault(); focusIdx = Math.min(focusIdx+1, items.length-1); highlightSug(items); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); focusIdx = Math.max(focusIdx-1, 0); highlightSug(items); }
+  else if (e.key === 'Enter' && focusIdx >= 0) { e.preventDefault(); items[focusIdx].dispatchEvent(new MouseEvent('mousedown')); }
+  else if (e.key === 'Escape') { sugBox.style.display='none'; }
+});
+
+document.addEventListener('click', function (e) {
+  if (!sugBox.contains(e.target) && e.target !== searchInp) sugBox.style.display = 'none';
+});
+
+function highlightSug(items) {
+  items.forEach(function (el, i) { el.classList.toggle('focused', i === focusIdx); });
+}
+
+function selectEntry(d) {
+  searchInp.value = d[0] + (d[1] !== 'UT' ? ' — ' + d[1] : '');
+  sugBox.style.display = 'none';
+  showBench(d[2], d[0], d[1]);
+}
+
+function showBench(benchId, district, state) {
+  var b = BENCHES[benchId];
+  if (!b) return;
+  var html = '<div class="jx-result">'
+           + '<div class="jx-bench-name">' + b.name + '</div>'
+           + '<div class="jx-bench-state">' + b.state + '</div>';
+
+  html += '<div class="calc-row"><span>Your district</span><span class="val">' + district + (state && state !== 'UT' ? ', ' + state : '') + '</span></div>';
+  html += '<div class="calc-row" style="margin-bottom:20px;"><span>Bench</span><span class="val">' + b.name + '</span></div>';
+
+  b.cats.forEach(function (c) {
+    html += '<div class="jx-cat-block">'
+          + '<div class="jx-cat-head"><span class="jx-cat-label">Category ' + c.cat + '</span><span class="jx-cat-days">' + c.days + '</span></div>'
+          + '<div class="jx-cat-body">';
+    c.members.forEach(function (m) {
+      html += '<div class="jx-member"><strong>' + m[0] + '</strong><br><span class="jx-member-role">' + m[1] + '</span></div>';
+    });
+    html += '</div></div>';
+  });
+
+  if (b.note) {
+    html += '<div class="jx-note">ℹ ' + b.note + '</div>';
+  }
+  html += '</div>';
+  resultEl.innerHTML = html;
+  resultEl.style.display = 'block';
+  resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+})();
+</script>
+</body>
+</html>
