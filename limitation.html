@@ -77,7 +77,7 @@
         <div id="lim-r-amnesty-note" style="display:none; margin-top:14px; padding:12px 16px; background:#eaf3fd; border:1px solid #c8daf0; border-left:3px solid #2a6cb8; font-size:13.5px; color:#5a4a3a; line-height:1.8;"></div>
       </div>
       <div class="calc-disclaimer">
-        <strong>Disclaimer:</strong> Section 107(1) provides a <strong>three-month</strong> limitation for first appeals from the date of receipt of the order; the first appellate authority may condone delay up to a further one month on sufficient cause (S. 107(4)). Section 112(1) provides a <strong>three-month</strong> limitation for GSTAT appeals, with condonation of up to a further three months on sufficient cause shown to the Tribunal (<strong>S. 112(6)</strong>). For orders communicated before 1 April 2026, Notification S.O. 4220(E) dated 17 September 2025 (issued under S. 112(1)) fixes 30 June 2026 as the last date; with S. 112(6) condonation, the outer limit is 30 September 2026. The GSTAT President's staggered portal filing windows (administrative orders under Rule 123 of the GSTAT Procedure Rules) regulate portal access, not legal limitation — missing an assigned window does not bar filing in a later window within the statutory deadline. <strong>Verify the applicable limitation against the statute before filing.</strong>
+        <strong>Disclaimer:</strong> Section 107(1) provides a <strong>three-month</strong> limitation for first appeals from the date of receipt of the order; the first appellate authority may condone delay up to a further one month on sufficient cause (S. 107(4)). Section 112(1) provides a <strong>three-month</strong> limitation for GSTAT appeals, with condonation of up to a further three months on sufficient cause shown to the Tribunal (<strong>S. 112(6)</strong>). For orders communicated before 1 April 2026, Notification S.O. 4220(E) dated 17 September 2025 (issued under S. 112(1)) fixes 30 June 2026 as the last date. Whether S. 112(6) condonation runs from that date is not settled — the notification extended the filing period but did not expressly extend the condonation window; take specific legal advice before filing after 30 June 2026. The GSTAT President's staggered portal filing windows (administrative orders under Rule 123 of the GSTAT Procedure Rules) regulate portal access, not legal limitation — missing an assigned window does not bar filing in a later window within the statutory deadline. <strong>Verify the applicable limitation against the statute before filing.</strong>
       </div>
     </div>
   </div>
@@ -159,30 +159,31 @@
     var condoneCard = document.getElementById('lim-r-condone-card');
     var flagEl = document.getElementById('lim-r-flag');
     if (expired) {
-      condoneCard.style.display = 'block';
-      document.getElementById('lim-r-condone').textContent = fmtDate(condoneEnd);
       var condSub = document.getElementById('lim-r-condone-sub');
-      if (!condoneExpired) {
-        var daysLeft2 = Math.round((condoneEnd - now) / 86400000);
-        condoneCard.className = 'date-result-card amnesty';
-        if (amnestyApplies) {
-          /* S.112(6) condonation confirmed — outer limit 30 Sep 2026. Discretionary, requires sufficient cause. */
-          condSub.innerHTML = 'Section 112(6) condonation window — ' + daysLeft2 + ' day' + (daysLeft2 !== 1 ? 's' : '') + ' remaining. Sufficient cause must be shown to the Tribunal.';
-          flagEl.innerHTML = '<strong>30 June 2026 has passed.</strong> Section 112(6) permits the Tribunal to condone delay up to a further 3 months (outer limit: 30 September 2026), but this is discretionary — sufficient cause for the delay after 30 June 2026 must be clearly demonstrated. The safer position is always to file before 30 June 2026.';
-        } else {
-          condSub.textContent = 'Condonation window still open — ' + daysLeft2 + ' day' + (daysLeft2 !== 1 ? 's' : '') + ' remaining. Sufficient cause must be shown (S. 112(6)).';
-          flagEl.style.display = 'none';
-        }
+      if (amnestyApplies) {
+        /* For tribunal non-constitution exclusion cases: whether S.112(6) condonation runs from
+           30 June 2026 (the notification date) is legally unsettled. The notification extends the
+           filing period but does not expressly extend the condonation window. Do not show a
+           condonation date — show the disputed position instead. */
+        condoneCard.style.display = 'none';
+        flagEl.innerHTML = '<strong>30 June 2026 has passed.</strong> Whether further condonation of delay is available under Section 112(6) for orders covered by the tribunal non-constitution exclusion is <strong>not settled</strong>. The notification (S.O. 4220(E) dated 17 September 2025) extended the filing period to 30 June 2026 but does not expressly extend the S.112(6) condonation window. If the Tribunal declines to condone delay filed after 30 June 2026, a writ petition under Article 226 may be the only remaining avenue — that relief is discretionary, not a statutory right. <strong>Take legal advice before filing after 30 June 2026.</strong>';
         flagEl.className = 'calc-flag warn';
         flagEl.style.display = 'block';
       } else {
-        condoneCard.className = 'date-result-card urgent';
-        condSub.textContent = 'Section 112(6) condonation outer limit has also expired.';
-        flagEl.innerHTML = amnestyApplies
-          ? 'Both the 30 June 2026 statutory deadline and the 30 September 2026 Section 112(6) condonation outer limit have expired. The only remaining avenue is a writ petition under Article 226, which is discretionary and is not a substitute for statutory appeal.'
-          : 'Both the limitation period and the Section 112(6) condonation window have expired. Writ jurisdiction under Article 226 remains, but it is discretionary and not a substitute for statutory appeal. Consult a lawyer.';
-        flagEl.className = 'calc-flag warn';
-        flagEl.style.display = 'block';
+        condoneCard.style.display = 'block';
+        document.getElementById('lim-r-condone').textContent = fmtDate(condoneEnd);
+        if (!condoneExpired) {
+          var daysLeft2 = Math.round((condoneEnd - now) / 86400000);
+          condoneCard.className = 'date-result-card amnesty';
+          condSub.textContent = 'Condonation window still open — ' + daysLeft2 + ' day' + (daysLeft2 !== 1 ? 's' : '') + ' remaining. Sufficient cause must be shown (S. 112(6)).';
+          flagEl.style.display = 'none';
+        } else {
+          condoneCard.className = 'date-result-card urgent';
+          condSub.textContent = 'Section 112(6) condonation outer limit has also expired.';
+          flagEl.innerHTML = 'Both the limitation period and the Section 112(6) condonation window have expired. Writ jurisdiction under Article 226 remains, but it is discretionary and not a substitute for statutory appeal. Consult a lawyer.';
+          flagEl.className = 'calc-flag warn';
+          flagEl.style.display = 'block';
+        }
       }
     } else {
       condoneCard.style.display = 'none';
